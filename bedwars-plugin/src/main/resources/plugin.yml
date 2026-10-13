@@ -7,6 +7,9 @@ main: com.andrei1058.bedwars.BedWars
 softdepend: [Vault,PlaceholderAPI,Citizens,Parties,SlimeWorldManager,VipFeatures,Enhanced-SlimeWorldManager,PartyAndFriends,Spigot-Party-API-PAF]
 #load: STARTUP
 permissions:
+  bw.practice.admin:
+    description: Allows configuring practice points and the lobby NPC
+    default: op
   bw.shout:
     description: Allows sending arena-wide shout messages
     default: true

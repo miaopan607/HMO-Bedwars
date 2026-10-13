@@ -54,6 +54,10 @@ public class CmdLeave extends SubCommand {
     public boolean execute(String[] args, CommandSender s) {
         if (s instanceof ConsoleCommandSender) return false;
         Player p = (Player) s;
+        if (BedWars.getPracticeManager() != null && BedWars.getPracticeManager().isPracticing(p)) {
+            BedWars.getPracticeManager().leave(p);
+            return true;
+        }
 
         if (cancel(p.getUniqueId())) return true;
         update(p.getUniqueId());

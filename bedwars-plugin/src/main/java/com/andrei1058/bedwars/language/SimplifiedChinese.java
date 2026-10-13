@@ -42,6 +42,37 @@ public class SimplifiedChinese extends Language {
         yml.options().copyDefaults(true);
         yml.addDefault(Messages.PREFIX, "");
         yml.addDefault("name", "简体中文");
+        yml.addDefault(Messages.PRACTICE_MENU_TITLE, "&8练习场");
+        yml.addDefault(Messages.PRACTICE_MODE_FIREBALL, "&e火球跳");
+        yml.addDefault(Messages.PRACTICE_MODE_BRIDGE, "&e搭路");
+        yml.addDefault(Messages.PRACTICE_MODE_PEARL, "&e末影珍珠");
+        yml.addDefault(Messages.PRACTICE_MENU_LORE, Arrays.asList("&7空闲练习点：{free}/{total}", "&a点击开始练习"));
+        yml.addDefault(Messages.PRACTICE_RETRY_ITEM, "&a重新练习");
+        yml.addDefault(Messages.PRACTICE_LEAVE_ITEM, "&c退出练习");
+        yml.addDefault(Messages.PRACTICE_NPC_NAME, "&e练习场 &7（右键打开）");
+        yml.addDefault(Messages.PRACTICE_COMMAND_HELP, "&e/{command} practice [join <fireball|bridge|pearl>|retry|leave|list]");
+        yml.addDefault(Messages.PRACTICE_ADMIN_HELP, "&e/{command} practice create <id> <mode>；setspawn|pos1|pos2|enable|disable|delete <id>；faily <id> <整数>；reload；npc set|remove");
+        yml.addDefault(Messages.PRACTICE_LIST_LINE, "&e{mode}&7：{free}/{total}");
+        yml.addDefault(Messages.PRACTICE_JOINED, "&a已进入练习点 {id}。");
+        yml.addDefault(Messages.PRACTICE_RESET, "&a已回到起点，可以重新练习。");
+        yml.addDefault(Messages.PRACTICE_LEFT, "&a已退出练习。");
+        yml.addDefault(Messages.PRACTICE_NOT_IN_SESSION, "&c你还没有进入练习。");
+        yml.addDefault(Messages.PRACTICE_ALREADY_IN_SESSION, "&c你已经在练习中。");
+        yml.addDefault(Messages.PRACTICE_NO_FREE_POINT, "&c没有安全且空闲的练习点，请稍后再试。");
+        yml.addDefault(Messages.PRACTICE_LEAVE_FIRST, "&c请先退出当前对局、练习、设置或建设状态。");
+        yml.addDefault(Messages.PRACTICE_NO_PERMISSION, "&c你没有练习管理权限。");
+        yml.addDefault(Messages.PRACTICE_PLAYER_ONLY, "&c此操作需要玩家在游戏内执行。");
+        yml.addDefault(Messages.PRACTICE_INVALID_ARGUMENTS, "&c参数不正确：{reason}");
+        yml.addDefault(Messages.PRACTICE_POINT_EXISTS, "&c练习点 {id} 已存在。");
+        yml.addDefault(Messages.PRACTICE_POINT_NOT_FOUND, "&c练习点 {id} 不存在。");
+        yml.addDefault(Messages.PRACTICE_POINT_BUSY, "&c练习点正在使用，请先退出再修改配置。");
+        yml.addDefault(Messages.PRACTICE_INVALID_POINT, "&c练习点 {id} 配置不正确：{reason}");
+        yml.addDefault(Messages.PRACTICE_SAVE_FAILED, "&c练习配置保存失败：{reason}");
+        yml.addDefault(Messages.PRACTICE_TELEPORT_FAILED, "&c传送失败，未丢弃当前会话，可以重试。{reason}");
+        yml.addDefault(Messages.PRACTICE_ADMIN_SUCCESS, "&a练习配置已保存。{id}");
+        yml.addDefault(Messages.PRACTICE_RELOAD_SUCCESS, "&a练习配置已重新加载。");
+        yml.addDefault(Messages.PRACTICE_COMMAND_DISPLAY, "&e/{command} practice &7- 打开练习菜单");
+        yml.addDefault(Messages.PRACTICE_COMMAND_DISPLAY_HOVER, "&f火球跳、搭路与末影珍珠练习。");
 
         // this must stay here
         // move message to new path

@@ -1,4 +1,7 @@
 # Unreleased
+- added isolated 1.8.8 fireball-jump, bridging and ender-pearl practice points with per-player allocation, retry cleanup and inventory/state restoration.
+- added practice setup commands, localized selection menus and a persistent native lobby NPC without Citizens; practice never joins normal arenas or records game statistics.
+- simplified practice cleanup: reuse shared constants and boundary checks, remove unused interfaces and task tracking, and avoid redundant projectile copies and inventory updates.
 - fixed 1.8.8 generator resources not stacking in inventories: stack-items now controls ground merging only, with persistent hidden entity markers instead of unique item NBT.
 - migrate legacy generator IDs in loaded items, containers, player inventories and ender chests, and on chunk load, item spawn, player join and inventory open; preserve other item data and normalize empty NBT.
 - respect pickup cancellation and apply generator collection/AFK rules once for both ground stacking modes; preserve generator identity across allowed item merges.

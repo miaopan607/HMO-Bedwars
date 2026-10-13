@@ -77,6 +77,38 @@ Restart after installing the plugin so the new permission declarations are loade
 若主配置在磁盘上已有尚未 reload 的修改，命令会拒绝覆盖并提示先 reload。
 该功能不使用 Bukkit 全服 `/reload`。首次安装新版 JAR 仍需正常重启服务器。
 
+## 独立练习场（Minecraft 1.8.8）
+
+MULTIARENA/SHARED 模式支持火球跳、搭路和末影珍珠自由练习，练习不加入正式竞技场、不产生战绩。每个练习点一次只分配一名玩家；可以在同一独立世界划定多个不重叠的点。
+
+玩家使用 `/bw practice` 打开菜单，或 `/bw practice join fireball|bridge|pearl` 直接进入。
+快捷栏箭头重试、床退出，也支持 `/bw practice retry`、`/bw practice leave` 和 `/bw leave`。
+跌出区域、低于失败高度或致死伤害会回起点；重试只恢复本轮羊毛并移除投射物，退出恢复进入前的物品与玩家状态。
+
+管理员需要 OP、`bw.*` 或 `bw.practice.admin`，先准备并加载独立世界，在安全起点执行：
+
+```text
+/bw practice create bridge-a bridge
+/bw practice setspawn bridge-a
+```
+
+站在练习范围两个角点分别执行 `/bw practice pos1 bridge-a`、`/bw practice pos2 bridge-a`，
+然后执行 `/bw practice faily bridge-a <整数>` 和 `/bw practice enable bridge-a`。
+区域必须包括起跳、飞行和落地区域；失败高度不能高于区域下界。`fireball`、`pearl` 使用相同设置流程。
+
+在主城执行 `/bw practice npc set` 放置唯一的静止村民入口，玩家右键打开菜单，不需要 Citizens。
+再次 set 移动入口；`/bw practice npc remove` 移除入口。
+`/bw practice list` 查看空闲点，`disable|enable|delete <id>` 管理点；
+delete 不删除世界，正在使用的点不能修改。管理员 `/bw build` 可编辑没有被占用的练习地形，进入练习前必须关闭建设模式。
+
+配置单独保存在插件数据目录的 `practice.yml`，使用 `/bw practice reload` 重新加载；有玩家练习时拒绝重载。
+`/bw reload` 不加载该文件。插件不会生成地形或把现有 Arena 自动转换成练习地图；
+练习世界不能是主世界、大厅、正式 Arenas 配置对应世界，世界名不得包含 `bw_temp_`。
+未加载的世界仅在已有 `level.dat` 时尝试加载，缺失世界的点不可分配。
+正常退出、断线与停服会恢复玩家状态；进程崩溃不保证内存快照恢复。
+断线和停服时，原光标物品转回背包以便 1.8 玩家数据保存；背包已满时，多余原物品掉落在返回点。
+
+
 
 # System requirements
 This software runs on [Spigot](https://www.spigotmc.org/) and NMS.

@@ -67,6 +67,7 @@ public class MainCommand extends BukkitCommand implements ParentCommand {
         new CmdJoin(this, "join");
         new CmdReady(this, "ready");
         new CmdLeave(this, "leave");
+        if (BedWars.getPracticeManager() != null) new CmdPractice(this, "practice");
         new CmdLang(this, "lang");
         new CmdTeleporter(this, "teleporter");
         new CmdSpecMode(this, "spec");
@@ -229,6 +230,7 @@ public class MainCommand extends BukkitCommand implements ParentCommand {
 
     private static String displayKey(String command, boolean hover) {
         switch (command) {
+            case "practice": return hover ? Messages.PRACTICE_COMMAND_DISPLAY_HOVER : Messages.PRACTICE_COMMAND_DISPLAY;
             case "setLobby": return hover ? Messages.COMMAND_SET_LOBBY_DISPLAY_HOVER : Messages.COMMAND_SET_LOBBY_DISPLAY;
             case "setupArena": return hover ? Messages.COMMAND_SETUP_ARENA_DISPLAY_HOVER : Messages.COMMAND_SETUP_ARENA_DISPLAY;
             case "arenaList": return hover ? Messages.COMMAND_ARENA_LIST_DISPLAY_HOVER : Messages.COMMAND_ARENA_LIST_DISPLAY;
@@ -261,6 +263,10 @@ public class MainCommand extends BukkitCommand implements ParentCommand {
     }
 
     public List<String> tabComplete(CommandSender s, String alias, String[] args, Location location) throws IllegalArgumentException {
+        if (args.length >= 2 && args[0].equalsIgnoreCase("practice")
+                && getSubCommand("practice") instanceof CmdPractice) {
+            return ((CmdPractice) getSubCommand("practice")).tabComplete(s, args);
+        }
         if (args.length == 1) {
             List<String> sub = new ArrayList<>();
             for (SubCommand sb : getSubCommands()) {

@@ -54,6 +54,11 @@ public class Build extends SubCommand {
     public boolean execute(String[] args, CommandSender s) {
         if (s instanceof ConsoleCommandSender) return false;
         Player p = (Player) s;
+        if (com.andrei1058.bedwars.BedWars.getPracticeManager() != null
+                && com.andrei1058.bedwars.BedWars.getPracticeManager().isPracticing(p)) {
+            com.andrei1058.bedwars.practice.PracticeManager.message(p, Messages.PRACTICE_LEAVE_FIRST);
+            return true;
+        }
         if (!MainCommand.isLobbySet(p)) return true;
         if (isBuildSession(p)) {
             p.sendMessage(Language.getMsg(p, Messages.COMMAND_BUILD_DISABLED));
