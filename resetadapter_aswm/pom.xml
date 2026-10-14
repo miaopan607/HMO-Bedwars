@@ -22,10 +22,6 @@
             <id>flow-nbt</id>
             <url>https://repo.glaremasters.me/repository/concuncan/</url>
         </repository>
-        <repository>
-            <id>legacy-aswm</id>
-            <url>https://repo.rapture.pw/repository/maven-snapshots/</url>
-        </repository>
     </repositories>
 
     <dependencies>

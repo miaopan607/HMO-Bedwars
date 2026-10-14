@@ -31,7 +31,7 @@
         <dependency>
             <groupId>com.andrei1058.bedwars</groupId>
             <artifactId>versionsupport-common</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

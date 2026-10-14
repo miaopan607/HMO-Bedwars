@@ -14,6 +14,8 @@ mvn -o clean install -DskipTests
 
 设置 `BED_WARS_SERVER_DIR` 时，构建会自动复制 JAR 到该服务器的 `plugins/`，不会自动重启。配置位于 `plugins/HMO-Bedwars/`。
 
+GitHub Actions 在推送和 PR 时按 POM 版本构建，可从成功任务的 `HMO-Bedwars` 制品下载 JAR；不依赖上游版本接口或发布凭据。
+
 ## 常用命令
 
 | 命令 | 用途 |
