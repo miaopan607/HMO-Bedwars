@@ -116,9 +116,9 @@ public class CategoryContent implements ICategoryContent {
         ContentTier ctt;
         for (String s : yml.getConfigurationSection(path + "." + ConfigPath.SHOP_CATEGORY_CONTENT_CONTENT_TIERS).getKeys(false)) {
             ctt = new ContentTier(path + "." + ConfigPath.SHOP_CATEGORY_CONTENT_CONTENT_TIERS + "." + s, s, path, yml);
-            /*if (ctt.isLoaded())*/
-            contentTiers.add(ctt);
+            if (ctt.isLoaded()) contentTiers.add(ctt);
         }
+        if (contentTiers.isEmpty()) return;
 
         itemNamePath = Messages.SHOP_CONTENT_TIER_ITEM_NAME.replace("%category%", categoryName).replace("%content%", contentName);
         for (Language language : Language.getLanguages()) {
@@ -161,21 +161,19 @@ public class CategoryContent implements ICategoryContent {
 
         // Simulate taking money
         // 模拟扣除货币的过程
-        if (currency != Material.AIR) {
-            int cost = price;
-            for (int i = 0; i < 36; i++) {
-                ItemStack item = simulatedInv[i];
-                if (item == null || item.getType() != currency) continue;
+        int cost = price;
+        for (int i = 0; i < 36; i++) {
+            ItemStack item = simulatedInv[i];
+            if (item == null || item.getType() != currency) continue;
 
-                if (item.getAmount() <= cost) {
-                    cost -= item.getAmount();
-                    simulatedInv[i] = null; // Slot becomes empty / 格子变为空
-                } else {
-                    item.setAmount(item.getAmount() - cost);
-                    cost = 0;
-                }
-                if (cost <= 0) break;
+            if (item.getAmount() <= cost) {
+                cost -= item.getAmount();
+                simulatedInv[i] = null;
+            } else {
+                item.setAmount(item.getAmount() - cost);
+                cost = 0;
             }
+            if (cost <= 0) break;
         }
 
         // Check space for each item to be bought
@@ -473,10 +471,6 @@ public class CategoryContent implements ICategoryContent {
      * Get player's money amount
      */
     public static int calculateMoney(Player player, Material currency) {
-        if (currency == Material.AIR) {
-            return (int) BedWars.getEconomy().getMoney(player);
-        }
-
         int amount = 0;
         for (ItemStack is : player.getInventory().getContents()) {
             if (is == null) continue;
@@ -491,7 +485,7 @@ public class CategoryContent implements ICategoryContent {
     public static Material getCurrency(String currency) {
         Material material;
         switch (currency) {
-            default:
+            case "iron":
                 material = Material.IRON_INGOT;
                 break;
             case "gold":
@@ -503,9 +497,8 @@ public class CategoryContent implements ICategoryContent {
             case "emerald":
                 material = Material.EMERALD;
                 break;
-            case "vault":
-                material = Material.AIR;
-                break;
+            default:
+                throw new IllegalArgumentException("Unsupported currency: " + currency);
         }
         return material;
     }
@@ -537,7 +530,7 @@ public class CategoryContent implements ICategoryContent {
         } else if (contentTier.getCurrency().toString().toLowerCase().contains("diamond")) {
             c = contentTier.getPrice() == 1 ? Messages.MEANING_DIAMOND_SINGULAR : Messages.MEANING_DIAMOND_PLURAL;
         } else {
-            c = contentTier.getPrice() == 1 ? Messages.MEANING_VAULT_SINGULAR : Messages.MEANING_VAULT_PLURAL;
+            throw new IllegalArgumentException("Unsupported currency: " + contentTier.getCurrency());
         }
         return c;
     }
@@ -590,15 +583,6 @@ public class CategoryContent implements ICategoryContent {
      * Take money from player on buy
      */
     public static void takeMoney(Player player, Material currency, int amount) {
-        if (currency == Material.AIR) {
-            if (!BedWars.getEconomy().isEconomy()) {
-                player.sendMessage(getMsg(player, Messages.SHOP_VAULT_REQUIRED));
-                return;
-            }
-            BedWars.getEconomy().buyAction(player, amount);
-            return;
-        }
-
         int cost = amount;
         for (ItemStack i : player.getInventory().getContents()) {
             if (i == null) continue;

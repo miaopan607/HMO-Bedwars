@@ -279,11 +279,7 @@ public class MenuBaseTrap implements MenuContent, EnemyBaseEnterTrap, TeamUpgrad
         Bukkit.getPluginManager().callEvent(event = new UpgradeBuyEvent(this, player, team));
         if(event.isCancelled()) return;
 
-        if (currency == Material.AIR) {
-            BedWars.getEconomy().buyAction(player, money);
-        } else {
-            BedWars.getAPI().getShopUtil().takeMoney(player, currency, cost);
-        }
+        BedWars.getAPI().getShopUtil().takeMoney(player, currency, cost);
         Sounds.playSound(ConfigPath.SOUNDS_BOUGHT, player);
         team.getActiveTraps().add(this);
         // when a new trap is bought check for enemies on the island #646

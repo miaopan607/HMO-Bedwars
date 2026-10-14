@@ -251,7 +251,6 @@ public class BwSidebar implements ISidebar {
     @NotNull ConcurrentLinkedQueue<PlaceholderProvider> getPlaceholders(@NotNull Player player) {
         ConcurrentLinkedQueue<PlaceholderProvider> providers = new ConcurrentLinkedQueue<>();
         providers.add(new PlaceholderProvider("{player}", player::getDisplayName));
-        providers.add(new PlaceholderProvider("{money}", () -> String.valueOf(getEconomy().getMoney(player))));
         providers.add(new PlaceholderProvider("{playerName}", player::getCustomName));
         providers.add(new PlaceholderProvider("{date}", () -> dateFormat.format(new Date(System.currentTimeMillis()))));
         // fixme 29/08/2023: disabled for now because this is not a dynamic placeholder. Let's see what's the impact.

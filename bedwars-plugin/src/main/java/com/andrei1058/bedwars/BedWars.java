@@ -61,7 +61,6 @@ import com.andrei1058.bedwars.lobbysocket.LoadedUsersCleaner;
 import com.andrei1058.bedwars.lobbysocket.SendTask;
 import com.andrei1058.bedwars.maprestore.internal.InternalAdapter;
 
-import com.andrei1058.bedwars.money.internal.MoneyListeners;
 import com.andrei1058.bedwars.shop.ShopManager;
 import com.andrei1058.bedwars.sidebar.*;
 import com.andrei1058.bedwars.stats.StatsManager;
@@ -70,15 +69,7 @@ import com.andrei1058.bedwars.support.citizens.JoinNPC;
 import com.andrei1058.bedwars.support.papi.PAPISupport;
 import com.andrei1058.bedwars.support.papi.SupportPAPI;
 import com.andrei1058.bedwars.support.party.NoParty;
-import com.andrei1058.bedwars.support.party.PAF;
-import com.andrei1058.bedwars.support.party.PAFBungeecordRedisApi;
-import com.andrei1058.bedwars.support.party.PartiesAdapter;
 import com.andrei1058.bedwars.support.preloadedparty.PrePartyListener;
-import com.andrei1058.bedwars.support.vault.*;
-import com.andrei1058.bedwars.support.vipfeatures.VipFeatures;
-import com.andrei1058.bedwars.support.vipfeatures.VipListeners;
-import com.andrei1058.vipfeatures.api.IVipFeatures;
-import com.andrei1058.vipfeatures.api.MiniGameAlreadyRegistered;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -91,7 +82,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -118,8 +108,6 @@ public class BedWars extends JavaPlugin {
     public static boolean isPaper = false;
 
     private static Party party = new NoParty();
-    private static Chat chat = new NoChat();
-    private static Economy economy;
     private static final String version = Bukkit.getServer().getClass().getName().split("\\.")[3];
     private static String lobbyWorld = "";
     private static boolean shuttingDown = false;
@@ -292,21 +280,8 @@ public class BedWars extends JavaPlugin {
         Bukkit.getScheduler().runTaskLater(this, () -> {
             if (config.getYml().getBoolean(ConfigPath.GENERAL_CONFIGURATION_ALLOW_PARTIES)) {
 
-                if (getServer().getPluginManager().isPluginEnabled("Parties")) {
-                    out.info("Hook into Parties (by AlessioDP) support!");
-                    party = new PartiesAdapter();
-                } else if (Bukkit.getServer().getPluginManager().isPluginEnabled("PartyAndFriends")) {
-                    out.info("Hook into Party and Friends for Spigot (by Simonsator) support!");
-                    party = new PAF();
-                } else if (Bukkit.getServer().getPluginManager().isPluginEnabled("Spigot-Party-API-PAF")) {
-                    out.info("Hook into Spigot Party API for Party and Friends Extended (by Simonsator) support!");
-                    party = new PAFBungeecordRedisApi();
-                }
-
-                if (party instanceof NoParty) {
-                    party = new com.andrei1058.bedwars.support.party.Internal();
-                    out.info("Loading internal Party system. /party");
-                }
+                party = new com.andrei1058.bedwars.support.party.Internal();
+                out.info("Loading internal Party system. /party");
             } else {
                 party = new NoParty();
             }
@@ -370,46 +345,6 @@ public class BedWars extends JavaPlugin {
             new PAPISupport().register();
             SupportPAPI.setSupportPAPI(new SupportPAPI.withPAPI());
         }
-        /*
-         * Vault support
-         * The task is to initialize after all plugins have loaded,
-         *  to make sure any economy/chat plugins have been loaded and registered.
-         */
-        Bukkit.getScheduler().runTask(this, () -> {
-            if (this.getServer().getPluginManager().getPlugin("Vault") != null) {
-                try {
-                    //noinspection rawtypes
-                    RegisteredServiceProvider rsp = this.getServer().getServicesManager().getRegistration(net.milkbowl.vault.chat.Chat.class);
-                    if (rsp != null) {
-                        WithChat.setChat((net.milkbowl.vault.chat.Chat) rsp.getProvider());
-                        plugin.getLogger().info("Hooked into vault chat support!");
-                        chat = new WithChat();
-                    } else {
-                        plugin.getLogger().info("Vault found, but no chat provider!");
-                        chat = new NoChat();
-                    }
-                } catch (Exception var2_2) {
-                    chat = new NoChat();
-                }
-                try {
-                    registerEvents(new MoneyListeners());
-                    RegisteredServiceProvider<net.milkbowl.vault.economy.Economy> rsp = this.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-                    if (rsp != null) {
-                        WithEconomy.setEconomy(rsp.getProvider());
-                        plugin.getLogger().info("Hooked into vault economy support!");
-                        economy = new WithEconomy();
-                    } else {
-                        plugin.getLogger().info("Vault found, but no economy provider!");
-                        economy = new NoEconomy();
-                    }
-                } catch (Exception var2_2) {
-                    economy = new NoEconomy();
-                }
-            } else {
-                chat = new NoChat();
-                economy = new NoEconomy();
-            }
-        });
 
         /* Chat support */
         registerEvents(new ChatFormatting());
@@ -437,21 +372,6 @@ public class BedWars extends JavaPlugin {
             Language.addDefaultMessagesCommandItems(l);
         }
 
-        /* Load Money Configuration */
-        MoneyConfig.init();
-
-        if (Bukkit.getPluginManager().getPlugin("VipFeatures") != null) {
-            try {
-                IVipFeatures vf = Bukkit.getServicesManager().getRegistration(IVipFeatures.class).getProvider();
-                vf.registerMiniGame(new VipFeatures(this));
-                registerEvents(new VipListeners(vf));
-                out.log(java.util.logging.Level.INFO, "Hook into VipFeatures support.");
-            } catch (Exception e) {
-                out.warning("Could not load support for VipFeatures.");
-            } catch (MiniGameAlreadyRegistered miniGameAlreadyRegistered) {
-                miniGameAlreadyRegistered.printStackTrace();
-            }
-        }
 
         Bukkit.getScheduler().runTaskLater(this,
                 () -> out.info("This server is running in " + getServerType() + " with auto-scale " + autoscale),
@@ -614,13 +534,6 @@ public class BedWars extends JavaPlugin {
         return party;
     }
 
-    public static Chat getChatSupport() {
-        return chat;
-    }
-
-    public static Economy getEconomy() {
-        return economy;
-    }
 
     public static ConfigManager getGeneratorsCfg() {
         return generators;

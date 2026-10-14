@@ -2,8 +2,6 @@
 
 基于 [BedWars1058](https://github.com/andrei1058/BedWars1058) 的起床战争插件，仅支持 Minecraft **1.8.8（v1_8_R3）**，需要包含 NMS 的 Spigot/Paper 和 **Java 11+**。
 
-语言仅保留英文 `en` 和简体中文 `zh_cn`。已移除玩家等级与经验奖励、万圣节玩法及插件自身的 bStats；保留战绩、金币奖励、商店、团队升级、组队、观战和地图恢复等功能。
-
 ## 构建与安装
 
 ```bash

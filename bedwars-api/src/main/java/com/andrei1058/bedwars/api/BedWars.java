@@ -324,7 +324,7 @@ public interface BedWars {
         /**
          * Get currency as material
          *
-         * @return {@link Material#AIR} if is vault.
+         * @return resource material: iron, gold, diamond or emerald.
          */
         Material getCurrency(String currency);
 

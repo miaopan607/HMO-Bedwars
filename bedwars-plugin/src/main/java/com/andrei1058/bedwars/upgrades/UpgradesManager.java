@@ -333,20 +333,16 @@ public class UpgradesManager {
      * Check the money amount in a given currency of a player.
      *
      * @param player   target player.
-     * @param currency {@link org.bukkit.Material#AIR} is used for vault, {@link org.bukkit.Material#IRON_INGOT} for iron, {@link org.bukkit.Material#GOLD_INGOT} for gold, {@link org.bukkit.Material#DIAMOND} for diamond, {@link org.bukkit.Material#EMERALD} for emerald.
+     * @param currency resource material: iron, gold, diamond or emerald.
      * @return the amount of money.
      */
     public static int getMoney(Player player, Material currency) {
-        if (currency == Material.AIR) {
-            double amount = BedWars.getEconomy().getMoney(player);
-            return amount % 2 == 0 ? (int) amount : (int) (amount - 1);
-        }
         return BedWars.getAPI().getShopUtil().calculateMoney(player, currency);
     }
 
     /**
      * @param name the string to be converted.
-     * @return NULL if not a currency. {@link org.bukkit.Material#AIR} is used for vault, {@link org.bukkit.Material#IRON_INGOT} for iron, {@link org.bukkit.Material#GOLD_INGOT} for gold, {@link org.bukkit.Material#DIAMOND} for diamond, {@link org.bukkit.Material#EMERALD} for emerald.
+     * @return NULL if not a currency.
      */
     public static Material getCurrency(String name) {
         if (name == null || name.isEmpty()) return null;
@@ -453,9 +449,6 @@ public class UpgradesManager {
             case DIAMOND:
                 c = ut.getCost() == 1 ? Messages.MEANING_DIAMOND_SINGULAR : Messages.MEANING_DIAMOND_PLURAL;
                 break;
-            case AIR:
-                c = ut.getCost() == 1 ? Messages.MEANING_VAULT_SINGULAR : Messages.MEANING_VAULT_PLURAL;
-                break;
         }
 
         return Language.getMsg(p, c);
@@ -463,9 +456,7 @@ public class UpgradesManager {
 
     public static String getCurrencyMsg(Player p, int money, String currency) {
         String c;
-        if (currency == null) {
-            return Language.getMsg(p, money == 1 ? Messages.MEANING_VAULT_SINGULAR : Messages.MEANING_VAULT_PLURAL);
-        }
+        if (currency == null) throw new IllegalArgumentException("Currency is required");
 
         switch (currency.toLowerCase()) {
             case "iron":
@@ -481,8 +472,7 @@ public class UpgradesManager {
                 c = money == 1 ? Messages.MEANING_DIAMOND_SINGULAR : Messages.MEANING_DIAMOND_PLURAL;
                 break;
             default:
-                c = money == 1 ? Messages.MEANING_VAULT_SINGULAR : Messages.MEANING_VAULT_PLURAL;
-                break;
+                throw new IllegalArgumentException("Unsupported currency: " + currency);
         }
 
         return Language.getMsg(p, c);
@@ -505,8 +495,7 @@ public class UpgradesManager {
                 c = money == 1 ? Messages.MEANING_DIAMOND_SINGULAR : Messages.MEANING_DIAMOND_PLURAL;
                 break;
             default:
-                c = money == 1 ? Messages.MEANING_VAULT_SINGULAR : Messages.MEANING_VAULT_PLURAL;
-                break;
+                throw new IllegalArgumentException("Unsupported currency: " + currency);
         }
 
         return Language.getMsg(p, c);

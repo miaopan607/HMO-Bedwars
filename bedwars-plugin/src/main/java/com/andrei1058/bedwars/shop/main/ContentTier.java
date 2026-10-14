@@ -82,14 +82,12 @@ public class ContentTier implements IContentTier {
             case "iron":
             case "gold":
             case "diamond":
-            case "vault":
             case "emerald":
                 currency = CategoryContent.getCurrency(yml.getString(path + ConfigPath.SHOP_CONTENT_TIER_SETTINGS_CURRENCY).toLowerCase());
                 break;
             default:
                 BedWars.plugin.getLogger().severe("Invalid currency at " + path);
-                currency = Material.IRON_INGOT;
-                break;
+                return;
         }
 
         itemStack = BedWars.nms.createItemStack(yml.getString(path + ConfigPath.SHOP_CONTENT_TIER_ITEM_MATERIAL),

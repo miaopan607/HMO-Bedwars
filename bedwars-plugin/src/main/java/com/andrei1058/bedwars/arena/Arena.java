@@ -68,14 +68,12 @@ import com.andrei1058.bedwars.configuration.ConfigurationReloadService;
 
 import com.andrei1058.bedwars.listeners.blockstatus.BlockStatusListener;
 import com.andrei1058.bedwars.listeners.dropshandler.PlayerDrops;
-import com.andrei1058.bedwars.money.internal.MoneyPerMinuteTask;
 import com.andrei1058.bedwars.shop.ShopCache;
 import com.andrei1058.bedwars.sidebar.BwSidebar;
 import com.andrei1058.bedwars.sidebar.SidebarService;
 import com.andrei1058.bedwars.support.citizens.JoinNPC;
 import com.andrei1058.bedwars.support.paper.TeleportManager;
 import com.andrei1058.bedwars.support.papi.SupportPAPI;
-import com.andrei1058.bedwars.support.vault.WithEconomy;
 import lombok.Getter;
 import lombok.Setter;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -260,7 +258,6 @@ public class Arena implements IArena {
     /* ARENA GENERATORS */
     private List<IGenerator> oreGenerators = new ArrayList<>();
 
-    private MoneyPerMinuteTask moneyperMinuteTask;
 
     private static final LinkedList<IArena> enableQueue = new LinkedList<>();
 
@@ -599,8 +596,6 @@ public class Arena implements IArena {
             for (Player on : players) {
                 on.sendMessage(
                         getMsg(on, Messages.COMMAND_JOIN_PLAYER_JOIN_MSG)
-                                .replace("{vPrefix}", getChatSupport().getPrefix(p))
-                                .replace("{vSuffix}", getChatSupport().getSuffix(p))
                                 .replace("{playername}", p.getName())
                                 .replace("{player}", p.getDisplayName())
                                 .replace("{on}", String.valueOf(getPlayers().size()))
@@ -999,15 +994,13 @@ public class Arena implements IArena {
         for (Player on : getPlayers()) {
             on.sendMessage(
                     getMsg(on, Messages.COMMAND_LEAVE_MSG)
-                            .replace("{vPrefix}", getChatSupport().getPrefix(p))
-                            .replace("{vSuffix}", getChatSupport().getSuffix(p))
                             .replace("{playername}", p.getName())
                             .replace("{player}", p.getDisplayName()
                             )
             );
         }
         for (Player on : getSpectators()) {
-            on.sendMessage(getMsg(on, Messages.COMMAND_LEAVE_MSG).replace("{vPrefix}", getChatSupport().getPrefix(p)).replace("{playername}", p.getName()).replace("{player}", p.getDisplayName()));
+            on.sendMessage(getMsg(on, Messages.COMMAND_LEAVE_MSG).replace("{playername}", p.getName()).replace("{player}", p.getDisplayName()));
         }
 
         if (getServerType() == ServerType.SHARED) {
@@ -1324,9 +1317,6 @@ public class Arena implements IArena {
         if (getRestartingTask() != null) getRestartingTask().cancel();
         if (getStartingTask() != null) getStartingTask().cancel();
         if (getPlayingTask() != null) getPlayingTask().cancel();
-        if (null != moneyperMinuteTask) {
-            moneyperMinuteTask.cancel();
-        }
 
         plugin.getLogger().log(Level.FINE, "Restarting arena: " + getArenaName());
         Bukkit.getPluginManager().callEvent(new ArenaRestartEvent(getArenaName(), getWorldName()));
@@ -1658,9 +1648,6 @@ public class Arena implements IArena {
                 restartingTask.cancel();
         }
         restartingTask = null;
-        if (null != moneyperMinuteTask) {
-            moneyperMinuteTask.cancel();
-        }
 
         players.forEach(c -> SidebarService.getInstance().giveSidebar(c, this, false));
 
@@ -1670,9 +1657,6 @@ public class Arena implements IArena {
             startingTask = new GameStartingTask(this);
         } else if (status == GameState.playing) {
 
-            if (BedWars.getEconomy() instanceof WithEconomy) {
-                moneyperMinuteTask = new MoneyPerMinuteTask(this);
-            }
             playingTask = new GamePlayingTask(this);
         } else if (status == GameState.restarting) {
             restartingTask = new GameRestartingTask(this);
@@ -2693,7 +2677,6 @@ public class Arena implements IArena {
         playingTask = null;
         restartingTask = null;
         oreGenerators = null;
-        moneyperMinuteTask = null;
         leaving.clear();
         fireballCooldowns.clear();
     }

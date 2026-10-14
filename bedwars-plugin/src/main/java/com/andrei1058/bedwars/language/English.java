@@ -408,8 +408,6 @@ public class English extends Language {
         yml.addDefault(Messages.SETUP_GENERATOR_DIAMOND, "Diamond");
         yml.addDefault(Messages.SETUP_AVAILABLE_TEAMS, "Available teams: ");
         yml.addDefault(Messages.SETUP_START_FAILED, "&cCould not start setup session. Pleas check the console.");
-        yml.addDefault(Messages.VAULT_SUPPORT_MISSING, "&cVault support missing!");
-        yml.addDefault(Messages.SHOP_VAULT_REQUIRED, "&4&lERROR: This requires Vault Support! Please install Vault plugin!");
         yml.addDefault(Messages.SIGN_SAVED, "&a▪ &7Sign saved for arena: {arena}");
         yml.addDefault(Messages.SIGN_NO_ARENAS, "&c▪ &7You didn't set any arena yet!");
         yml.addDefault(Messages.PLUGIN_RELOAD_KICK, "HMO-Bedwars was RELOADED! (do not reload plugins)");
@@ -540,7 +538,7 @@ public class English extends Language {
         yml.addDefault(Messages.ARENA_SPECTATE_DENIED_SELECTOR, "{prefix}&cSorry but you can't spectate this arena at this moment. Use Left-Click to join!");
         yml.addDefault(Messages.ARENA_JOIN_DENIED_NO_PROXY, "&cSorry but you must join an arena using BedWarsProxy. \n&eIf you want to setup an arena make sure to give yourself the bw.setup permission so you can join the server directly!");
         yml.addDefault(Messages.ARENA_SPECTATOR_TELEPORTER_GUI_NAME, "&8Teleporter");
-        yml.addDefault(Messages.ARENA_SPECTATOR_TELEPORTER_GUI_HEAD_NAME, "{teamColor}{team} - {vPrefix}{player}");
+        yml.addDefault(Messages.ARENA_SPECTATOR_TELEPORTER_GUI_HEAD_NAME, "{teamColor}{team} - {player}");
         yml.addDefault(Messages.ARENA_SPECTATOR_TELEPORTER_GUI_HEAD_LORE, Arrays.asList("&7Health: &f{health}%", "&7Food: &f{food}", "", "&7Left-click to spectate"));
         yml.addDefault(Messages.ARENA_SPECTATOR_LEAVE_ITEM_NAME, "&c&lReturn to lobby");
         yml.addDefault(Messages.ARENA_SPECTATOR_LEAVE_ITEM_LORE, Collections.singletonList("&7Right-click to leave to the lobby!"));
@@ -554,13 +552,13 @@ public class English extends Language {
         yml.addDefault(Messages.GENERATOR_HOLOGRAM_TYPE_EMERALD, "&a&lEmerald");
         yml.addDefault(Messages.GENERATOR_HOLOGRAM_TIMER, "&eSpawns in &c{seconds} &eseconds");
         yml.addDefault(Messages.GENERATOR_UPGRADE_CHAT_ANNOUNCEMENT, "{prefix}{generatorType} Generators &ehave been upgraded to Tier &c{tier}");
-        yml.addDefault(Messages.FORMATTING_CHAT_LOBBY, "{vPrefix}&7{player}{vSuffix}: {message}");
-        yml.addDefault(Messages.FORMATTING_CHAT_WAITING, "{vPrefix}&7{player}{vSuffix}: {message}");
-        yml.addDefault(Messages.FORMATTING_CHAT_SHOUT, "{vPrefix}&6[SHOUT] {team} &7{player}&f{vSuffix}: {message}");
-        yml.addDefault(Messages.FORMATTING_CHAT_SERVER, "{vPrefix}&6[GLOBAL] &7{player}&f{vSuffix}: {message}");
+        yml.addDefault(Messages.FORMATTING_CHAT_LOBBY, "&7{player}: {message}");
+        yml.addDefault(Messages.FORMATTING_CHAT_WAITING, "&7{player}: {message}");
+        yml.addDefault(Messages.FORMATTING_CHAT_SHOUT, "&6[SHOUT] {team} &7{player}&f: {message}");
+        yml.addDefault(Messages.FORMATTING_CHAT_SERVER, "&6[GLOBAL] &7{player}&f: {message}");
         yml.addDefault(Messages.CHAT_GLOBAL_USAGE, "{prefix}&cType @ followed by a message to chat with the whole server.");
-        yml.addDefault(Messages.FORMATTING_CHAT_TEAM, "{vPrefix}&f{team}&7 {player}{vSuffix} {message}");
-        yml.addDefault(Messages.FORMATTING_CHAT_SPECTATOR, "{vPrefix}&7[SPECTATOR] {player}{vSuffix}: {message}");
+        yml.addDefault(Messages.FORMATTING_CHAT_TEAM, "&f{team}&7 {player} {message}");
+        yml.addDefault(Messages.FORMATTING_CHAT_SPECTATOR, "&7[SPECTATOR] {player}: {message}");
         yml.addDefault(Messages.FORMATTING_SCOREBOARD_HEALTH, Arrays.asList("&c❤", "&aHealth"));
 
         yml.addDefault(Messages.FORMATTING_SCOREBOARD_DATE, "dd/MM/yy");
@@ -593,8 +591,6 @@ public class English extends Language {
         yml.addDefault(Messages.MEANING_EMERALD_PLURAL, "Emeralds");
         yml.addDefault(Messages.MEANING_DIAMOND_SINGULAR, "Diamond");
         yml.addDefault(Messages.MEANING_DIAMOND_PLURAL, "Diamonds");
-        yml.addDefault(Messages.MEANING_VAULT_SINGULAR, "$");
-        yml.addDefault(Messages.MEANING_VAULT_PLURAL, "$");
         yml.addDefault(Messages.INTERACT_CANNOT_PLACE_BLOCK, "{prefix}&cYou can't place blocks here!");
         yml.addDefault(Messages.INTERACT_CANNOT_BREAK_BLOCK, "{prefix}&cYou can only break blocks placed by a player!");
         yml.addDefault(Messages.INTERACT_CANNOT_BREAK_OWN_BED, "&cYou can't destroy your own bed!");
@@ -668,12 +664,6 @@ public class English extends Language {
         yml.addDefault(Messages.NEXT_EVENT_SUBTITLE_ANNOUNCE_SUDDEN_DEATH, "");
         yml.addDefault(Messages.NEXT_EVENT_CHAT_ANNOUNCE_SUDDEN_DEATH, "&cSUDDEN DEATH: &6&b{TeamDragons} {TeamColor}{TeamName} Dragon!");
 
-        yml.addDefault(Messages.MONEY_REWARD_PER_MINUTE, "{prefix}&6+{money} Coins (Play Time).");
-        yml.addDefault(Messages.MONEY_REWARD_WIN, "{prefix}&6+{money} Coins (Game Win).");
-        yml.addDefault(Messages.MONEY_REWARD_PER_TEAMMATE, "{prefix}&6+{money} Coins (Team Support).");
-        yml.addDefault(Messages.MONEY_REWARD_BED_DESTROYED, "{prefix}&6+{money} Coins (Bed Destroyed).");
-        yml.addDefault(Messages.MONEY_REWARD_FINAL_KILL, "{prefix}&6+{money} Coins (Final Kill).");
-        yml.addDefault(Messages.MONEY_REWARD_REGULAR_KILL, "{prefix}&6+{money} Coins (Regular Kill).");
 
         /* Lobby Command Items */
         yml.addDefault(Messages.GENERAL_CONFIGURATION_LOBBY_ITEMS_NAME.replace("%path%", "stats"), "&eStats");
@@ -709,8 +699,6 @@ public class English extends Language {
         yml.addDefault(Messages.SCOREBOARD_LOBBY, Arrays.asList(
                 "&f&lBED WARS,&f&lBED WARS,&f&lBED WARS,&f&lBED WARS,&f&lBED WARS,&f&lBED WARS,&f&lBED WARS,&f&l{poweredBy},&f&l{poweredBy},&f&l{poweredBy},&e&lBED WARS,&e&lBED WARS,&e&lBED WARS,&e&lBED WARS,&e&lBED WARS,&e&lBED WARS,&e&lBED WARS,&e&l{poweredBy},&e&l{poweredBy},&e&l{poweredBy}",
                 "&7{player}",
-                "",
-                "&fCoins: &a{money}" ,
                 "",
                 "&fTotal Wins: &a{wins}",
                 "&fTotal Kills: &a{kills}",
@@ -1094,7 +1082,7 @@ public class English extends Language {
                 "Powered by {poweredBy},&a{serverIp}",
                 ""
         ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_LOBBY_PREFIX, List.of("{vPrefix}"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_LOBBY_PREFIX, List.of(""));
         yml.addDefault(Messages.FORMATTING_SB_TAB_LOBBY_SUFFIX, List.of(""));
         // player waiting lobby
         yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_HEADER, List.of(
@@ -1111,7 +1099,7 @@ public class English extends Language {
                 "&fPowered by {poweredBy}",
                 ""
         ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_PREFIX, List.of("{vPrefix}"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_PREFIX, List.of(""));
         yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_SUFFIX, List.of(""));
         // spectator waiting lobby
         yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_HEADER_SPEC, List.of(
@@ -1129,7 +1117,7 @@ public class English extends Language {
                 "&fPowered by {poweredBy}",
                 ""
         ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_PREFIX_SPEC, List.of("{vPrefix}"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_PREFIX_SPEC, List.of(""));
         yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_SUFFIX_SPEC, List.of(""));
         // player starting lobby
         yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_HEADER, List.of(
@@ -1148,7 +1136,7 @@ public class English extends Language {
                 "&fPowered by {poweredBy}",
                 ""
         ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_PREFIX, List.of("{vPrefix} "));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_PREFIX, List.of(""));
         yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_SUFFIX, List.of(""));
         // spectator starting lobby
         yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_HEADER_SPEC, List.of(
@@ -1168,7 +1156,7 @@ public class English extends Language {
                 "&fPowered by {poweredBy}",
                 ""
         ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_PREFIX_SPEC, List.of("{vPrefix} "));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_PREFIX_SPEC, List.of(""));
         yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_SUFFIX_SPEC, List.of(""));
         // player playing
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_HEADER, List.of(
@@ -1188,7 +1176,7 @@ public class English extends Language {
                 ""
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_PREFIX, List.of("{teamColor}{teamName} "));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SUFFIX, List.of(" {vPrefix}"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SUFFIX, List.of(""));
         // player eliminated - playing state
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_HEADER, List.of(
                 "                                                                                                        ",
@@ -1208,7 +1196,7 @@ public class English extends Language {
                 ""
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_PREFIX, List.of("&f&oSpectator "));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_SUFFIX, List.of(" &c&oEliminated {teamColor}&o{teamName}", " {teamColor}&oEliminated {vPrefix}"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_SUFFIX, List.of(" &c&oEliminated {teamColor}&o{teamName}", " {teamColor}&oEliminated"));
         // spectator - playing state
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SPEC_HEADER, List.of(
                 "                                                                                                        ",
@@ -1226,7 +1214,7 @@ public class English extends Language {
                 ""
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SPEC_PREFIX, List.of("&f&oSpectator "));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SPEC_SUFFIX, List.of(" {vPrefix}"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SPEC_SUFFIX, List.of(""));
         // winner alive - restarting state
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN1_HEADER, List.of(
                 "                                                                                                        ",
@@ -1246,7 +1234,7 @@ public class English extends Language {
                 ""
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN1_PREFIX, List.of("&6&l⭐ {teamColor}{teamName} "));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN1_SUFFIX, List.of(" {vPrefix}"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN1_SUFFIX, List.of(""));
         // winner dead - restarting state
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN2_HEADER, List.of(
                 "                                                                                                        ",
@@ -1267,7 +1255,7 @@ public class English extends Language {
                 ""
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN2_PREFIX, List.of("&6&l⭐ {teamColor}{teamName} "));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN2_SUFFIX, List.of(" {vPrefix}", " &c&oEliminated"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN2_SUFFIX, List.of("", " &c&oEliminated"));
         // loser - restarting state
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_ELM_HEADER, List.of(
                 "                                                                                                        ",
@@ -1287,7 +1275,7 @@ public class English extends Language {
                 ""
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_ELM_PREFIX, List.of("{teamColor}{teamName} "));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_ELM_SUFFIX, List.of(" {vPrefix}", " &c&oEliminated"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_ELM_SUFFIX, List.of("", " &c&oEliminated"));
         // spectator - restarting state
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_SPEC_HEADER, List.of(
                 "                                                                                                        ",
@@ -1305,7 +1293,7 @@ public class English extends Language {
                 ""
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_SPEC_PREFIX, List.of("&f&oSpectator "));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_SPEC_SUFFIX, List.of(" {vPrefix}"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_SPEC_SUFFIX, List.of(""));
         // end of tab
 
         //

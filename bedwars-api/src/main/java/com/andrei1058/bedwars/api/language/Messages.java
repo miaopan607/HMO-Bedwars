@@ -345,8 +345,6 @@ public class Messages {
     public static String MEANING_EMERALD_PLURAL = "meaning-emerald-plural";
     public static String MEANING_DIAMOND_SINGULAR = "meaning-diamond-singular";
     public static String MEANING_DIAMOND_PLURAL = "meaning-diamond-plural";
-    public static String MEANING_VAULT_SINGULAR = "meaning-vault-singular";
-    public static String MEANING_VAULT_PLURAL = "meaning-vault-plural";
     public static String MEANING_NO_TRAP = "meaning-no-trap";
 
     /**
@@ -426,12 +424,6 @@ public class Messages {
     public static String GAME_END_TOP_PLAYER_CHAT = "game-end-top-chat";
     public static String GAME_END_TEAM_WON_CHAT = "game-end-winner-team";
 
-    public static String MONEY_REWARD_WIN = "money-reward-game-win";
-    public static String MONEY_REWARD_PER_MINUTE = "money-reward-per-minute";
-    public static String MONEY_REWARD_PER_TEAMMATE = "money-reward-per-teammate";
-    public static String MONEY_REWARD_BED_DESTROYED = "money-reward-bed-destroyed";
-    public static String MONEY_REWARD_FINAL_KILL = "money-reward-final-kill";
-    public static String MONEY_REWARD_REGULAR_KILL = "money-reward-regular-kill";
 
     public static String BED_HOLOGRAM_DEFEND = "bed-hologram-defend";
     public static String BED_HOLOGRAM_DESTROYED = "bed-hologram-destroyed";
@@ -617,8 +609,6 @@ public class Messages {
     public static String SETUP_GENERATOR_DIAMOND = "setup-generator-diamond";
     public static String SETUP_AVAILABLE_TEAMS = "setup-available-teams";
     public static String SETUP_START_FAILED = "setup-start-failed";
-    public static String VAULT_SUPPORT_MISSING = "vault-support-missing";
-    public static String SHOP_VAULT_REQUIRED = "shop-vault-required";
     public static String SIGN_SAVED = "sign-saved";
     public static String SIGN_NO_ARENAS = "sign-no-arenas";
     public static String PLUGIN_RELOAD_KICK = "plugin-reload-kick";

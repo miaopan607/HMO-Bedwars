@@ -404,8 +404,7 @@ public class BwTabList {
 
         strings = new ArrayList<>();
         for (String string : Language.getList(sidebar.getPlayer(), path)) {
-            String parsed = string.replace("{vPrefix}", BedWars.getChatSupport().getPrefix(targetPlayer))
-                    .replace("{vSuffix}", BedWars.getChatSupport().getSuffix(targetPlayer));
+            String parsed = string;
 
             if (null != replacements) {
                 for (Map.Entry<String, String> entry : replacements.entrySet()) {

@@ -408,8 +408,6 @@ public class SimplifiedChinese extends Language {
         yml.addDefault(Messages.SETUP_GENERATOR_DIAMOND, "钻石");
         yml.addDefault(Messages.SETUP_AVAILABLE_TEAMS, "可用队伍：");
         yml.addDefault(Messages.SETUP_START_FAILED, "&c无法启动设置流程。请检查控制台。");
-        yml.addDefault(Messages.VAULT_SUPPORT_MISSING, "&c缺少 Vault 支持！");
-        yml.addDefault(Messages.SHOP_VAULT_REQUIRED, "&4&l错误：此功能需要 Vault 支持！请安装 Vault 插件！");
         yml.addDefault(Messages.SIGN_SAVED, "&a▪ &7已保存竞技场 {arena} 的告示牌。");
         yml.addDefault(Messages.SIGN_NO_ARENAS, "&c▪ &7你还没有设置任何竞技场！");
         yml.addDefault(Messages.PLUGIN_RELOAD_KICK, "HMO-Bedwars 已重新加载！请勿重新加载插件。");
@@ -541,7 +539,7 @@ public class SimplifiedChinese extends Language {
         yml.addDefault(Messages.ARENA_SPECTATE_DENIED_SELECTOR, "{prefix}&c抱歉，你现在不能观赛。左键来加入游戏！");
         yml.addDefault(Messages.ARENA_JOIN_DENIED_NO_PROXY, "&c抱歉，你必须通过 BedWarsProxy 来加入游戏。 \n&e如果你想设置游戏，你可以给予你自己 bw.setup 权限来直接进入服务器！");
         yml.addDefault(Messages.ARENA_SPECTATOR_TELEPORTER_GUI_NAME, "&8传送");
-        yml.addDefault(Messages.ARENA_SPECTATOR_TELEPORTER_GUI_HEAD_NAME, "{teamColor}{team} - {vPrefix}{player}");
+        yml.addDefault(Messages.ARENA_SPECTATOR_TELEPORTER_GUI_HEAD_NAME, "{teamColor}{team} - {player}");
         yml.addDefault(Messages.ARENA_SPECTATOR_TELEPORTER_GUI_HEAD_LORE, Arrays.asList("&7生命值：&f{health}%", "&7饱食度：&f{food}", "", "&7左键传送"));
         yml.addDefault(Messages.ARENA_SPECTATOR_LEAVE_ITEM_NAME, "&c&l回到大厅");
         yml.addDefault(Messages.ARENA_SPECTATOR_LEAVE_ITEM_LORE, Collections.singletonList("&7右键返回大厅！"));
@@ -555,13 +553,13 @@ public class SimplifiedChinese extends Language {
         yml.addDefault(Messages.GENERATOR_HOLOGRAM_TYPE_EMERALD, "&a&l绿宝石");
         yml.addDefault(Messages.GENERATOR_HOLOGRAM_TIMER, "&c{seconds}&e 秒后生成");
         yml.addDefault(Messages.GENERATOR_UPGRADE_CHAT_ANNOUNCEMENT, "{prefix}{generatorType}资源点&e升级到&c{tier}级。");
-        yml.addDefault(Messages.FORMATTING_CHAT_LOBBY, "&7[大厅] {vPrefix} &a{player}{vSuffix}&f：{message}");
-        yml.addDefault(Messages.FORMATTING_CHAT_WAITING, "&7[等待] {vPrefix} &a{player}{vSuffix}&f：{message}");
-        yml.addDefault(Messages.FORMATTING_CHAT_SHOUT, "&6[公屏] {team} {vPrefix} &a{player}{vSuffix}&f：{message}");
-        yml.addDefault(Messages.FORMATTING_CHAT_SERVER, "&6[全服] {vPrefix} &a{player}{vSuffix}&f：{message}");
+        yml.addDefault(Messages.FORMATTING_CHAT_LOBBY, "&7[大厅] &a{player}&f：{message}");
+        yml.addDefault(Messages.FORMATTING_CHAT_WAITING, "&7[等待] &a{player}&f：{message}");
+        yml.addDefault(Messages.FORMATTING_CHAT_SHOUT, "&6[公屏] {team} &a{player}&f：{message}");
+        yml.addDefault(Messages.FORMATTING_CHAT_SERVER, "&6[全服] &a{player}&f：{message}");
         yml.addDefault(Messages.CHAT_GLOBAL_USAGE, "{prefix}&c请在 @ 后输入要发送到全服的消息。");
-        yml.addDefault(Messages.FORMATTING_CHAT_TEAM, "&b[队内] {team} {vPrefix} &a{player}{vSuffix}&f：{message}");
-        yml.addDefault(Messages.FORMATTING_CHAT_SPECTATOR, "&8[旁观] {vPrefix} &a{player}{vSuffix}&f：{message}");
+        yml.addDefault(Messages.FORMATTING_CHAT_TEAM, "&b[队内] {team} &a{player}&f：{message}");
+        yml.addDefault(Messages.FORMATTING_CHAT_SPECTATOR, "&8[旁观] &a{player}&f：{message}");
         yml.addDefault(Messages.FORMATTING_SCOREBOARD_HEALTH, Arrays.asList("&c❤", "&a生命值"));
 
         yml.addDefault(Messages.FORMATTING_SCOREBOARD_DATE, "yy/MM/dd");
@@ -594,8 +592,6 @@ public class SimplifiedChinese extends Language {
         yml.addDefault(Messages.MEANING_EMERALD_PLURAL, "绿宝石");
         yml.addDefault(Messages.MEANING_DIAMOND_SINGULAR, "钻石");
         yml.addDefault(Messages.MEANING_DIAMOND_PLURAL, "钻石");
-        yml.addDefault(Messages.MEANING_VAULT_SINGULAR, "$");
-        yml.addDefault(Messages.MEANING_VAULT_PLURAL, "$");
         yml.addDefault(Messages.INTERACT_CANNOT_PLACE_BLOCK, "{prefix}&c你不能在这里放置方块！");
         yml.addDefault(Messages.INTERACT_CANNOT_BREAK_BLOCK, "{prefix}&c你只能破坏由玩家放置的方块！");
         yml.addDefault(Messages.INTERACT_CANNOT_BREAK_OWN_BED, "&c你不能破坏自己的床！");
@@ -668,12 +664,6 @@ public class SimplifiedChinese extends Language {
         yml.addDefault(Messages.NEXT_EVENT_SUBTITLE_ANNOUNCE_SUDDEN_DEATH, "");
         yml.addDefault(Messages.NEXT_EVENT_CHAT_ANNOUNCE_SUDDEN_DEATH, "&c绝杀模式：&6&b{TeamDragons} {TeamColor}{TeamName}的龙！");
 
-        yml.addDefault(Messages.MONEY_REWARD_PER_MINUTE, "{prefix}&6+{money}金币(游戏时间)");
-        yml.addDefault(Messages.MONEY_REWARD_WIN, "{prefix}&6+{money}金币(游戏胜利)");
-        yml.addDefault(Messages.MONEY_REWARD_PER_TEAMMATE, "{prefix}&6+{money}金币(团队协作)");
-        yml.addDefault(Messages.MONEY_REWARD_BED_DESTROYED, "{prefix}&6+{money}金币(破坏床)");
-        yml.addDefault(Messages.MONEY_REWARD_FINAL_KILL, "{prefix}&6+{money}金币(最终击杀)");
-        yml.addDefault(Messages.MONEY_REWARD_REGULAR_KILL, "{prefix}&6+{money}金币(击杀)");
 
         /* Lobby Command Items */
         yml.addDefault(Messages.GENERAL_CONFIGURATION_LOBBY_ITEMS_NAME.replace("%path%", "stats"), "&e战绩");
@@ -709,8 +699,6 @@ public class SimplifiedChinese extends Language {
         yml.addDefault(Messages.SCOREBOARD_LOBBY, Arrays.asList(
                 "&6&l起床战争,&4&l起&6&l床战争,&6&l起&4&l床&6&l战争,&6&l起床&4&l战&6&l争,&6&l起床战&4&l争,&6&l起床战争,&6&l起床战争,&6&l{poweredBy},&6&l{poweredBy},&6&l{poweredBy},&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l{poweredBy},&e&l{poweredBy},&e&l{poweredBy}",
                 "&7{player}",
-                "",
-                "&f金币：&a{money}",
                 "",
                 "&f总胜场：&a{wins}",
                 "&f总击杀：&a{kills}",
@@ -1093,7 +1081,7 @@ public class SimplifiedChinese extends Language {
                 "由 {poweredBy} 提供支持,&a{serverIp}",
                 ""
         ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_LOBBY_PREFIX, List.of("{vPrefix}"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_LOBBY_PREFIX, List.of(""));
         yml.addDefault(Messages.FORMATTING_SB_TAB_LOBBY_SUFFIX, List.of(""));
         // player waiting lobby
         yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_HEADER, List.of(
@@ -1110,7 +1098,7 @@ public class SimplifiedChinese extends Language {
                 "&f由 {poweredBy} 提供支持",
                 ""
         ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_PREFIX, List.of("{vPrefix}"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_PREFIX, List.of(""));
         yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_SUFFIX, List.of(""));
         // spectator waiting lobby
         yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_HEADER_SPEC, List.of(
@@ -1128,7 +1116,7 @@ public class SimplifiedChinese extends Language {
                 "&f由 {poweredBy} 提供支持",
                 ""
         ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_PREFIX_SPEC, List.of("{vPrefix}"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_PREFIX_SPEC, List.of(""));
         yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_SUFFIX_SPEC, List.of(""));
         // player starting lobby
         yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_HEADER, List.of(
@@ -1147,7 +1135,7 @@ public class SimplifiedChinese extends Language {
                 "&f由 {poweredBy} 提供支持",
                 ""
         ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_PREFIX, List.of("{vPrefix} "));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_PREFIX, List.of(""));
         yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_SUFFIX, List.of(""));
         // spectator starting lobby
         yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_HEADER_SPEC, List.of(
@@ -1167,7 +1155,7 @@ public class SimplifiedChinese extends Language {
                 "&f由 {poweredBy} 提供支持",
                 ""
         ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_PREFIX_SPEC, List.of("{vPrefix} "));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_PREFIX_SPEC, List.of(""));
         yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_SUFFIX_SPEC, List.of(""));
         // player playing
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_HEADER, List.of(
@@ -1187,7 +1175,7 @@ public class SimplifiedChinese extends Language {
                 ""
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_PREFIX, List.of("{teamColor}{teamName} "));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SUFFIX, List.of(" {vPrefix}"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SUFFIX, List.of(""));
         // player eliminated - playing state
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_HEADER, List.of(
                 "                                                                                                        ",
@@ -1207,7 +1195,7 @@ public class SimplifiedChinese extends Language {
                 ""
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_PREFIX, List.of("&f&o观战者 "));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_SUFFIX, List.of(" &c&o已淘汰 {teamColor}&o{teamName}", " {teamColor}&o已淘汰 {vPrefix}"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_SUFFIX, List.of(" &c&o已淘汰 {teamColor}&o{teamName}", " {teamColor}&o已淘汰"));
         // spectator - playing state
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SPEC_HEADER, List.of(
                 "                                                                                                        ",
@@ -1225,7 +1213,7 @@ public class SimplifiedChinese extends Language {
                 ""
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SPEC_PREFIX, List.of("&f&o观战者 "));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SPEC_SUFFIX, List.of(" {vPrefix}"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SPEC_SUFFIX, List.of(""));
         // winner alive - restarting state
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN1_HEADER, List.of(
                 "                                                                                                        ",
@@ -1245,7 +1233,7 @@ public class SimplifiedChinese extends Language {
                 ""
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN1_PREFIX, List.of("&6&l⭐ {teamColor}{teamName} "));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN1_SUFFIX, List.of(" {vPrefix}"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN1_SUFFIX, List.of(""));
         // winner dead - restarting state
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN2_HEADER, List.of(
                 "                                                                                                        ",
@@ -1266,7 +1254,7 @@ public class SimplifiedChinese extends Language {
                 ""
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN2_PREFIX, List.of("&6&l⭐ {teamColor}{teamName} "));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN2_SUFFIX, List.of(" {vPrefix}", " &c&o已淘汰"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN2_SUFFIX, List.of("", " &c&o已淘汰"));
         // loser - restarting state
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_ELM_HEADER, List.of(
                 "                                                                                                        ",
@@ -1286,7 +1274,7 @@ public class SimplifiedChinese extends Language {
                 ""
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_ELM_PREFIX, List.of("{teamColor}{teamName} "));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_ELM_SUFFIX, List.of(" {vPrefix}", " &c&o已淘汰"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_ELM_SUFFIX, List.of("", " &c&o已淘汰"));
         // spectator - restarting state
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_SPEC_HEADER, List.of(
                 "                                                                                                        ",
@@ -1304,7 +1292,7 @@ public class SimplifiedChinese extends Language {
                 ""
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_SPEC_PREFIX, List.of("&f&o观战者 "));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_SPEC_SUFFIX, List.of(" {vPrefix}"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_SPEC_SUFFIX, List.of(""));
         // end of tab
 
         yml.addDefault(Messages.SHOP_INDEX_NAME, "&8快速购买");

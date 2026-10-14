@@ -150,11 +150,7 @@ public class MenuUpgrade implements MenuContent, TeamUpgrade {
             Bukkit.getPluginManager().callEvent(event = new UpgradeBuyEvent(this, player, team));
             if(event.isCancelled()) return;
             
-            if (ut.getCurrency() == Material.AIR) {
-                BedWars.getEconomy().buyAction(player, ut.getCost());
-            } else {
-                BedWars.getAPI().getShopUtil().takeMoney(player, ut.getCurrency(), ut.getCost());
-            }
+            BedWars.getAPI().getShopUtil().takeMoney(player, ut.getCurrency(), ut.getCost());
 
             if (team.getTeamUpgradeTiers().containsKey(getName())) {
                 team.getTeamUpgradeTiers().replace(getName(), team.getTeamUpgradeTiers().get(getName()) + 1);
