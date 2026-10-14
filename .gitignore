@@ -30,6 +30,9 @@ $RECYCLE.BIN/
 *.ctxt
 .mtj.tmp/
 *.jar
+# 构建所需的本地 SidebarLib 依赖，不属于生成产物。
+!repo/com/andrei1058/spigot/sidebar/sidebar-base/24.2/sidebar-base-24.2.jar
+!repo/com/andrei1058/spigot/sidebar/sidebar-v1_8_R3/24.2/sidebar-v1_8_R3-24.2.jar
 *.war
 *.nar
 *.ear
