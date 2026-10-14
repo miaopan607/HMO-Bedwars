@@ -211,7 +211,6 @@ public class ChatFormatting implements Listener {
                 .replace("{vPrefix}", getChatSupport().getPrefix(player).trim())
                 .replace("{vSuffix}", getChatSupport().getSuffix(player))
                 .replace("{playername}", player.getName())
-                .replace("{level}", getLevelSupport().getLevel(player).trim())
                 .replace("{player}", player.getDisplayName());
         if (team != null) {
             String teamFormat = getMsg(player, Messages.FORMAT_PAPI_PLAYER_TEAM_TEAM)

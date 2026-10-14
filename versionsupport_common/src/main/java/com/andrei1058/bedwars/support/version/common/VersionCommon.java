@@ -23,10 +23,8 @@ package com.andrei1058.bedwars.support.version.common;
 import com.andrei1058.bedwars.api.BedWars;
 import com.andrei1058.bedwars.api.server.VersionSupport;
 import com.andrei1058.bedwars.listeners.GeneratorDropMergeListener;
-import com.andrei1058.bedwars.listeners.Interact_1_13Plus;
 import com.andrei1058.bedwars.listeners.ItemDropPickListener;
 import com.andrei1058.bedwars.listeners.PlayerDropPick_1_11Minus;
-import com.andrei1058.bedwars.listeners.SwapItem;
 import com.andrei1058.bedwars.shop.defaultrestore.ShopItemRestoreListener;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
@@ -37,35 +35,11 @@ public class VersionCommon {
     public static BedWars api;
 
     public VersionCommon(VersionSupport versionSupport) {
-            //noinspection ConstantConditions
-            api = Bukkit.getServicesManager().getRegistration(BedWars.class).getProvider();
-            // 9 and newer
-            if (versionSupport.getVersion() > 1) {
-                registerListeners(versionSupport.getPlugin(), new SwapItem(), new ItemDropPickListener.ArrowCollect());
-            }
-            // 11 and older
-            if (versionSupport.getVersion() < 5){
-                registerListeners(versionSupport.getPlugin(), new ShopItemRestoreListener.PlayerPickup(), new PlayerDropPick_1_11Minus(api));
-            }
-
-            // 13 and newer
-            if (versionSupport.getVersion() > 5){
-                registerListeners(versionSupport.getPlugin(), new ShopItemRestoreListener.EntityDrop(), new Interact_1_13Plus(), new ItemDropPickListener.EntityDrop());
-            }
-
-            // 1.12 and newer
-            if (versionSupport.getVersion() > 4){
-                registerListeners(versionSupport.getPlugin(), new ItemDropPickListener.EntityPickup(), new ShopItemRestoreListener.EntityPickup());
-            }
-
-            // 1.12 drop listeners
-            //if (versionSupport.getVersion() == 5){
-                // common
-                registerListeners(versionSupport.getPlugin(), new ItemDropPickListener.PlayerDrop(), new ShopItemRestoreListener.PlayerDrop());
-            //}
-
-            // common
-            registerListeners(versionSupport.getPlugin(), new GeneratorDropMergeListener(), new ShopItemRestoreListener.DefaultRestoreInvClose());
+        // 1.8 的拾取、丢弃与默认武器恢复监听器。
+        api = Bukkit.getServicesManager().getRegistration(BedWars.class).getProvider();
+        registerListeners(versionSupport.getPlugin(), new ShopItemRestoreListener.PlayerPickup(), new PlayerDropPick_1_11Minus(api));
+        registerListeners(versionSupport.getPlugin(), new ItemDropPickListener.PlayerDrop(), new ShopItemRestoreListener.PlayerDrop());
+        registerListeners(versionSupport.getPlugin(), new GeneratorDropMergeListener(), new ShopItemRestoreListener.DefaultRestoreInvClose());
     }
 
     private void registerListeners(Plugin plugin, Listener... listener) {

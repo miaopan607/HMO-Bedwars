@@ -12,7 +12,7 @@ import com.andrei1058.bedwars.api.server.ServerType;
 import com.andrei1058.bedwars.api.sidebar.ISidebar;
 import com.andrei1058.bedwars.arena.Arena;
 import com.andrei1058.bedwars.arena.stats.StatisticsOrdered;
-import com.andrei1058.bedwars.levels.internal.PlayerLevel;
+
 import com.andrei1058.bedwars.stats.PlayerStats;
 import com.andrei1058.spigot.sidebar.*;
 import org.bukkit.Bukkit;
@@ -109,15 +109,9 @@ public class BwSidebar implements ISidebar {
         return player;
     }
 
-    @SuppressWarnings("ConstantConditions")
     public SidebarLine normalizeTitle(@Nullable List<String> titleArray) {
-        String[] data = new String[titleArray.size()];
-        for (int x = 0; x < titleArray.size(); x++) {
-            data[x] = titleArray.get(x);
-        }
-        return null == titleArray || titleArray.isEmpty() ?
-                EMPTY_TITLE :
-                new SidebarLineAnimated(data);
+        if (titleArray == null || titleArray.isEmpty()) return EMPTY_TITLE;
+        return new SidebarLineAnimated(titleArray.toArray(new String[titleArray.size()]));
     }
 
     /**
@@ -136,7 +130,6 @@ public class BwSidebar implements ISidebar {
         for (String line : lineArray) {
             // convert old placeholders
             line = line.replace("{server_ip}", "{serverIp}");
-            String scoreLine = null;
 
             // generic team placeholder {team}
             if (null != arena) {
@@ -151,12 +144,7 @@ public class BwSidebar implements ISidebar {
                                 .replace("{TeamColor}", team.getColor().chat().toString())
                                 .replace("{TeamName}", teamName);
 
-                        if (line.contains("{TeamStatus}") && getAPI().getVersionSupport().getVersion() >= 10) {
-                            line = line.replace("{TeamStatus}", "");
-                            scoreLine = "{Team" + team.getName() + "Status}";
-                        } else {
-                            line = line.replace("{TeamStatus}", "{Team" + team.getName() + "Status}");
-                        }
+                        line = line.replace("{TeamStatus}", "{Team" + team.getName() + "Status}");
                     } else {
                         // skip line
                         continue;
@@ -227,9 +215,14 @@ public class BwSidebar implements ISidebar {
             SidebarLine sidebarLine;
 
             if (divided.length > 1) {
-                sidebarLine = normalizeTitle(Arrays.asList(divided));
+                sidebarLine = new SidebarLineAnimated(divided);
             } else {
-                sidebarLine = new BwSidebarLine(finalTemp, scoreLine);
+                sidebarLine = new SidebarLine() {
+                    @Override
+                    public @NotNull String getLine() {
+                        return finalTemp;
+                    }
+                };
             }
 
             lines.add(sidebarLine);
@@ -264,14 +257,6 @@ public class BwSidebar implements ISidebar {
         // fixme 29/08/2023: disabled for now because this is not a dynamic placeholder. Let's see what's the impact.
 //        providers.add(new PlaceholderProvider("{serverIp}", () -> BedWars.config.getString(ConfigPath.GENERAL_CONFIG_PLACEHOLDERS_REPLACEMENTS_SERVER_IP)));
         providers.add(new PlaceholderProvider("{version}", () -> plugin.getDescription().getVersion()));
-        PlayerLevel level = PlayerLevel.getLevelByPlayer(player.getUniqueId());
-        if (null != level) {
-            providers.add(new PlaceholderProvider("{progress}", level::getProgress));
-            providers.add(new PlaceholderProvider("{level}", () -> String.valueOf(level.getLevelName())));
-            providers.add(new PlaceholderProvider("{levelUnformatted}", () -> String.valueOf(level.getLevel())));
-            providers.add(new PlaceholderProvider("{currentXp}", level::getFormattedCurrentXp));
-            providers.add(new PlaceholderProvider("{requiredXp}", level::getFormattedRequiredXp));
-        }
 
         if (hasNoArena()) {
             providers.add(new PlaceholderProvider("{on}", () ->

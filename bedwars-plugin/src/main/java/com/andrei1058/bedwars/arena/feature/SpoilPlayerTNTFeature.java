@@ -26,7 +26,7 @@ import com.andrei1058.bedwars.api.configuration.ConfigPath;
 import com.andrei1058.bedwars.api.events.player.PlayerKillEvent;
 import com.andrei1058.bedwars.api.events.player.PlayerLeaveArenaEvent;
 import com.andrei1058.bedwars.arena.Arena;
-import com.andrei1058.bedwars.metrics.MetricsManager;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -58,7 +58,7 @@ public class SpoilPlayerTNTFeature {
                 instance = new SpoilPlayerTNTFeature();
             }
         }
-        MetricsManager.appendPie("tnt_spoil_enable", () -> String.valueOf(enable));
+
     }
 
     private static class ParticleTask implements Runnable {

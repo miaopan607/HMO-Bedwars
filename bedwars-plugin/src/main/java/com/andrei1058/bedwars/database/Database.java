@@ -76,21 +76,6 @@ public interface Database {
     int getColumn(UUID player, String column);
 
     /**
-     * Get a player level and xp.
-     * <p>
-     * args 0 is level.
-     * args 1 is xp.
-     * args 2 is display name.
-     * args 3 next level cost.
-     */
-    Object[] getLevelData(UUID player);
-
-    /**
-     * Set a player level data.
-     */
-    void setLevelData(UUID player, int level, int xp, String displayName, int nextCost);
-
-    /**
      * Set a player language.
      */
     void setLanguage(UUID player, String iso);

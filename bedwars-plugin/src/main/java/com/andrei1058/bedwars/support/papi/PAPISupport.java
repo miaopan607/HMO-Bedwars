@@ -189,27 +189,6 @@ public class PAPISupport extends PlaceholderExpansion {
                     }
                 }
                 break;
-            case "player_level":
-                response = BedWars.getLevelSupport().getLevel(player);
-                break;
-            case "player_level_raw":
-                response = String.valueOf(BedWars.getLevelSupport().getPlayerLevel(player));
-                break;
-            case "player_progress":
-                response = BedWars.getLevelSupport().getProgressBar(player);
-                break;
-            case "player_xp_formatted":
-                response = BedWars.getLevelSupport().getCurrentXpFormatted(player);
-                break;
-            case "player_xp":
-                response = String.valueOf(BedWars.getLevelSupport().getCurrentXp(player));
-                break;
-            case "player_rerq_xp_formatted":
-                response = BedWars.getLevelSupport().getRequiredXpFormatted(player);
-                break;
-            case "player_rerq_xp":
-                response = String.valueOf(BedWars.getLevelSupport().getRequiredXp(player));
-                break;
             case "player_status":
                 if(a != null) {
                     switch (a.getStatus()) {

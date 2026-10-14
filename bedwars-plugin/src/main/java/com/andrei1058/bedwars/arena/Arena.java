@@ -65,8 +65,7 @@ import com.andrei1058.bedwars.configuration.ArenaConfig;
 import com.andrei1058.bedwars.configuration.Sounds;
 import com.andrei1058.bedwars.configuration.ConfigurationValues;
 import com.andrei1058.bedwars.configuration.ConfigurationReloadService;
-import com.andrei1058.bedwars.levels.internal.InternalLevel;
-import com.andrei1058.bedwars.levels.internal.PerMinuteTask;
+
 import com.andrei1058.bedwars.listeners.blockstatus.BlockStatusListener;
 import com.andrei1058.bedwars.listeners.dropshandler.PlayerDrops;
 import com.andrei1058.bedwars.money.internal.MoneyPerMinuteTask;
@@ -260,8 +259,6 @@ public class Arena implements IArena {
 
     /* ARENA GENERATORS */
     private List<IGenerator> oreGenerators = new ArrayList<>();
-
-    private PerMinuteTask perMinuteTask;
 
     private MoneyPerMinuteTask moneyperMinuteTask;
 
@@ -671,9 +668,7 @@ public class Arena implements IArena {
             // bungee mode invisibility issues
             if (getServerType() == ServerType.BUNGEE) {
                 // fix invisibility issue
-                //if (BedWars.nms.getVersion() == 7) {
                 BedWars.nms.sendPlayerSpawnPackets(p, this);
-                //}
             }
             for (Player on : Bukkit.getOnlinePlayers()) {
                 if (on == null) continue;
@@ -693,9 +688,7 @@ public class Arena implements IArena {
 
             if (getServerType() == ServerType.BUNGEE) {
                 // fix invisibility issue
-                //if (BedWars.nms.getVersion() == 7) {
                 BedWars.nms.sendPlayerSpawnPackets(p, this);
-                //}
             }
         }, 17L);
 
@@ -1334,9 +1327,7 @@ public class Arena implements IArena {
         if (null != moneyperMinuteTask) {
             moneyperMinuteTask.cancel();
         }
-        if (null != perMinuteTask) {
-            perMinuteTask.cancel();
-        }
+
         plugin.getLogger().log(Level.FINE, "Restarting arena: " + getArenaName());
         Bukkit.getPluginManager().callEvent(new ArenaRestartEvent(getArenaName(), getWorldName()));
         for (Player inWorld : getWorld().getPlayers()) {
@@ -1670,9 +1661,6 @@ public class Arena implements IArena {
         if (null != moneyperMinuteTask) {
             moneyperMinuteTask.cancel();
         }
-        if (null != perMinuteTask) {
-            perMinuteTask.cancel();
-        }
 
         players.forEach(c -> SidebarService.getInstance().giveSidebar(c, this, false));
 
@@ -1681,9 +1669,7 @@ public class Arena implements IArena {
         if (status == GameState.starting) {
             startingTask = new GameStartingTask(this);
         } else if (status == GameState.playing) {
-            if (BedWars.getLevelSupport() instanceof InternalLevel) {
-                perMinuteTask = new PerMinuteTask(this);
-            }
+
             if (BedWars.getEconomy() instanceof WithEconomy) {
                 moneyperMinuteTask = new MoneyPerMinuteTask(this);
             }
@@ -2707,7 +2693,6 @@ public class Arena implements IArena {
         playingTask = null;
         restartingTask = null;
         oreGenerators = null;
-        perMinuteTask = null;
         moneyperMinuteTask = null;
         leaving.clear();
         fireballCooldowns.clear();

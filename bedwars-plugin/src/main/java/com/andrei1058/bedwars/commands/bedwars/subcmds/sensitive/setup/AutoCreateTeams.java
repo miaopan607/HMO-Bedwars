@@ -32,7 +32,6 @@ import com.andrei1058.bedwars.arena.SetupSession;
 import com.andrei1058.bedwars.configuration.Permissions;
 import net.md_5.bungee.api.chat.ClickEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -54,7 +53,6 @@ public class AutoCreateTeams extends SubCommand {
 
     private static HashMap<Player, Long> timeOut = new HashMap<>();
     private static HashMap<Player, List<Byte>> teamsFoundOld = new HashMap<>();
-    private static HashMap<Player, List<String>> teamsFound13 = new HashMap<>();
 
     @SuppressWarnings("deprecation")
     @Override
@@ -67,154 +65,57 @@ public class AutoCreateTeams extends SubCommand {
             return true;
         }
         if (ss.getSetupType() == SetupType.ASSISTED) {
-            if (is13Higher()) {
-                if (timeOut.containsKey(p) && timeOut.get(p) >= System.currentTimeMillis() && teamsFound13.containsKey(p)) {
-                    for (String tf : teamsFound13.get(p)) {
-                        Bukkit.dispatchCommand(s, BedWars.mainCmd + " createTeam " + TeamColor.enName(tf) + " " + TeamColor.enName(tf));
-                    }
-                    if (ss.getConfig().getYml().get("waiting.Pos1") == null) {
-                        s.sendMessage("");
-                        s.sendMessage(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_WAITING_HEADER));
-                        s.sendMessage(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_WAITING_DESCRIPTION));
-                        s.sendMessage(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_WAITING_SELECTION));
-                        p.spigot().sendMessage(Misc.msgHoverClick(Language.getMsg(p, Messages.COMMAND_SETUP_WAITING_POS_OPTION).replace("{command}", BedWars.mainCmd).replace("{position}", "1"), Language.getMsg(p, Messages.COMMAND_SETUP_WAITING_POS_OPTION_HOVER).replace("{position}", "1"), "/" + getParent().getName() + " waitingPos 1", ClickEvent.Action.RUN_COMMAND));
-                        p.spigot().sendMessage(Misc.msgHoverClick(Language.getMsg(p, Messages.COMMAND_SETUP_WAITING_POS_OPTION).replace("{command}", BedWars.mainCmd).replace("{position}", "2"), Language.getMsg(p, Messages.COMMAND_SETUP_WAITING_POS_OPTION_HOVER).replace("{position}", "2"), "/" + getParent().getName() + " waitingPos 2", ClickEvent.Action.RUN_COMMAND));
-                        s.sendMessage("");
-                        s.sendMessage(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_WAITING_OPTIONAL).replace("{command}", BedWars.mainCmd));
-                    }
-                    return true;
+            if (timeOut.containsKey(p) && timeOut.get(p) >= System.currentTimeMillis() && teamsFoundOld.containsKey(p)) {
+                for (Byte tf : teamsFoundOld.get(p)) {
+                    Bukkit.dispatchCommand(s, BedWars.mainCmd + " createTeam " + TeamColor.enName(tf) + " " + TeamColor.enName(tf));
                 }
-                List<String> found = new ArrayList<>();
-                World w = p.getWorld();
-                if (ss.getConfig().getYml().get("Team") == null) {
-                    p.sendMessage(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_SEARCH));
-                    for (int x = -200; x < 200; x++) {
-                        for (int y = 50; y < 130; y++) {
-                            for (int z = -200; z < 200; z++) {
-                                Block b = new Location(w, x, y, z).getBlock();
-                                if (b.getType().toString().contains("_WOOL")) {
-                                    if (!found.contains(b.getType().toString())) {
-                                        int count = 0;
-                                        for (int x1 = -2; x1 < 2; x1++) {
-                                            for (int y1 = -2; y1 < 2; y1++) {
-                                                for (int z1 = -2; z1 < 2; z1++) {
-                                                    Block b2 = new Location(w, x, y, z).getBlock();
-                                                    if (b2.getType() == b.getType()) {
-                                                        count++;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        if (count >= 5) {
-                                            if (!TeamColor.enName(b.getType().toString()).isEmpty()) {
-                                                if (ss.getConfig().getYml().get("Team." + TeamColor.enName(b.getType().toString())) == null) {
-                                                    found.add(b.getType().toString());
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                if (ss.getConfig().getYml().get("waiting.Pos1") == null) {
+                    s.sendMessage("");
+                    s.sendMessage(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_WAITING_HEADER));
+                    s.sendMessage(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_WAITING_DESCRIPTION));
+                    s.sendMessage(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_WAITING_SELECTION));
+                    p.spigot().sendMessage(Misc.msgHoverClick(Language.getMsg(p, Messages.COMMAND_SETUP_WAITING_POS_OPTION).replace("{command}", BedWars.mainCmd).replace("{position}", "1"), Language.getMsg(p, Messages.COMMAND_SETUP_WAITING_POS_OPTION_HOVER).replace("{position}", "1"), "/" + getParent().getName() + " waitingPos 1", ClickEvent.Action.RUN_COMMAND));
+                    p.spigot().sendMessage(Misc.msgHoverClick(Language.getMsg(p, Messages.COMMAND_SETUP_WAITING_POS_OPTION).replace("{command}", BedWars.mainCmd).replace("{position}", "2"), Language.getMsg(p, Messages.COMMAND_SETUP_WAITING_POS_OPTION_HOVER).replace("{position}", "2"), "/" + getParent().getName() + " waitingPos 2", ClickEvent.Action.RUN_COMMAND));
+                    s.sendMessage("");
+                    s.sendMessage(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_WAITING_OPTIONAL).replace("{command}", BedWars.mainCmd));
+                }
+                return true;
+            }
+            List<Byte> found = new ArrayList<>();
+            World w = p.getWorld();
+            if (ss.getConfig().getYml().get("Team") == null) {
+                p.sendMessage(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_SEARCH));
+                for (int x = -200; x < 200; x++) {
+                    for (int y = 50; y < 130; y++) {
+                        for (int z = -200; z < 200; z++) {
+                            Block b = w.getBlockAt(x, y, z);
+                            if (b.getType() != Material.WOOL) continue;
+                            byte color = b.getData();
+                            if (found.contains(color)) continue;
+                            String teamName = TeamColor.enName(color);
+                            if (!teamName.isEmpty() && ss.getConfig().getYml().get("Team." + teamName) == null) {
+                                found.add(color);
                             }
                         }
                     }
                 }
-                if (found.isEmpty()) {
-                    p.sendMessage(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_NONE).replace("{command}", BedWars.mainCmd));
-                } else {
-                    if (timeOut.containsKey(p)) {
-                        p.sendMessage(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_TIMEOUT));
-                        timeOut.remove(p);
-                        return true;
-                    } else {
-                        timeOut.put(p, System.currentTimeMillis() + 16000);
-                    }
-                    if (teamsFound13.containsKey(p)) {
-                        teamsFound13.replace(p, found);
-                    } else {
-                        teamsFound13.put(p, found);
-                    }
-                    p.sendMessage(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_FOUND_HEADER));
-                    for (String tf : found) {
-                        String name = TeamColor.enName(tf);
-                        p.sendMessage(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_FOUND_ENTRY).replace("{team}", TeamColor.getChatColor(name) + name.replace("_", " ")));
-                    }
-                    p.spigot().sendMessage(Misc.msgHoverClick(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_CONFIRM), Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_CONFIRM_HOVER), "/" + getParent().getName() + " " + getSubCommandName(), ClickEvent.Action.RUN_COMMAND));
-                }
+            }
+            if (found.isEmpty()) {
+                p.sendMessage(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_NONE).replace("{command}", BedWars.mainCmd));
             } else {
-                if (timeOut.containsKey(p) && timeOut.get(p) >= System.currentTimeMillis() && teamsFoundOld.containsKey(p)) {
-                    for (Byte tf : teamsFoundOld.get(p)) {
-                        Bukkit.dispatchCommand(s, BedWars.mainCmd + " createTeam " + TeamColor.enName(tf) + " " + TeamColor.enName(tf));
-                    }
-                    if (ss.getConfig().getYml().get("waiting.Pos1") == null) {
-                        s.sendMessage("");
-                        s.sendMessage(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_WAITING_HEADER));
-                        s.sendMessage(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_WAITING_DESCRIPTION));
-                        s.sendMessage(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_WAITING_SELECTION));
-                        p.spigot().sendMessage(Misc.msgHoverClick(Language.getMsg(p, Messages.COMMAND_SETUP_WAITING_POS_OPTION).replace("{command}", BedWars.mainCmd).replace("{position}", "1"), Language.getMsg(p, Messages.COMMAND_SETUP_WAITING_POS_OPTION_HOVER).replace("{position}", "1"), "/" + getParent().getName() + " waitingPos 1", ClickEvent.Action.RUN_COMMAND));
-                        p.spigot().sendMessage(Misc.msgHoverClick(Language.getMsg(p, Messages.COMMAND_SETUP_WAITING_POS_OPTION).replace("{command}", BedWars.mainCmd).replace("{position}", "2"), Language.getMsg(p, Messages.COMMAND_SETUP_WAITING_POS_OPTION_HOVER).replace("{position}", "2"), "/" + getParent().getName() + " waitingPos 2", ClickEvent.Action.RUN_COMMAND));
-                        s.sendMessage("");
-                        s.sendMessage(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_WAITING_OPTIONAL).replace("{command}", BedWars.mainCmd));
-                    }
+                if (timeOut.containsKey(p)) {
+                    p.sendMessage(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_TIMEOUT));
+                    timeOut.remove(p);
                     return true;
                 }
-                List<Byte> found = new ArrayList<>();
-                World w = p.getWorld();
-                if (ss.getConfig().getYml().get("Team") == null) {
-                    p.sendMessage(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_SEARCH));
-                    for (int x = -200; x < 200; x++) {
-                        for (int y = 50; y < 130; y++) {
-                            for (int z = -200; z < 200; z++) {
-                                Block b = new Location(w, x, y, z).getBlock();
-                                if (b.getType() == Material.valueOf("WOOL")) {
-                                    if (!found.contains(b.getData())) {
-                                        int count = 0;
-                                        for (int x1 = -2; x1 < 2; x1++) {
-                                            for (int y1 = -2; y1 < 2; y1++) {
-                                                for (int z1 = -2; z1 < 2; z1++) {
-                                                    Block b2 = new Location(w, x, y, z).getBlock();
-                                                    if (b2.getType() == b.getType()) {
-                                                        if (b.getData() == b2.getData()) {
-                                                            count++;
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        if (count >= 5) {
-                                            if (!TeamColor.enName(b.getData()).isEmpty()) {
-                                                if (ss.getConfig().getYml().get("Team." + TeamColor.enName(b.getData())) == null) {
-                                                    found.add(b.getData());
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                timeOut.put(p, System.currentTimeMillis() + 16000);
+                teamsFoundOld.put(p, found);
+                p.sendMessage(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_FOUND_HEADER));
+                for (Byte tf : found) {
+                    String name = TeamColor.enName(tf);
+                    p.sendMessage(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_FOUND_ENTRY).replace("{team}", TeamColor.getChatColor(name) + name.replace('_', ' ')));
                 }
-                if (found.isEmpty()) {
-                    p.sendMessage(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_NONE).replace("{command}", BedWars.mainCmd));
-                } else {
-                    if (timeOut.containsKey(p)) {
-                        p.sendMessage(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_TIMEOUT));
-                        timeOut.remove(p);
-                        return true;
-                    } else {
-                        timeOut.put(p, System.currentTimeMillis() + 16000);
-                    }
-                    if (teamsFoundOld.containsKey(p)) {
-                        teamsFoundOld.replace(p, found);
-                    } else {
-                        teamsFoundOld.put(p, found);
-                    }
-                    p.sendMessage(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_FOUND_HEADER));
-                    for (Byte tf : found) {
-                        String name = TeamColor.enName(tf);
-                        p.sendMessage(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_FOUND_ENTRY).replace("{team}", TeamColor.getChatColor(name) + name.replace('_', ' ')));
-                    }
-                    p.spigot().sendMessage(Misc.msgHoverClick(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_CONFIRM), Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_CONFIRM_HOVER), "/" + getParent().getName() + " " + getSubCommandName(), ClickEvent.Action.RUN_COMMAND));
-                }
+                p.spigot().sendMessage(Misc.msgHoverClick(Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_CONFIRM), Language.getMsg(p, Messages.COMMAND_SETUP_AUTO_TEAMS_CONFIRM_HOVER), "/" + getParent().getName() + " " + getSubCommandName(), ClickEvent.Action.RUN_COMMAND));
             }
         } else return false;
         return true;
@@ -223,13 +124,6 @@ public class AutoCreateTeams extends SubCommand {
     @Override
     public List<String> getTabComplete() {
         return null;
-    }
-
-    /**
-     * Check if server version is 1.13 or higher
-     */
-    public static boolean is13Higher() {
-        return !(BedWars.getServerVersion().equals("v1_8_R3") || BedWars.getServerVersion().equals("v1_12_R1"));
     }
 
     @Override

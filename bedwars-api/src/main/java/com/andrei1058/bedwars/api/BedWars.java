@@ -25,7 +25,6 @@ import com.andrei1058.bedwars.api.arena.shop.IContentTier;
 import com.andrei1058.bedwars.api.command.ParentCommand;
 import com.andrei1058.bedwars.api.configuration.ConfigManager;
 import com.andrei1058.bedwars.api.language.Language;
-import com.andrei1058.bedwars.api.levels.Level;
 import com.andrei1058.bedwars.api.party.Party;
 import com.andrei1058.bedwars.api.server.ISetupSession;
 import com.andrei1058.bedwars.api.server.RestoreAdapter;
@@ -381,11 +380,6 @@ public interface BedWars {
     }
 
     /**
-     * Get levels methods.
-     */
-    Level getLevelsUtil();
-
-    /**
      * Get party util.
      */
     Party getPartyUtil();
@@ -452,11 +446,6 @@ public interface BedWars {
      * Get lobby world name.
      */
     String getLobbyWorld();
-
-    String getForCurrentVersion(String v18, String v12, String v13);
-
-    @SuppressWarnings("unused")
-    void setLevelAdapter(Level level);
 
     boolean isAutoScale();
 

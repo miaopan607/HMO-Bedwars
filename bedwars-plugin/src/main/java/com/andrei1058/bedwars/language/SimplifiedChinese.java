@@ -137,20 +137,7 @@ public class SimplifiedChinese extends Language {
         yml.addDefault(Messages.COMMAND_ENABLE_ARENA_QUEUED, "&c▪ &7该竞技场已在启用队列中！");
         yml.addDefault(Messages.COMMAND_ENABLE_ARENA_START, "&6 ▪ &7正在启用竞技场……");
         yml.addDefault(Messages.COMMAND_ENABLE_ARENA_USAGE, "&c▪ &7用法：&o/{command} enableRotation <地图名>");
-        yml.addDefault(Messages.COMMAND_LEVEL_DISPLAY, "§6 ▪ §7/{command} {subcommand} §8      - §e点击查看详情");
-        yml.addDefault(Messages.COMMAND_LEVEL_DISPLAY_HOVER, "§f管理玩家等级。");
-        yml.addDefault(Messages.COMMAND_LEVEL_INVALID_AMOUNT, "§c数量必须是整数！");
-        yml.addDefault(Messages.COMMAND_LEVEL_INVALID_LEVEL, "§c等级必须是整数！");
-        yml.addDefault(Messages.COMMAND_LEVEL_PLAYER_NOT_FOUND, "§c ▪ §7找不到玩家！");
-        yml.addDefault(Messages.COMMAND_LEVEL_REJOIN, "§6 ▪ §7玩家可能需要重新加入才能看到更新。");
-        yml.addDefault(Messages.COMMAND_LEVEL_SET_CONSOLE_USAGE, "§6bw level setLevel <玩家> <等级>");
-        yml.addDefault(Messages.COMMAND_LEVEL_SET_HOVER, "设置玩家等级。");
-        yml.addDefault(Messages.COMMAND_LEVEL_SET_SUCCESS, "§6 ▪ §7已将 {player} 的等级设置为：{level}");
-        yml.addDefault(Messages.COMMAND_LEVEL_SET_USAGE, "§6 ▪ §7用法：/bw level setLevel §o<玩家> <等级>");
-        yml.addDefault(Messages.COMMAND_LEVEL_XP_CONSOLE_USAGE, "§6bw level giveXp <玩家> <数量>");
-        yml.addDefault(Messages.COMMAND_LEVEL_XP_HOVER, "给玩家经验值。");
-        yml.addDefault(Messages.COMMAND_LEVEL_XP_SUCCESS, "§6 ▪ §7已给予 {player} {amount} 点经验值。");
-        yml.addDefault(Messages.COMMAND_LEVEL_XP_USAGE, "§6 ▪ §7用法：/bw level giveXp §o<玩家> <数量>");
+
         yml.addDefault(Messages.COMMAND_NPC_ADD_HOVER, "点击使用。");
         yml.addDefault(Messages.COMMAND_NPC_ADD_USAGE, "§f\n§c▪ §7用法：§e§o/{command} {subcommand} add <皮肤> <竞技场分组> <§7第一行§9\\n§7第二行§e>\n§7你可以用 §e{players} §7表示分组内的玩家数量。");
         yml.addDefault(Messages.COMMAND_NPC_CREATED, "§a§c▪ §bNPC：{name} §b已设置！");
@@ -425,9 +412,8 @@ public class SimplifiedChinese extends Language {
         yml.addDefault(Messages.SHOP_VAULT_REQUIRED, "&4&l错误：此功能需要 Vault 支持！请安装 Vault 插件！");
         yml.addDefault(Messages.SIGN_SAVED, "&a▪ &7已保存竞技场 {arena} 的告示牌。");
         yml.addDefault(Messages.SIGN_NO_ARENAS, "&c▪ &7你还没有设置任何竞技场！");
-        yml.addDefault(Messages.PLUGIN_RELOAD_KICK, "BedWars1058 已重新加载！请勿重新加载插件。");
-        yml.addDefault(Messages.SHOP_HALLOWEEN_PUMPKIN_NAME, "&6&l万圣节快乐！");
-        yml.addDefault(Messages.HALLOWEEN_COBWEB_XP, "&6+{xp} 经验！");
+        yml.addDefault(Messages.PLUGIN_RELOAD_KICK, "HMO-Bedwars 已重新加载！请勿重新加载插件。");
+
         yml.addDefault(Messages.COMMAND_ECHO_USAGE, "{prefix}&c用法：/bw echo <消息>");
         yml.addDefault(Messages.COMMAND_ECHO_SENT, "{prefix}&a消息已发送至竞技场 {arena}");
         yml.addDefault(Messages.COMMAND_ECHO_NOT_IN_ARENA, "{prefix}&c你不在一个竞技场中。");
@@ -569,13 +555,13 @@ public class SimplifiedChinese extends Language {
         yml.addDefault(Messages.GENERATOR_HOLOGRAM_TYPE_EMERALD, "&a&l绿宝石");
         yml.addDefault(Messages.GENERATOR_HOLOGRAM_TIMER, "&c{seconds}&e 秒后生成");
         yml.addDefault(Messages.GENERATOR_UPGRADE_CHAT_ANNOUNCEMENT, "{prefix}{generatorType}资源点&e升级到&c{tier}级。");
-        yml.addDefault(Messages.FORMATTING_CHAT_LOBBY, "&7[大厅] {level} {vPrefix} &a{player}{vSuffix}&f：{message}");
-        yml.addDefault(Messages.FORMATTING_CHAT_WAITING, "&7[等待] {level} {vPrefix} &a{player}{vSuffix}&f：{message}");
-        yml.addDefault(Messages.FORMATTING_CHAT_SHOUT, "&6[公屏] {team} {level} {vPrefix} &a{player}{vSuffix}&f：{message}");
-        yml.addDefault(Messages.FORMATTING_CHAT_SERVER, "&6[全服] {level} {vPrefix} &a{player}{vSuffix}&f：{message}");
+        yml.addDefault(Messages.FORMATTING_CHAT_LOBBY, "&7[大厅] {vPrefix} &a{player}{vSuffix}&f：{message}");
+        yml.addDefault(Messages.FORMATTING_CHAT_WAITING, "&7[等待] {vPrefix} &a{player}{vSuffix}&f：{message}");
+        yml.addDefault(Messages.FORMATTING_CHAT_SHOUT, "&6[公屏] {team} {vPrefix} &a{player}{vSuffix}&f：{message}");
+        yml.addDefault(Messages.FORMATTING_CHAT_SERVER, "&6[全服] {vPrefix} &a{player}{vSuffix}&f：{message}");
         yml.addDefault(Messages.CHAT_GLOBAL_USAGE, "{prefix}&c请在 @ 后输入要发送到全服的消息。");
-        yml.addDefault(Messages.FORMATTING_CHAT_TEAM, "&b[队内] {team} {level} {vPrefix} &a{player}{vSuffix}&f：{message}");
-        yml.addDefault(Messages.FORMATTING_CHAT_SPECTATOR, "&8[旁观] {level} {vPrefix} &a{player}{vSuffix}&f：{message}");
+        yml.addDefault(Messages.FORMATTING_CHAT_TEAM, "&b[队内] {team} {vPrefix} &a{player}{vSuffix}&f：{message}");
+        yml.addDefault(Messages.FORMATTING_CHAT_SPECTATOR, "&8[旁观] {vPrefix} &a{player}{vSuffix}&f：{message}");
         yml.addDefault(Messages.FORMATTING_SCOREBOARD_HEALTH, Arrays.asList("&c❤", "&a生命值"));
 
         yml.addDefault(Messages.FORMATTING_SCOREBOARD_DATE, "yy/MM/dd");
@@ -681,12 +667,6 @@ public class SimplifiedChinese extends Language {
         yml.addDefault(Messages.NEXT_EVENT_TITLE_ANNOUNCE_SUDDEN_DEATH, "&c绝杀模式");
         yml.addDefault(Messages.NEXT_EVENT_SUBTITLE_ANNOUNCE_SUDDEN_DEATH, "");
         yml.addDefault(Messages.NEXT_EVENT_CHAT_ANNOUNCE_SUDDEN_DEATH, "&c绝杀模式：&6&b{TeamDragons} {TeamColor}{TeamName}的龙！");
-        yml.addDefault(Messages.XP_REWARD_PER_MINUTE, "{prefix}&6+{xp}起床战争经验(游戏时间)");
-        yml.addDefault(Messages.XP_REWARD_WIN, "{prefix}&6+{xp}起床战争经验(游戏胜利)");
-        yml.addDefault(Messages.XP_REWARD_PER_TEAMMATE, "{prefix}&6+{xp}起床战争经验(团队协作)");
-        yml.addDefault(Messages.XP_REWARD_BED_DESTROY, "{prefix}&6+{xp}起床战争经验(破坏床)");
-        yml.addDefault(Messages.XP_REWARD_REGULAR_KILL, "{prefix}&6+{xp}起床战争经验(击杀)");
-        yml.addDefault(Messages.XP_REWARD_FINAL_KILL, "{prefix}&6+{xp}起床战争经验(最终击杀)");
 
         yml.addDefault(Messages.MONEY_REWARD_PER_MINUTE, "{prefix}&6+{money}金币(游戏时间)");
         yml.addDefault(Messages.MONEY_REWARD_WIN, "{prefix}&6+{money}金币(游戏胜利)");
@@ -728,11 +708,6 @@ public class SimplifiedChinese extends Language {
         // Start of Sidebar
         yml.addDefault(Messages.SCOREBOARD_LOBBY, Arrays.asList(
                 "&6&l起床战争,&4&l起&6&l床战争,&6&l起&4&l床&6&l战争,&6&l起床&4&l战&6&l争,&6&l起床战&4&l争,&6&l起床战争,&6&l起床战争,&6&l{poweredBy},&6&l{poweredBy},&6&l{poweredBy},&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l{poweredBy},&e&l{poweredBy},&e&l{poweredBy}",
-                "&f等级：{level}",
-                "",
-                "&f进度：&a{currentXp}&7/&b{requiredXp}",
-                "{progress}",
-                "",
                 "&7{player}",
                 "",
                 "&f金币：&a{money}",
@@ -1119,7 +1094,7 @@ public class SimplifiedChinese extends Language {
                 ""
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_LOBBY_PREFIX, List.of("{vPrefix}"));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_LOBBY_SUFFIX, List.of(" {level}"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_LOBBY_SUFFIX, List.of(""));
         // player waiting lobby
         yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_HEADER, List.of(
                 "                                                                                                        ",
@@ -1136,7 +1111,7 @@ public class SimplifiedChinese extends Language {
                 ""
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_PREFIX, List.of("{vPrefix}"));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_SUFFIX, List.of(" {level}"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_SUFFIX, List.of(""));
         // spectator waiting lobby
         yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_HEADER_SPEC, List.of(
                 "                                                                                                        ",
@@ -1154,7 +1129,7 @@ public class SimplifiedChinese extends Language {
                 ""
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_PREFIX_SPEC, List.of("{vPrefix}"));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_SUFFIX_SPEC, List.of(" {level}"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_SUFFIX_SPEC, List.of(""));
         // player starting lobby
         yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_HEADER, List.of(
                 "                                                                                                        ",
@@ -1173,7 +1148,7 @@ public class SimplifiedChinese extends Language {
                 ""
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_PREFIX, List.of("{vPrefix} "));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_SUFFIX, List.of(" {level}"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_SUFFIX, List.of(""));
         // spectator starting lobby
         yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_HEADER_SPEC, List.of(
                 "                                                                                                        ",
@@ -1193,7 +1168,7 @@ public class SimplifiedChinese extends Language {
                 ""
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_PREFIX_SPEC, List.of("{vPrefix} "));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_SUFFIX_SPEC, List.of(" {level}"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_SUFFIX_SPEC, List.of(""));
         // player playing
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_HEADER, List.of(
                 "                                                                                                        ",
@@ -1212,7 +1187,7 @@ public class SimplifiedChinese extends Language {
                 ""
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_PREFIX, List.of("{teamColor}{teamName} "));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SUFFIX, List.of(" {vPrefix}", " {level}"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SUFFIX, List.of(" {vPrefix}"));
         // player eliminated - playing state
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_HEADER, List.of(
                 "                                                                                                        ",
@@ -1232,7 +1207,7 @@ public class SimplifiedChinese extends Language {
                 ""
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_PREFIX, List.of("&f&o观战者 "));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_SUFFIX, List.of(" &c&o已淘汰 {teamColor}&o{teamName}", " {teamColor}&o已淘汰 {vPrefix}", "{teamColor}&o已淘汰 {level}"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_SUFFIX, List.of(" &c&o已淘汰 {teamColor}&o{teamName}", " {teamColor}&o已淘汰 {vPrefix}"));
         // spectator - playing state
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SPEC_HEADER, List.of(
                 "                                                                                                        ",
@@ -1250,7 +1225,7 @@ public class SimplifiedChinese extends Language {
                 ""
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SPEC_PREFIX, List.of("&f&o观战者 "));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SPEC_SUFFIX, List.of(" {vPrefix}", " {level}"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SPEC_SUFFIX, List.of(" {vPrefix}"));
         // winner alive - restarting state
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN1_HEADER, List.of(
                 "                                                                                                        ",
@@ -1270,7 +1245,7 @@ public class SimplifiedChinese extends Language {
                 ""
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN1_PREFIX, List.of("&6&l⭐ {teamColor}{teamName} "));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN1_SUFFIX, List.of(" {vPrefix}", " {level}"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN1_SUFFIX, List.of(" {vPrefix}"));
         // winner dead - restarting state
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN2_HEADER, List.of(
                 "                                                                                                        ",
@@ -1291,7 +1266,7 @@ public class SimplifiedChinese extends Language {
                 ""
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN2_PREFIX, List.of("&6&l⭐ {teamColor}{teamName} "));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN2_SUFFIX, List.of(" {vPrefix}", " &c&o已淘汰", " {level}", " &c&o已淘汰"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN2_SUFFIX, List.of(" {vPrefix}", " &c&o已淘汰"));
         // loser - restarting state
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_ELM_HEADER, List.of(
                 "                                                                                                        ",
@@ -1311,7 +1286,7 @@ public class SimplifiedChinese extends Language {
                 ""
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_ELM_PREFIX, List.of("{teamColor}{teamName} "));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_ELM_SUFFIX, List.of(" {vPrefix}", " &c&o已淘汰", " {level}", " &c&o已淘汰"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_ELM_SUFFIX, List.of(" {vPrefix}", " &c&o已淘汰"));
         // spectator - restarting state
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_SPEC_HEADER, List.of(
                 "                                                                                                        ",
@@ -1329,7 +1304,7 @@ public class SimplifiedChinese extends Language {
                 ""
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_SPEC_PREFIX, List.of("&f&o观战者 "));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_SPEC_SUFFIX, List.of(" {vPrefix}", " {level}"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_SPEC_SUFFIX, List.of(" {vPrefix}"));
         // end of tab
 
         yml.addDefault(Messages.SHOP_INDEX_NAME, "&8快速购买");

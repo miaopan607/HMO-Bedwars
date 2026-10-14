@@ -31,8 +31,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDropItemEvent;
-import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -41,10 +39,10 @@ import org.bukkit.inventory.ItemStack;
 
 import static com.andrei1058.bedwars.support.version.common.VersionCommon.api;
 
-// Used to restore default swords and bows if they are removed from the inventory and you remain with a less powerful weapon of the same kind. 1.12-.
+// 丢弃、拾取或移动武器后恢复默认武器。
 public class ShopItemRestoreListener {
 
-    // 1.11 or older
+    // 1.8 玩家丢弃事件。
     public static class PlayerDrop implements Listener {
         @EventHandler
         public void onDrop(PlayerDropItemEvent e) {
@@ -52,28 +50,12 @@ public class ShopItemRestoreListener {
         }
     }
 
-    // 1.11 or older
+    // 1.8 玩家拾取事件。
     public static class PlayerPickup implements Listener {
         @SuppressWarnings("deprecation")
         @EventHandler
         public void onDrop(PlayerPickupItemEvent e) {
             if (managePickup(e.getItem(), e.getPlayer())) e.setCancelled(true);
-        }
-    }
-
-    // 1.12 or newer
-    public static class EntityDrop implements Listener {
-        @EventHandler
-        public void onDrop(EntityDropItemEvent e) {
-            if (manageDrop(e.getEntity(), e.getItemDrop())) e.setCancelled(true);
-        }
-    }
-
-    // 1.12 or newer
-    public static class EntityPickup implements Listener {
-        @EventHandler
-        public void onDrop(EntityPickupItemEvent e) {
-            if (managePickup(e.getItem(), e.getEntity())) e.setCancelled(true);
         }
     }
 

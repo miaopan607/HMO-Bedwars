@@ -425,12 +425,6 @@ public class Messages {
     public static String GAME_END_VICTORY_PLAYER_TITLE = "game-end-victory-title";
     public static String GAME_END_TOP_PLAYER_CHAT = "game-end-top-chat";
     public static String GAME_END_TEAM_WON_CHAT = "game-end-winner-team";
-    public static String XP_REWARD_WIN = "xp-reward-game-win";
-    public static String XP_REWARD_PER_TEAMMATE = "xp-reward-per-teammate";
-    public static String XP_REWARD_PER_MINUTE = "xp-reward-per-minute";
-    public static String XP_REWARD_BED_DESTROY = "xp-reward-bed-destroyed";
-    public static String XP_REWARD_REGULAR_KILL = "xp-reward-regular-kill";
-    public static String XP_REWARD_FINAL_KILL = "xp-reward-final-kill";
 
     public static String MONEY_REWARD_WIN = "money-reward-game-win";
     public static String MONEY_REWARD_PER_MINUTE = "money-reward-per-minute";
@@ -628,8 +622,6 @@ public class Messages {
     public static String SIGN_SAVED = "sign-saved";
     public static String SIGN_NO_ARENAS = "sign-no-arenas";
     public static String PLUGIN_RELOAD_KICK = "plugin-reload-kick";
-    public static String SHOP_HALLOWEEN_PUMPKIN_NAME = "shop-halloween-pumpkin-name";
-    public static String HALLOWEEN_COBWEB_XP = "halloween-cobweb-xp";
     public static String ARENA_UNEXPECTED_PLAYER_KICK = "arena-unexpected-player-kick";
 
     // Sensitive commands and arena setup messages.
@@ -690,20 +682,6 @@ public class Messages {
     public static String COMMAND_ENABLE_ARENA_QUEUED = "command-enable-arena-queued";
     public static String COMMAND_ENABLE_ARENA_START = "command-enable-arena-start";
     public static String COMMAND_ENABLE_ARENA_USAGE = "command-enable-arena-usage";
-    public static String COMMAND_LEVEL_DISPLAY = "command-level-display";
-    public static String COMMAND_LEVEL_DISPLAY_HOVER = "command-level-display-hover";
-    public static String COMMAND_LEVEL_INVALID_AMOUNT = "command-level-invalid-amount";
-    public static String COMMAND_LEVEL_INVALID_LEVEL = "command-level-invalid-level";
-    public static String COMMAND_LEVEL_PLAYER_NOT_FOUND = "command-level-player-not-found";
-    public static String COMMAND_LEVEL_REJOIN = "command-level-rejoin";
-    public static String COMMAND_LEVEL_SET_CONSOLE_USAGE = "command-level-set-console-usage";
-    public static String COMMAND_LEVEL_SET_HOVER = "command-level-set-hover";
-    public static String COMMAND_LEVEL_SET_SUCCESS = "command-level-set-success";
-    public static String COMMAND_LEVEL_SET_USAGE = "command-level-set-usage";
-    public static String COMMAND_LEVEL_XP_CONSOLE_USAGE = "command-level-xp-console-usage";
-    public static String COMMAND_LEVEL_XP_HOVER = "command-level-xp-hover";
-    public static String COMMAND_LEVEL_XP_SUCCESS = "command-level-xp-success";
-    public static String COMMAND_LEVEL_XP_USAGE = "command-level-xp-usage";
     public static String COMMAND_NPC_ADD_HOVER = "command-npc-add-hover";
     public static String COMMAND_NPC_ADD_USAGE = "command-npc-add-usage";
     public static String COMMAND_NPC_CREATED = "command-npc-created";

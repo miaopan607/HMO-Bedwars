@@ -47,47 +47,47 @@ public class Sounds {
     public static void init() {
         YamlConfiguration yml = sounds.getYml();
 
-        addDefSound("game-end", BedWars.getForCurrentVersion("AMBIENCE_THUNDER", "ENTITY_LIGHTNING_THUNDER", "ITEM_TRIDENT_THUNDER"));
-        addDefSound("rejoin-denied", BedWars.getForCurrentVersion("VILLAGER_NO", "ENTITY_VILLAGER_NO", "ENTITY_VILLAGER_NO"));
-        addDefSound("rejoin-allowed", BedWars.getForCurrentVersion("SLIME_WALK", "ENTITY_SLIME_JUMP", "ENTITY_SLIME_JUMP"));
-        addDefSound("spectate-denied", BedWars.getForCurrentVersion("VILLAGER_NO", "ENTITY_VILLAGER_NO", "ENTITY_VILLAGER_NO"));
-        addDefSound("spectate-allowed", BedWars.getForCurrentVersion("SLIME_WALK", "ENTITY_SLIME_JUMP", "ENTITY_SLIME_JUMP"));
-        addDefSound("join-denied", BedWars.getForCurrentVersion("VILLAGER_NO", "ENTITY_VILLAGER_NO", "ENTITY_VILLAGER_NO"));
-        addDefSound("join-allowed", BedWars.getForCurrentVersion("SLIME_WALK", "ENTITY_SLIME_JUMP", "ENTITY_SLIME_JUMP"));
-        addDefSound("spectator-gui-click", BedWars.getForCurrentVersion("SLIME_WALK", "ENTITY_SLIME_JUMP", "ENTITY_SLIME_JUMP"));
-        addDefSound(SOUNDS_COUNTDOWN_TICK, BedWars.getForCurrentVersion("CHICKEN_EGG_POP", "ENTITY_CHICKEN_EGG", "ENTITY_CHICKEN_EGG"));
-        addDefSound(SOUNDS_COUNTDOWN_TICK_X + "5", BedWars.getForCurrentVersion("CHICKEN_EGG_POP", "ENTITY_CHICKEN_EGG", "ENTITY_CHICKEN_EGG"));
-        addDefSound(SOUNDS_COUNTDOWN_TICK_X + "4", BedWars.getForCurrentVersion("CHICKEN_EGG_POP", "ENTITY_CHICKEN_EGG", "ENTITY_CHICKEN_EGG"));
-        addDefSound(SOUNDS_COUNTDOWN_TICK_X + "3", BedWars.getForCurrentVersion("CHICKEN_EGG_POP", "ENTITY_CHICKEN_EGG", "ENTITY_CHICKEN_EGG"));
-        addDefSound(SOUNDS_COUNTDOWN_TICK_X + "2", BedWars.getForCurrentVersion("CHICKEN_EGG_POP", "ENTITY_CHICKEN_EGG", "ENTITY_CHICKEN_EGG"));
-        addDefSound(SOUNDS_COUNTDOWN_TICK_X + "1", BedWars.getForCurrentVersion("CHICKEN_EGG_POP", "ENTITY_CHICKEN_EGG", "ENTITY_CHICKEN_EGG"));
-        addDefSound(SOUND_GAME_START, BedWars.getForCurrentVersion("SLIME_ATTACK", "BLOCK_SLIME_FALL", "BLOCK_SLIME_BLOCK_FALL"));
+        addDefSound("game-end", "AMBIENCE_THUNDER");
+        addDefSound("rejoin-denied", "VILLAGER_NO");
+        addDefSound("rejoin-allowed", "SLIME_WALK");
+        addDefSound("spectate-denied", "VILLAGER_NO");
+        addDefSound("spectate-allowed", "SLIME_WALK");
+        addDefSound("join-denied", "VILLAGER_NO");
+        addDefSound("join-allowed", "SLIME_WALK");
+        addDefSound("spectator-gui-click", "SLIME_WALK");
+        addDefSound(SOUNDS_COUNTDOWN_TICK, "CHICKEN_EGG_POP");
+        addDefSound(SOUNDS_COUNTDOWN_TICK_X + "5", "CHICKEN_EGG_POP");
+        addDefSound(SOUNDS_COUNTDOWN_TICK_X + "4", "CHICKEN_EGG_POP");
+        addDefSound(SOUNDS_COUNTDOWN_TICK_X + "3", "CHICKEN_EGG_POP");
+        addDefSound(SOUNDS_COUNTDOWN_TICK_X + "2", "CHICKEN_EGG_POP");
+        addDefSound(SOUNDS_COUNTDOWN_TICK_X + "1", "CHICKEN_EGG_POP");
+        addDefSound(SOUND_GAME_START, "SLIME_ATTACK");
 
-        addDefSound(SOUNDS_KILL, BedWars.getForCurrentVersion("ORB_PICKUP", "ENTITY_EXPERIENCE_ORB_PICKUP", "ENTITY_EXPERIENCE_ORB_PICKUP"));
+        addDefSound(SOUNDS_KILL, "ORB_PICKUP");
 
-        addDefSound(SOUNDS_BED_DESTROY, BedWars.getForCurrentVersion("ENDERDRAGON_GROWL", "ENTITY_ENDERDRAGON_GROWL", "ENTITY_ENDER_DRAGON_GROWL"));
-        addDefSound(SOUNDS_BED_DESTROY_OWN, BedWars.getForCurrentVersion("WITHER_DEATH", "ENTITY_WITHER_DEATH", "ENTITY_WITHER_DEATH"));
-        addDefSound(SOUNDS_INSUFF_MONEY, BedWars.getForCurrentVersion("VILLAGER_NO", "ENTITY_VILLAGER_NO", "ENTITY_VILLAGER_NO"));
-        addDefSound(SOUNDS_INSUFF_INVENTORY, BedWars.getForCurrentVersion("VILLAGER_NO", "ENTITY_VILLAGER_NO", "ENTITY_VILLAGER_NO"));
-        addDefSound(SOUNDS_BOUGHT, BedWars.getForCurrentVersion("VILLAGER_YES", "ENTITY_VILLAGER_YES", "ENTITY_VILLAGER_YES"));
+        addDefSound(SOUNDS_BED_DESTROY, "ENDERDRAGON_GROWL");
+        addDefSound(SOUNDS_BED_DESTROY_OWN, "WITHER_DEATH");
+        addDefSound(SOUNDS_INSUFF_MONEY, "VILLAGER_NO");
+        addDefSound(SOUNDS_INSUFF_INVENTORY, "VILLAGER_NO");
+        addDefSound(SOUNDS_BOUGHT, "VILLAGER_YES");
 
-        addDefSound(NextEvent.BEDS_DESTROY.getSoundPath(), BedWars.getForCurrentVersion("ENDERDRAGON_GROWL", "ENTITY_ENDERDRAGON_GROWL", "ENTITY_ENDER_DRAGON_GROWL"));
-        addDefSound(NextEvent.DIAMOND_GENERATOR_TIER_II.getSoundPath(), BedWars.getForCurrentVersion("LEVEL_UP", "ENTITY_PLAYER_LEVELUP", "ENTITY_PLAYER_LEVELUP"));
-        addDefSound(NextEvent.DIAMOND_GENERATOR_TIER_III.getSoundPath(), BedWars.getForCurrentVersion("LEVEL_UP", "ENTITY_PLAYER_LEVELUP", "ENTITY_PLAYER_LEVELUP"));
-        addDefSound(NextEvent.EMERALD_GENERATOR_TIER_II.getSoundPath(), BedWars.getForCurrentVersion("GHAST_MOAN", "ENTITY_GHAST_WARN", "ENTITY_GHAST_WARN"));
-        addDefSound(NextEvent.EMERALD_GENERATOR_TIER_III.getSoundPath(), BedWars.getForCurrentVersion("GHAST_MOAN", "ENTITY_GHAST_WARN", "ENTITY_GHAST_WARN"));
-        addDefSound(NextEvent.ENDER_DRAGON.getSoundPath(), BedWars.getForCurrentVersion("ENDERDRAGON_WINGS", "ENTITY_ENDERDRAGON_FLAP", "ENTITY_ENDER_DRAGON_FLAP"));
+        addDefSound(NextEvent.BEDS_DESTROY.getSoundPath(), "ENDERDRAGON_GROWL");
+        addDefSound(NextEvent.DIAMOND_GENERATOR_TIER_II.getSoundPath(), "LEVEL_UP");
+        addDefSound(NextEvent.DIAMOND_GENERATOR_TIER_III.getSoundPath(), "LEVEL_UP");
+        addDefSound(NextEvent.EMERALD_GENERATOR_TIER_II.getSoundPath(), "GHAST_MOAN");
+        addDefSound(NextEvent.EMERALD_GENERATOR_TIER_III.getSoundPath(), "GHAST_MOAN");
+        addDefSound(NextEvent.ENDER_DRAGON.getSoundPath(), "ENDERDRAGON_WINGS");
 
-        addDefSound("player-re-spawn", BedWars.getForCurrentVersion("SLIME_ATTACK", "BLOCK_SLIME_FALL", "BLOCK_SLIME_BLOCK_FALL"));
-        addDefSound("arena-selector-open", BedWars.getForCurrentVersion("CHICKEN_EGG_POP", "ENTITY_CHICKEN_EGG", "ENTITY_CHICKEN_EGG"));
-        addDefSound("stats-gui-open", BedWars.getForCurrentVersion("CHICKEN_EGG_POP", "ENTITY_CHICKEN_EGG", "ENTITY_CHICKEN_EGG"));
-        addDefSound(SOUNDS_TEAM_SELECTOR_OPEN, BedWars.getForCurrentVersion("CHEST_OPEN", "BLOCK_CHEST_OPEN", "BLOCK_CHEST_OPEN"));
-        addDefSound(SOUNDS_TEAM_SELECTOR_CLOSE, BedWars.getForCurrentVersion("CHEST_CLOSE", "BLOCK_CHEST_CLOSE", "BLOCK_CHEST_CLOSE"));
-        addDefSound("trap-sound", BedWars.getForCurrentVersion("ENDERMAN_TELEPORT", "ENDERMAN_TELEPORT", "ENTITY_ENDERMAN_TELEPORT"));
-        addDefSound("shop-auto-equip", BedWars.getForCurrentVersion("HORSE_ARMOR", "ITEM_ARMOR_EQUIP_GENERIC", "ITEM_ARMOR_EQUIP_GENERIC"));
-        addDefSound("egg-bridge-block", BedWars.getForCurrentVersion("CHICKEN_EGG_POP", "ENTITY_CHICKEN_EGG", "ENTITY_CHICKEN_EGG"));
-        addDefSound("ender-pearl-landed", BedWars.getForCurrentVersion("ENDERMAN_TELEPORT", "ENTITY_ENDERMEN_TELEPORT", "ENTITY_ENDERMAN_TELEPORT"));
-        addDefSound("pop-up-tower-build", BedWars.getForCurrentVersion("CHICKEN_EGG_POP", "ENTITY_CHICKEN_EGG","ENTITY_CHICKEN_EGG"));
+        addDefSound("player-re-spawn", "SLIME_ATTACK");
+        addDefSound("arena-selector-open", "CHICKEN_EGG_POP");
+        addDefSound("stats-gui-open", "CHICKEN_EGG_POP");
+        addDefSound(SOUNDS_TEAM_SELECTOR_OPEN, "CHEST_OPEN");
+        addDefSound(SOUNDS_TEAM_SELECTOR_CLOSE, "CHEST_CLOSE");
+        addDefSound("trap-sound", "ENDERMAN_TELEPORT");
+        addDefSound("shop-auto-equip", "HORSE_ARMOR");
+        addDefSound("egg-bridge-block", "CHICKEN_EGG_POP");
+        addDefSound("ender-pearl-landed", "ENDERMAN_TELEPORT");
+        addDefSound("pop-up-tower-build", "CHICKEN_EGG_POP");
         yml.options().copyDefaults(true);
 
         // remove old paths
@@ -102,7 +102,7 @@ public class Sounds {
         try {
             return Sound.valueOf(sounds.getString(path + ".sound"));
         } catch (Exception ex) {
-            return Sound.valueOf(BedWars.getForCurrentVersion("AMBIENCE_THUNDER", "ENTITY_LIGHTNING_THUNDER", "ITEM_TRIDENT_THUNDER"));
+            return Sound.valueOf("AMBIENCE_THUNDER");
         }
     }
 

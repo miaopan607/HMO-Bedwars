@@ -43,7 +43,6 @@ public class Permissions {
     public static final String PERMISSION_NPC = BedWars.mainCmd+".npc";
     public static final String PERMISSION_RELOAD = BedWars.mainCmd+".reload";
     public static final String PERMISSION_REJOIN = BedWars.mainCmd+".rejoin";
-    public static final String PERMISSION_LEVEL = BedWars.mainCmd+".level";
     public static final String PERMISSION_CHAT_COLOR = BedWars.mainCmd+".chatcolor";
     public static final String PERMISSION_VIP = BedWars.mainCmd+".vip";
     public static final String PERMISSION_ECHO = BedWars.mainCmd+".echo";

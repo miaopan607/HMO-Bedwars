@@ -73,7 +73,7 @@ public class MySQL implements Database {
     public boolean connect() {
         HikariConfig hikariConfig = new HikariConfig();
 
-        hikariConfig.setPoolName("BedWars1058MySQLPool");
+        hikariConfig.setPoolName("HMO-BedwarsMySQLPool");
 
         hikariConfig.setMaximumPoolSize(poolSize);
         hikariConfig.setMaxLifetime(maxLifetime * 1000L);
@@ -145,12 +145,6 @@ public class MySQL implements Database {
                     "slot_19 VARCHAR(200), slot_20 VARCHAR(200), slot_21 VARCHAR(200), slot_22 VARCHAR(200), slot_23 VARCHAR(200), slot_24 VARCHAR(200), slot_25 VARCHAR(200)," +
                     "slot_28 VARCHAR(200), slot_29 VARCHAR(200), slot_30 VARCHAR(200), slot_31 VARCHAR(200), slot_32 VARCHAR(200), slot_33 VARCHAR(200), slot_34 VARCHAR(200)," +
                     "slot_37 VARCHAR(200), slot_38 VARCHAR(200), slot_39 VARCHAR(200), slot_40 VARCHAR(200), slot_41 VARCHAR(200), slot_42 VARCHAR(200), slot_43 VARCHAR(200));";
-            try (Statement statement = connection.createStatement()) {
-                statement.executeUpdate(sql);
-            }
-
-            sql = "CREATE TABLE IF NOT EXISTS player_levels (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, uuid VARCHAR(200), " +
-                    "level INT(200), xp INT(200), name VARCHAR(200) CHARACTER SET utf8, next_cost INT(200));";
             try (Statement statement = connection.createStatement()) {
                 statement.executeUpdate(sql);
             }
@@ -345,73 +339,6 @@ public class MySQL implements Database {
             return 0;
         }
         return 0;
-    }
-
-    @Override
-    public Object[] getLevelData(UUID uuid) {
-        String sql = "SELECT level, xp, name, next_cost FROM player_levels WHERE uuid = ?;";
-        try (Connection connection = dataSource.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setString(1, uuid.toString());
-                try (ResultSet result = statement.executeQuery()) {
-                    if (result.next()) {
-                        return new Object[]{
-                            result.getInt(1),
-                            result.getInt(2),
-                            result.getString(3),
-                            result.getInt(4)
-                        };
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return new Object[]{1, 0, "", 0};
-    }
-
-    @Override
-    public void setLevelData(UUID uuid, int level, int xp, String displayName, int nextCost) {
-        String sql = "SELECT uuid from player_levels WHERE uuid = ?;";
-        try (Connection connection = dataSource.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setString(1, uuid.toString());
-                try (ResultSet result = statement.executeQuery()) {
-                    if (!result.next()) {
-                        sql = "INSERT INTO player_levels VALUES (?, ?, ?, ?, ?, ?);";
-                        try (PreparedStatement statement2 = connection.prepareStatement(sql)) {
-                            statement2.setInt(1, 0);
-                            statement2.setString(2, uuid.toString());
-                            statement2.setInt(3, level);
-                            statement2.setInt(4, xp);
-                            statement2.setString(5, displayName);
-                            statement2.setInt(6, nextCost);
-                            statement2.executeUpdate();
-                        }
-                    } else {
-                        if (displayName == null) {
-                            sql = "UPDATE player_levels SET level=?, xp=? WHERE uuid = ?;";
-                        } else {
-                            sql = "UPDATE player_levels SET level=?, xp=?, name=?, next_cost=? WHERE uuid = ?;";
-                        }
-                        try (PreparedStatement statement2 = connection.prepareStatement(sql)) {
-                            statement2.setInt(1, level);
-                            statement2.setInt(2, xp);
-                            if (displayName != null) {
-                                statement2.setString(3, displayName);
-                                statement2.setInt(4, nextCost);
-                                statement2.setString(5, uuid.toString());
-                            } else {
-                                statement2.setString(3, uuid.toString());
-                            }
-                            statement2.executeUpdate();
-                        }
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override

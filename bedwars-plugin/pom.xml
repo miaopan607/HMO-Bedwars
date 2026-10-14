@@ -3,12 +3,12 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>BedWars1058</artifactId>
+        <artifactId>HMO-Bedwars-parent</artifactId>
         <groupId>com.andrei1058.bedwars</groupId>
         <version>0.2.4-beta</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>bedwars-plugin</artifactId>
+    <artifactId>HMO-Bedwars</artifactId>
     <packaging>jar</packaging>
     <version>0.2.4-beta</version>
 
@@ -80,12 +80,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.bstats</groupId>
-            <artifactId>bstats-bukkit</artifactId>
-            <version>3.0.2</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>de.simonsator</groupId>
             <artifactId>DevelopmentPAFSpigot</artifactId>
             <version>1.0.239</version>
@@ -140,56 +134,6 @@
             <artifactId>resetadapter-slime</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!-- <dependency>
-            <groupId>com.andrei1058.bedwars</groupId>
-            <artifactId>versionsupport_1_12_R1</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.andrei1058.bedwars</groupId>
-            <artifactId>versionsupport_v1_16_R3</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.andrei1058.bedwars</groupId>
-            <artifactId>versionsupport_v1_17_R1</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.andrei1058.bedwars</groupId>
-            <artifactId>versionsupport_v1_18_R2</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.andrei1058.bedwars</groupId>
-            <artifactId>versionsupport_v1_19_R2</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.andrei1058.bedwars</groupId>
-            <artifactId>versionsupport_v1_19_R3</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.andrei1058.bedwars</groupId>
-            <artifactId>versionsupport_v1_20_R1</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.andrei1058.bedwars</groupId>
-            <artifactId>versionsupport_v1_20_R2</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.andrei1058.bedwars</groupId>
-            <artifactId>versionsupport_v1_20_R3</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.andrei1058.bedwars</groupId>
-            <artifactId>versionsupport_v1_20_R4</artifactId>
-            <version>${project.version}</version>
-        </dependency> -->
         <dependency>
             <groupId>com.andrei1058.bedwars</groupId>
             <artifactId>versionsupport-common</artifactId>
@@ -254,80 +198,12 @@
             <version>24.2</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>com.andrei1058.spigot.sidebar</groupId>
-            <artifactId>sidebar-v1_12_R1</artifactId>
-            <version>24.2</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.andrei1058.spigot.sidebar</groupId>
-            <artifactId>sidebar-v1_16_R3</artifactId>
-            <version>24.2</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.andrei1058.spigot.sidebar</groupId>
-            <artifactId>sidebar-v1_17_R1</artifactId>
-            <version>24.2</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.andrei1058.spigot.sidebar</groupId>
-            <artifactId>sidebar-v1_18_R2</artifactId>
-            <version>24.2</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.andrei1058.spigot.sidebar</groupId>
-            <artifactId>sidebar-v1_19_R2</artifactId>
-            <version>24.2</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.andrei1058.spigot.sidebar</groupId>
-            <artifactId>sidebar-v1_19_R3</artifactId>
-            <version>24.2</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.andrei1058.spigot.sidebar</groupId>
-            <artifactId>sidebar-v1_20_R1</artifactId>
-            <version>24.2</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.andrei1058.spigot.sidebar</groupId>
-            <artifactId>sidebar-v1_20_R2</artifactId>
-            <version>24.2</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.andrei1058.spigot.sidebar</groupId>
-            <artifactId>sidebar-v1_20_R3</artifactId>
-            <version>24.2</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.andrei1058.spigot.sidebar</groupId>
-            <artifactId>sidebar-v1_20_R4</artifactId>
-            <version>24.2</version>
-            <scope>compile</scope>
-        </dependency>
         <!--        End of Sidebar LIB-->
-        <!-- Slime Paper -->
-        <dependency>
-            <groupId>com.andrei1058.bedwars</groupId>
-            <artifactId>resetadapter-slimepaper</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <!-- Slime Paper -->
         <dependency>
             <groupId>com.andrei1058.bedwars</groupId>
             <artifactId>resetadapter-aswm</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!-- End of Slime Paper -->
 
         <dependency>
             <groupId>net.md-5</groupId>
@@ -354,10 +230,6 @@
                 <version>3.5.0</version>
                 <configuration>
                     <relocations>
-                        <relocation>
-                            <pattern>org.bstats</pattern>
-                            <shadedPattern>com.andrei1058.bedwars.libs.bstats</shadedPattern>
-                        </relocation>
                         <relocation>
                             <pattern>com.zaxxer.hikari</pattern>
                             <shadedPattern>com.andrei1058.bedwars.libs.hikari</shadedPattern>
@@ -399,7 +271,7 @@
                         <configuration>
                             <target xmlns:if="ant:if">
                                 <property environment="env"/>
-                                <copy file="${project.build.directory}/${project.artifactId}-${project.version}.jar"
+                                <copy file="${project.build.directory}/${project.build.finalName}.jar"
                                       todir="${env.BED_WARS_SERVER_DIR}/plugins"
                                       if:set="env.BED_WARS_SERVER_DIR"/>
                             </target>

@@ -318,11 +318,6 @@ public class API implements com.andrei1058.bedwars.api.BedWars {
     }
 
     @Override
-    public com.andrei1058.bedwars.api.levels.Level getLevelsUtil() {
-        return BedWars.getLevelSupport();
-    }
-
-    @Override
     public Party getPartyUtil() {
         return BedWars.getParty();
     }
@@ -386,16 +381,6 @@ public class API implements com.andrei1058.bedwars.api.BedWars {
     @Override
     public String getLobbyWorld() {
         return BedWars.getLobbyWorld();
-    }
-
-    @Override
-    public String getForCurrentVersion(String v18, String v12, String v13) {
-        return BedWars.getForCurrentVersion(v18, v12, v13);
-    }
-
-    @Override
-    public void setLevelAdapter(com.andrei1058.bedwars.api.levels.Level level) {
-        BedWars.setLevelAdapter(level);
     }
 
     @Override

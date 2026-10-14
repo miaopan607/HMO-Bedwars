@@ -1,11 +1,23 @@
-![Logo](./.github/assets/logo_open_source.png)
+# HMO-Bedwars
 
 
 As from November 1st 2021 BedWars1058 by Andrei Dascălu becomes open source under GNU GPL 3.0 license. If you are a developer I would really appreciate if you'd come with pull requests instead of making hundreds of forks. Let's make updates available for everyone!
 
+HMO-Bedwars 基于 BedWars1058，仅支持 Minecraft 1.8.8（`v1_8_R3`），保留英文和简体中文。玩家等级、经验奖励、万圣节特殊玩法和 bStats 上报已移除；玩家战绩、金币奖励、团队升级、药水强度及原版经验恢复保留。
+
+## 从 BedWars1058 迁移
+
+构建命令：`mvn -o clean install -DskipTests`。产物位于 `bedwars-plugin/target/HMO-Bedwars-0.2.4-beta.jar`；设置 `BED_WARS_SERVER_DIR` 时仍自动复制到对应的 `plugins` 目录。
+
+1. 停服并备份旧插件 JAR、`plugins/BedWars1058` 和数据库。
+2. 将旧数据复制到 `plugins/HMO-Bedwars`；若新目录已存在，不直接覆盖或合并，先确认要使用哪份数据。
+3. 在中英文覆盖文件中移除聊天、Tab、侧边栏的玩家等级/经验行及等级、万圣节专用消息键；保留药水名称中的 `{level}`。旧默认 `poweredBy: BedWars1058` 可改为 `HMO-Bedwars`。
+4. 将旧插件 JAR 移出 `plugins`，只保留新的 HMO-Bedwars JAR，再启动。不能同时加载两份插件。
+
+旧等级数据库表和其它语言文件不会被主动删除，但插件不再访问等级表或加载其它语言。原 Java 包名、命令、权限、PlaceholderAPI 前缀 `bw1058` 和物品数据标识保留；依赖等级 API、等级事件或 `getForCurrentVersion` 的附属插件需要修改后重新编译。
+
 [![Discord](https://discordapp.com/api/guilds/201345265821679617/widget.png?style=shield)](https://discord.gg/XdJfN2X)
 
-[![Crowdin](https://support.crowdin.com/assets/badges/localization-at-white-rounded-bordered@1x.svg)](https://crowdin.com/project/bedwars1058)
 
 # Description
 BedWars is a mini-game where you have to defend your bed and destroy the others.  
@@ -61,9 +73,9 @@ Restart after installing the plugin so the new permission declarations are loade
 自定义文案请写入 `Languages/overrides/messages_<iso>.yml`，沿用默认文件的 YAML 键结构，只填写需要覆盖的键。
 升级前请将默认文件中需要保留的自定义文案移到覆盖文件；插件不会把旧默认文件里的文案自动转成覆盖值。
 覆盖列表整体替换（空列表也有效）；删除覆盖键或覆盖文件后 reload 恢复基础值。
-reload 只读取语言覆盖文件，并恢复内置默认文件；普通文案即时生效，商店/升级菜单及日期/计时格式仍需重启。额外添加且没有内置文案的语言文件继续作为该语言的基础文件。
+reload 只读取中英文语言覆盖文件，并恢复内置默认文件；普通文案即时生效，商店/升级菜单及日期/计时格式仍需重启。其它 ISO 的文件不会被自动注册；不支持的默认语言回退到英文，玩家旧语言记录沿用默认语言回退。
 
-简体中文玩家聊天统一按频道、队伍（适用时）、等级、身份前缀、玩家名排列；玩家名默认绿色，中文冒号与正文默认白色。大厅/等待使用灰色标签，队内使用青色，公屏/全服使用金色，旁观使用深灰色。单人模式普通聊天使用公屏样式，接收范围不变；已有语言覆盖值仍优先于内置样式。
+简体中文玩家聊天统一按频道、队伍（适用时）、身份前缀、玩家名排列；玩家名默认绿色，中文冒号与正文默认白色。大厅/等待使用灰色标签，队内使用青色，公屏/全服使用金色，旁观使用深灰色。单人模式普通聊天使用公屏样式，接收范围不变；已有语言覆盖值仍优先于内置样式。
 
 ### 仅 OP 可用的主配置修改命令
 
@@ -89,7 +101,7 @@ reload 只读取语言覆盖文件，并恢复内置默认文件；普通文案�
 # System requirements
 This software runs on [Spigot](https://www.spigotmc.org/) and NMS.
 Spigot forks without compiled NMS code are not supported.
-Officially supported servers are [spigot](https://www.spigotmc.org/) and [paper](https://papermc.io/).
+仅支持 Minecraft **1.8.8（v1_8_R3）** 的 [Spigot](https://www.spigotmc.org/) 和 [Paper](https://papermc.io/)，不包含其它服务端版本实现。
 It is required to use **Java 11** or newer.
 
 The internal world restore system is based on zipping and unzipping maps which can become
@@ -97,9 +109,8 @@ heavy if you are still making use of HDDs and you do not have a decent CPU, for 
 and faster restore system we recommend using one of the following solutions:
 - [SlimeWorldManager](https://www.spigotmc.org/resources/slimeworldmanager.69974/) plug-in (v2.2.1 **only**)
 - [AdvancedWorldManager](https://www.spigotmc.org/resources/advanced-slimeworldmanager.87209/) plug-in (v2.8.0 **only**)
-- [AdvancedSlimePaper](https://github.com/InfernalSuite/AdvancedSlimePaper) server jar (**1.20 or newer**)
 
-BedWars1058 will hook into it and do everything for you, no additional configuration is needed.
+HMO-Bedwars will hook into it and do everything for you, no additional configuration is needed.
 
 # Pre-made setups and community add-ons
 
@@ -114,9 +125,9 @@ You can find a list of pre-made server setups and a lot of community add-ons [on
 - **BUNGEE**: a brand new scalable bungee mode. It can host multiple arenas on the same server instance, clone and start new arenas when needed so other players can join. The server can be automatically restarted after a certain amount of games played. This will require installing [BedWarsProxy](https://www.spigotmc.org/resources/bedwarsproxy.66642/) on your lobby servers so players can join. And of course, you can run as many servers as you want in bungee mode.
 
 ###### Language | Per player language system:
-- each player can receive messages, holograms, GUIs etc. in their desired language. /bw lang.
-- you can either remove or add new languages.
-- team names, group names, shop contents and a lot more can be translated in your languages.
+- 玩家可用 `/bw lang` 选择英文（`en`）或简体中文（`zh_cn`）。
+- 仅加载这两种语言，保留禁用语言配置；不能通过添加其它语言 YAML 扩展语言列表。
+- 队伍名、竞技场组名、商城内容等可在对应语言覆盖文件中自定义。
 - custom titles and subtitles for [starting countdown](https://gitlab.com/andrei1058/BedWars1058/-/wikis/language-configuration#custom-title-sub-title-for-arena-countdown).
 
 ###### Lobby removal | Optional:
@@ -221,8 +232,8 @@ Inactive players for more than 45 seconds can't pick-up items from generators.
 - join items can execute commands.
 
 ###### Map Restore System:
-- the default restore adapter from BedWars1058 is based on un-loading the map, un-zipping a backup and loading it again. This may be heavy for servers with cheap hardware. We recommend using gaming processors and a SSD.
-- to improve performance we added support for SlimeWorldManager, which loads maps way faster with less performance impact thanks to its slime format. We really encourage you installing this plugin. No manual conversion is required. BedWars1058 will handle everything. Read how to install it here.
+- the default restore adapter from HMO-Bedwars is based on un-loading the map, un-zipping a backup and loading it again. This may be heavy for servers with cheap hardware. We recommend using gaming processors and a SSD.
+- to improve performance we added support for SlimeWorldManager, which loads maps way faster with less performance impact thanks to its slime format. We really encourage you installing this plugin. No manual conversion is required. HMO-Bedwars will handle everything. Read how to install it here.
 - you can also implement your own map adapter trough the API.
 - it may seem heavy than other plugins because we don't simply keep track of modified blocks. We need to restore the entire map because server owners can allow players to destroy the maps like on a SkyWars game. Regions like generators, NPCs and team spawns will be protected.
 
@@ -233,19 +244,13 @@ If you get disconnected, or if you leave a game (configurable) you can re-join i
 - players are able to do tnt jump with configurable values.
 - players with tnt in their inventory have a red particle on their head (configurable).
 
-###### Season events:
-- Halloween special. It is enabled automatically based on your machine timezone and will provide cool effects.
 
 # Contributing
 Any help is appreciated, just give a quick look at [CONTRIBUTING.md](https://github.com/andrei1058/BedWars1058/blob/master/CONTRIBUTING.md) first!
 
-If you are not a programmer you can help answering people in the [Issues](https://github.com/andrei1058/BedWars1058/issues) section or even [translate the plugin in your languae on Crowdin](https://crowdin.com/project/bedwars1058).
-
-### Translation progress
-[Translation Chart](https://badges.awesome-crowdin.com/translation-12780139-594479.png)
+中英文文案修正可通过本仓库提交；上游贡献方式见上方链接。
 
 # 3rd party libraries
-- [bStats](https://bstats.org/getting-started/include-metrics)
 - [SidebarLib](https://github.com/andrei1058/SiderbarLib)
 - [Commons IO](https://mvnrepository.com/artifact/commons-io/commons-io)
 - [HikariCP](https://mvnrepository.com/artifact/com.zaxxer/HikariCP)

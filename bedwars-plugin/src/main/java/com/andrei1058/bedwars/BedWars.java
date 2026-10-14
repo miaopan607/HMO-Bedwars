@@ -25,7 +25,6 @@ import com.andrei1058.bedwars.api.configuration.ConfigManager;
 import com.andrei1058.bedwars.api.configuration.ConfigPath;
 import com.andrei1058.bedwars.api.language.Language;
 import com.andrei1058.bedwars.api.language.Messages;
-import com.andrei1058.bedwars.api.levels.Level;
 import com.andrei1058.bedwars.api.party.Party;
 import com.andrei1058.bedwars.api.server.RestoreAdapter;
 import com.andrei1058.bedwars.api.server.ServerType;
@@ -49,10 +48,8 @@ import com.andrei1058.bedwars.commands.shout.ShoutCommand;
 import com.andrei1058.bedwars.configuration.*;
 import com.andrei1058.bedwars.database.Database;
 import com.andrei1058.bedwars.database.SQLite;
-import com.andrei1058.bedwars.halloween.HalloweenSpecial;
+
 import com.andrei1058.bedwars.language.*;
-import com.andrei1058.bedwars.levels.internal.InternalLevel;
-import com.andrei1058.bedwars.levels.internal.LevelListeners;
 import com.andrei1058.bedwars.listeners.*;
 import com.andrei1058.bedwars.listeners.arenaselector.ArenaSelectorListener;
 import com.andrei1058.bedwars.listeners.blockstatus.BlockStatusListener;
@@ -63,7 +60,7 @@ import com.andrei1058.bedwars.lobbysocket.ArenaSocket;
 import com.andrei1058.bedwars.lobbysocket.LoadedUsersCleaner;
 import com.andrei1058.bedwars.lobbysocket.SendTask;
 import com.andrei1058.bedwars.maprestore.internal.InternalAdapter;
-import com.andrei1058.bedwars.metrics.MetricsManager;
+
 import com.andrei1058.bedwars.money.internal.MoneyListeners;
 import com.andrei1058.bedwars.shop.ShopManager;
 import com.andrei1058.bedwars.sidebar.*;
@@ -91,8 +88,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -102,7 +97,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 @SuppressWarnings({"WeakerAccess", "CallToPrintStackTrace"})
@@ -125,7 +119,6 @@ public class BedWars extends JavaPlugin {
 
     private static Party party = new NoParty();
     private static Chat chat = new NoChat();
-    protected static Level level;
     private static Economy economy;
     private static final String version = Bukkit.getServer().getClass().getName().split("\\.")[3];
     private static String lobbyWorld = "";
@@ -162,48 +155,21 @@ public class BedWars extends JavaPlugin {
 
         plugin = this;
 
-        /* Load version support */
-        //noinspection rawtypes
-        Class supp;
-
-        try {
-            supp = Class.forName("com.andrei1058.bedwars.support.version." + version + "." + version);
-        } catch (ClassNotFoundException e) {
+        if (!"v1_8_R3".equals(version)) {
             serverSoftwareSupport = false;
-            this.getLogger().severe("I can't run on your version: " + version);
+            getLogger().severe("HMO-Bedwars only supports Minecraft 1.8.8 (v1_8_R3); detected: " + version);
             return;
         }
 
         api = new API();
         Bukkit.getServicesManager().register(com.andrei1058.bedwars.api.BedWars.class, api, this, ServicePriority.Highest);
-
-        try {
-            //noinspection unchecked
-            nms = (VersionSupport) supp.getConstructor(Class.forName("org.bukkit.plugin.Plugin"), String.class).newInstance(this, version);
-        } catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException |
-                 ClassNotFoundException e) {
-            e.printStackTrace();
-            serverSoftwareSupport = false;
-            this.getLogger().severe("Could not load support for server version: " + version);
-            return;
-        }
+        nms = new com.andrei1058.bedwars.support.version.v1_8_R3.v1_8_R3(this, version);
 
         this.getLogger().info("Loading support for paper/spigot: " + version);
 
         // Setup languages
         new English();
-        new Romanian();
-        new Italian();
-        new Polish();
-        new Spanish();
-        new Russian();
-        new Bangla();
-        new Persian();
-        new Hindi();
-        new Indonesia();
-        new Portuguese();
         new SimplifiedChinese();
-        new Turkish();
         for (Language language : Language.getLanguages()) {
             language.initializeOverrides();
         }
@@ -234,12 +200,7 @@ public class BedWars extends JavaPlugin {
         /* Register commands */
         nms.registerCommand(mainCmd, new MainCommand(mainCmd));
 
-        // newer versions do not seem to like delayed registration of commands
-        if (nms.getVersion() >= 9) {
-            this.registerDelayedCommands();
-        } else {
-            Bukkit.getScheduler().runTaskLater(this, this::registerDelayedCommands, 20L);
-        }
+        Bukkit.getScheduler().runTaskLater(this, this::registerDelayedCommands, 20L);
 
         /* Setup plugin messaging channel */
         Bukkit.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
@@ -350,9 +311,6 @@ public class BedWars extends JavaPlugin {
                 party = new NoParty();
             }
         }, 10L);
-
-        /* Levels support */
-        setLevelAdapter(new InternalLevel());
 
         /* Register tasks */
         Bukkit.getScheduler().runTaskTimer(this, new Refresh(), 20L, 20L);
@@ -479,13 +437,8 @@ public class BedWars extends JavaPlugin {
             Language.addDefaultMessagesCommandItems(l);
         }
 
-        LevelsConfig.init();
-
         /* Load Money Configuration */
         MoneyConfig.init();
-
-        // bStats metrics
-        MetricsManager.initService(this);
 
         if (Bukkit.getPluginManager().getPlugin("VipFeatures") != null) {
             try {
@@ -517,16 +470,11 @@ public class BedWars extends JavaPlugin {
             return;
         }
 
-        // Halloween Special
-        HalloweenSpecial.init();
-
         // TNT Spoil Feature
         SpoilPlayerTNTFeature.init();
 
         configurationReloadService = new com.andrei1058.bedwars.configuration.ConfigurationReloadService();
 
-        // Warn user if current server version support is deprecated
-        this.performDeprecationCheck();
     }
 
     /**
@@ -558,8 +506,6 @@ public class BedWars extends JavaPlugin {
                 adapterPath = "com.andrei1058.bedwars.arena.mapreset.slime.SlimeAdapter";
             } else if (major == 2 && minor == 8 && release == 0) {
                 adapterPath = "com.andrei1058.bedwars.arena.mapreset.slime.AdvancedSlimeAdapter";
-            } else if (major > 2 || major == 2 && minor >= 10) {
-                adapterPath = "com.andrei1058.bedwars.arena.mapreset.slime.SlimePaperAdapter";
             } else {
                 return false;
             }
@@ -660,16 +606,6 @@ public class BedWars extends JavaPlugin {
         }
     }
 
-    public static String getForCurrentVersion(String v18, String v12, String v13) {
-        switch (getServerVersion()) {
-            case "v1_8_R3":
-                return v18;
-            case "v1_12_R1":
-                return v12;
-        }
-        return v13;
-    }
-
     public static ServerType getServerType() {
         return serverType;
     }
@@ -680,35 +616,6 @@ public class BedWars extends JavaPlugin {
 
     public static Chat getChatSupport() {
         return chat;
-    }
-
-    /**
-     * Get current levels manager.
-     */
-    public static Level getLevelSupport() {
-        return level;
-    }
-
-    /**
-     * Set the levels manager.
-     * You can use this to add your own levels manager just implement
-     * the Level interface so the plugin will be able to display
-     * the level internally.
-     */
-
-    public static void setLevelAdapter(Level levelsManager) {
-        if (levelsManager instanceof InternalLevel) {
-            if (LevelListeners.instance == null) {
-                Bukkit.getPluginManager().registerEvents(new LevelListeners(), BedWars.plugin);
-            }
-        } else {
-            if (LevelListeners.instance != null) {
-                PlayerJoinEvent.getHandlerList().unregister(LevelListeners.instance);
-                PlayerQuitEvent.getHandlerList().unregister(LevelListeners.instance);
-                LevelListeners.instance = null;
-            }
-        }
-        level = levelsManager;
     }
 
     public static Economy getEconomy() {
@@ -758,15 +665,6 @@ public class BedWars extends JavaPlugin {
 
     public static void setParty(Party party) {
         BedWars.party = party;
-    }
-
-    public void performDeprecationCheck() {
-        Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
-            if (Arrays.stream(nms.getClass().getAnnotations()).anyMatch(annotation -> annotation instanceof Deprecated)) {
-                this.getLogger().warning("Support for "+getServerVersion()+" is scheduled for removal. " +
-                        "Please consider upgrading your server software to a newer Minecraft version.");
-            }
-        });
     }
 
     @Override

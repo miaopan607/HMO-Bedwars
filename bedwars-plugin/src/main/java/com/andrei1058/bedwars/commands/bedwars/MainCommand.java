@@ -28,7 +28,6 @@ import com.andrei1058.bedwars.api.language.Messages;
 import com.andrei1058.bedwars.api.server.ServerType;
 import com.andrei1058.bedwars.arena.SetupSession;
 import com.andrei1058.bedwars.commands.bedwars.subcmds.regular.*;
-import com.andrei1058.bedwars.commands.bedwars.subcmds.sensitive.Level;
 import com.andrei1058.bedwars.commands.bedwars.subcmds.sensitive.Reload;
 import com.andrei1058.bedwars.commands.bedwars.subcmds.sensitive.setup.*;
 import com.andrei1058.bedwars.support.citizens.JoinNPC;
@@ -88,7 +87,7 @@ public class MainCommand extends BukkitCommand implements ParentCommand {
         new com.andrei1058.bedwars.commands.bedwars.subcmds.sensitive.CloneArena(this, "cloneArena"); //priority 7
         new com.andrei1058.bedwars.commands.bedwars.subcmds.sensitive.ArenaGroup(this, "arenaGroup"); //priority 8
         new com.andrei1058.bedwars.commands.bedwars.subcmds.sensitive.Build(this, "build"); //priority 9
-        new Level(this, "level");
+
         new Reload(this, "reload"); //priority 11
         new com.andrei1058.bedwars.commands.bedwars.subcmds.sensitive.Config(this, "config");
         new CmdList(this, "cmds"); //priority 20
@@ -238,7 +237,6 @@ public class MainCommand extends BukkitCommand implements ParentCommand {
             case "cloneArena": return hover ? Messages.COMMAND_CLONE_ARENA_DISPLAY_HOVER : Messages.COMMAND_CLONE_ARENA_DISPLAY;
             case "arenaGroup": return hover ? Messages.COMMAND_ARENA_GROUP_DISPLAY_HOVER : Messages.COMMAND_ARENA_GROUP_DISPLAY;
             case "build": return hover ? Messages.COMMAND_BUILD_DISPLAY_HOVER : Messages.COMMAND_BUILD_DISPLAY;
-            case "level": return hover ? Messages.COMMAND_LEVEL_DISPLAY_HOVER : Messages.COMMAND_LEVEL_DISPLAY;
             case "npc": return hover ? Messages.COMMAND_NPC_DISPLAY_HOVER : Messages.COMMAND_NPC_DISPLAY;
             case "reload": return hover ? Messages.COMMAND_RELOAD_DISPLAY_HOVER : Messages.COMMAND_RELOAD_DISPLAY;
             case "config": return hover ? null : Messages.CONFIG_SET_DISPLAY;
