@@ -712,6 +712,9 @@ public class BedWarsTeam implements ITeam {
     @Override
     public String getDisplayName(Language language) {
         String m = language.m(ConfigPath.TEAM_NAME_PATH.replace("{arena}", getArena().getArenaName()).replace("{team}", getName()));
+        if (name.equals(m) && name.equalsIgnoreCase(color.name())) {
+            return language.m("team-color-name." + color.name());
+        }
         return m == null ? getName() : m;
     }
 

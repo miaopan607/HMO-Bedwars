@@ -65,6 +65,16 @@ public class English extends Language {
         yml.addDefault(Messages.TEAM_SELECTOR_FULL, "&cThis team is full. Please select another team.");
         yml.addDefault(Messages.TEAM_SELECTOR_PREVIOUS_PAGE, "&ePrevious page");
         yml.addDefault(Messages.TEAM_SELECTOR_NEXT_PAGE, "&eNext page");
+        yml.addDefault("team-color-name.RED", "Red");
+        yml.addDefault("team-color-name.BLUE", "Blue");
+        yml.addDefault("team-color-name.GREEN", "Green");
+        yml.addDefault("team-color-name.YELLOW", "Yellow");
+        yml.addDefault("team-color-name.AQUA", "Aqua");
+        yml.addDefault("team-color-name.WHITE", "White");
+        yml.addDefault("team-color-name.PINK", "Pink");
+        yml.addDefault("team-color-name.GRAY", "Gray");
+        yml.addDefault("team-color-name.DARK_GREEN", "Dark Green");
+        yml.addDefault("team-color-name.DARK_GRAY", "Dark Gray");
 
         yml.addDefault(Messages.HINT_CHAT_GLOBAL, "&7Start a message with &e@&7 to send it to the whole server.");
         yml.addDefault(Messages.HINT_REJOIN, "&7Use &e/rejoin&7 to rejoin your previous game.");

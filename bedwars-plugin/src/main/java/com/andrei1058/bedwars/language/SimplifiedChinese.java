@@ -65,6 +65,16 @@ public class SimplifiedChinese extends Language {
         yml.addDefault(Messages.TEAM_SELECTOR_FULL, "&c该队伍已满，请选择其他队伍。");
         yml.addDefault(Messages.TEAM_SELECTOR_PREVIOUS_PAGE, "&e上一页");
         yml.addDefault(Messages.TEAM_SELECTOR_NEXT_PAGE, "&e下一页");
+        yml.addDefault("team-color-name.RED", "红队");
+        yml.addDefault("team-color-name.BLUE", "蓝队");
+        yml.addDefault("team-color-name.GREEN", "绿队");
+        yml.addDefault("team-color-name.YELLOW", "黄队");
+        yml.addDefault("team-color-name.AQUA", "青队");
+        yml.addDefault("team-color-name.WHITE", "白队");
+        yml.addDefault("team-color-name.PINK", "粉队");
+        yml.addDefault("team-color-name.GRAY", "灰队");
+        yml.addDefault("team-color-name.DARK_GREEN", "深绿队");
+        yml.addDefault("team-color-name.DARK_GRAY", "深灰队");
 
         yml.addDefault(Messages.HINT_CHAT_GLOBAL, "&7使用&e@&7开头发送全服消息。");
         yml.addDefault(Messages.HINT_REJOIN, "&7使用&e/rejoin&7重新加入刚刚的对局。");
