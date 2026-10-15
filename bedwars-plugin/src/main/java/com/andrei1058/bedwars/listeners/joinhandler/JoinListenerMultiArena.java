@@ -26,6 +26,7 @@ import com.andrei1058.bedwars.arena.ReJoin;
 import com.andrei1058.bedwars.sidebar.SidebarService;
 import com.andrei1058.bedwars.support.paper.TeleportManager;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -78,6 +79,13 @@ public class JoinListenerMultiArena implements Listener {
         }, 14L);
 
         if (reJoin != null && reJoin.canReJoin()) return;
+
+        // 普通玩家进入大厅统一使用冒险模式。
+        if (!p.hasPermission("bw.setup")) {
+            p.setGameMode(GameMode.ADVENTURE);
+            p.setFlying(false);
+            p.setAllowFlight(false);
+        }
 
         // Teleport to lobby location
         Location lobbyLocation = config.getConfigLoc("lobbyLoc");

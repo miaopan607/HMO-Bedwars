@@ -1265,8 +1265,9 @@ public class Arena implements IArena {
         setArenaByPlayer(p, this);
         /* save player inventory etc */
         if (BedWars.getServerType() != ServerType.BUNGEE) {
-            // no need to backup inventory because it's empty
-            //new PlayerGoods(p, true, true);
+            if (!PlayerGoods.hasGoods(p)) {
+                new PlayerGoods(p, true);
+            }
             playerLocation.put(p, p.getLocation());
         }
         TeleportManager.teleportC(p, getSpectatorLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
