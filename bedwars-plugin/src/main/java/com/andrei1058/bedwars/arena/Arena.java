@@ -1929,10 +1929,12 @@ public class Arena implements IArena {
     public static void sendLobbyCommandItems(Player p) {
         if (config.getYml().get(ConfigPath.GENERAL_CONFIGURATION_LOBBY_ITEMS_PATH) == null) return;
         if (!BedWars.config.getLobbyWorldName().equalsIgnoreCase(p.getWorld().getName())) return;
-        p.getInventory().clear();
 
-        Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            if (!p.isOnline() || isInArena(p)) return;
             if (!BedWars.config.getLobbyWorldName().equalsIgnoreCase(p.getWorld().getName())) return;
+            // 在同一次主线程任务中更新并同步大厅物品，保留当前菜单。
+            p.getInventory().clear();
             for (String item : config.getYml().getConfigurationSection(ConfigPath.GENERAL_CONFIGURATION_LOBBY_ITEMS_PATH).getKeys(false)) {
 
                 if (config.getYml().get(ConfigPath.GENERAL_CONFIGURATION_LOBBY_ITEMS_MATERIAL.replace("%path%", item)) == null) {
@@ -1964,6 +1966,7 @@ public class Arena implements IArena {
 
                 p.getInventory().setItem(config.getInt(ConfigPath.GENERAL_CONFIGURATION_LOBBY_ITEMS_SLOT.replace("%path%", item)), i);
             }
+            p.updateInventory();
         }, 15L);
     }
 
