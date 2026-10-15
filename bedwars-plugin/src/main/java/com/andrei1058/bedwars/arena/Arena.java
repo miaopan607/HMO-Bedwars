@@ -374,7 +374,11 @@ public class Arena implements IArena {
         yKillHeight = yml.getInt(ConfigPath.ARENA_Y_LEVEL_KILL);
         if (BedWars.configurationReloadService != null) BedWars.configurationReloadService.registerArena(cm);
         addToEnableQueue(this);
-        Language.saveIfNotExists(Messages.ARENA_DISPLAY_GROUP_PATH + getGroup().toLowerCase(), String.valueOf(getGroup().charAt(0)).toUpperCase() + group.substring(1).toLowerCase());
+        String displayGroup = String.valueOf(getGroup().charAt(0)).toUpperCase() + getGroup().substring(1).toLowerCase();
+        String displayGroupPath = Messages.ARENA_DISPLAY_GROUP_PATH + getGroup().toLowerCase();
+        for (Language language : Language.getLanguages()) {
+            language.setRuntimeDefault(displayGroupPath, displayGroup);
+        }
     }
 
     /**

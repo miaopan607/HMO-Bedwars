@@ -110,6 +110,11 @@ public class BedWarsTeam implements ITeam {
         this.arena = arena;
         this.shop = shop;
         this.teamUpgrades = teamUpgrades;
+        String teamNamePath = ConfigPath.TEAM_NAME_PATH.replace("{arena}", getArena().getArenaName()).replace("{team}", getName());
+        for (Language language : Language.getLanguages()) {
+            String defaultName = name.equalsIgnoreCase(color.name()) ? language.m("team-color-name." + color.name()) : name;
+            language.setRuntimeDefault(teamNamePath, defaultName);
+        }
         arena.getRegionsList().add(new Cuboid(spawn, arena.getConfig().getInt(ConfigPath.ARENA_SPAWN_PROTECTION), true));
 
         Location drops = getArena().getConfig().getArenaLoc("Team." + getName() + "." + ConfigPath.ARENA_TEAM_KILL_DROPS_LOC);
@@ -710,12 +715,8 @@ public class BedWarsTeam implements ITeam {
 
     @Override
     public String getDisplayName(Language language) {
-        String path = ConfigPath.TEAM_NAME_PATH.replace("{arena}", getArena().getArenaName()).replace("{team}", getName());
-        String m = language.hasOverride(path) ? language.m(path) : name;
-        if (name.equals(m) && name.equalsIgnoreCase(color.name())) {
-            return language.m("team-color-name." + color.name());
-        }
-        return m;
+        String m = language.m(ConfigPath.TEAM_NAME_PATH.replace("{arena}", getArena().getArenaName()).replace("{team}", getName()));
+        return m == null ? getName() : m;
     }
 
     public TeamColor getColor() {

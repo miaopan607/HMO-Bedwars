@@ -51,14 +51,9 @@ public class InternalMenu implements UpgradesIndex {
      */
     public InternalMenu(String groupName) {
         this.name = groupName.toLowerCase();
-        String messagePath = Messages.UPGRADES_MENU_GUI_NAME_PATH + this.name;
+        String path = Messages.UPGRADES_MENU_GUI_NAME_PATH + name;
         for (Language language : Language.getLanguages()) {
-            Object currentTitle = language.getYml().get(messagePath);
-            String defaultTitle = language.m(Messages.UPGRADES_MENU_GUI_NAME_DEFAULT);
-            boolean legacyEnglishTitle = "&8Upgrades & Traps".equals(currentTitle) || "§8Upgrades & Traps".equals(currentTitle);
-            if (currentTitle == null || (!language.hasOverride(messagePath) && legacyEnglishTitle && !"§8Upgrades & Traps".equals(defaultTitle))) {
-                language.set(messagePath, defaultTitle);
-            }
+            language.setRuntimeDefault(path, language.m(Messages.UPGRADES_MENU_GUI_NAME_DEFAULT));
         }
     }
 

@@ -48,6 +48,7 @@ public class Language extends ConfigManager {
     private YamlConfiguration baseConfiguration;
     private YamlConfiguration overrideConfiguration;
     private boolean overrideReadFailed;
+    private final Map<String, Object> runtimeDefaults = new HashMap<>();
     private String prefix = "";
     private static String prefixStatic = "";
     private static final HashMap<UUID, Language> langByPlayer = new HashMap<>();
@@ -177,11 +178,29 @@ public class Language extends ConfigManager {
             owner.getLogger().log(Level.SEVERE, "Could not initialize language " + iso + " with overrides " + overrideFile, e);
             replaceConfiguration(copyConfiguration(baseConfiguration));
         }
+        applyRuntimeDefaults();
         refreshConfiguration();
     }
 
     public boolean hasOverride(String path) {
         return overrideConfiguration != null && path != null && overrideConfiguration.isSet(path);
+    }
+
+    public void setRuntimeDefault(String path, Object value) {
+        if (path == null || getYml() == null) return;
+        if (hasOverride(path)) {
+            runtimeDefaults.remove(path);
+            return;
+        }
+        Object copy = copyValue(value);
+        runtimeDefaults.put(path, copy);
+        getYml().set(path, copyValue(copy));
+    }
+
+    @Override
+    public void set(String path, Object value) {
+        runtimeDefaults.remove(path);
+        super.set(path, value);
     }
 
     @Override
@@ -219,6 +238,7 @@ public class Language extends ConfigManager {
         if (overrideReadFailed) throw new IOException("Unreadable language overrides: " + overrideFile);
         YamlConfiguration changes = new YamlConfiguration();
         configurationLeaves(configuration).forEach((path, value) -> {
+            if (runtimeDefaults.containsKey(path) && !hasOverride(path)) return;
             if (hasOverride(path) || !Objects.equals(value, copyValue(baseConfiguration.get(path)))) changes.set(path, value);
         });
         overrides.saveConfiguration(changes);
@@ -228,7 +248,14 @@ public class Language extends ConfigManager {
     @Override
     public void reload() {
         super.reload();
+        applyRuntimeDefaults();
         refreshConfiguration();
+    }
+
+    private void applyRuntimeDefaults() {
+        runtimeDefaults.forEach((path, value) -> {
+            if (!hasOverride(path)) getYml().set(path, copyValue(value));
+        });
     }
 
     private static Map<String, Object> configurationLeaves(ConfigurationSection configuration) {
@@ -345,7 +372,7 @@ public class Language extends ConfigManager {
         Object current = getYml().get(path);
         Object configuredDefault = getYml().getDefaults() == null ? null : getYml().getDefaults().get(path);
         String replacement = configuredDefault instanceof String ? (String) configuredDefault : m(Messages.CONFIG_ITEM_NAME_NOT_SET);
-        if (current == null || (!hasOverride(path) && isLegacyUnsetName(current))) set(path, replacement);
+        if (current == null || (!hasOverride(path) && isLegacyUnsetName(current))) setRuntimeDefault(path, replacement);
     }
 
     /**
@@ -357,7 +384,7 @@ public class Language extends ConfigManager {
         Object configuredDefault = getYml().getDefaults() == null ? null : getYml().getDefaults().get(path);
         List<String> replacement = configuredDefault instanceof List ? new ArrayList<>((List<String>) configuredDefault)
                 : l(Messages.CONFIG_ITEM_LORE_NOT_SET);
-        if (current == null || (!hasOverride(path) && isLegacyUnsetLore(current))) set(path, replacement);
+        if (current == null || (!hasOverride(path) && isLegacyUnsetLore(current))) setRuntimeDefault(path, replacement);
     }
 
     /**
@@ -520,23 +547,23 @@ public class Language extends ConfigManager {
     }
 
     private static void addLocalizedDefaultName(Language language, String path, String fallback) {
-        YamlConfiguration yml = language.getYml();
         String message = getDefaultMessage(language, Messages.CONFIG_ITEM_NAME_NOT_SET, fallback);
-        Object current = yml.get(path);
-        if (!language.hasOverride(path) && isLegacyUnsetName(current) && !sameMessage(current, message)) yml.set(path, message);
-        if (yml.getDefaults() == null || !yml.getDefaults().contains(path)) yml.addDefault(path, message);
+        Object current = language.getYml().get(path);
+        if (current == null || (!language.hasOverride(path) && isLegacyUnsetName(current) && !sameMessage(current, message))) {
+            language.setRuntimeDefault(path, message);
+        }
     }
 
     private static void addLocalizedDefaultLore(Language language, String path, List<String> fallback) {
-        YamlConfiguration yml = language.getYml();
         List<String> messages = getDefaultMessageList(language, Messages.CONFIG_ITEM_LORE_NOT_SET, fallback);
-        Object current = yml.get(path);
-        if (!language.hasOverride(path) && isLegacyUnsetLore(current) && !sameMessage(current, messages)) yml.set(path, messages);
-        if (yml.getDefaults() == null || !yml.getDefaults().contains(path)) yml.addDefault(path, messages);
+        Object current = language.getYml().get(path);
+        if (current == null || (!language.hasOverride(path) && isLegacyUnsetLore(current) && !sameMessage(current, messages))) {
+            language.setRuntimeDefault(path, messages);
+        }
     }
 
     /**
-     * Save localized messages for unset stats items.
+     * Register runtime localized messages for unset stats items.
      */
     public static void setupCustomStatsMessages() {
         if (Bukkit.getServer().getServicesManager().getRegistration(BedWars.class) == null) return;
@@ -555,7 +582,6 @@ public class Language extends ConfigManager {
                 addLocalizedDefaultName(l, namePath, "&cName not set");
                 addLocalizedDefaultLore(l, lorePath, Collections.singletonList("&cLore not set"));
             }
-            l.save();
         }
     }
 
@@ -600,8 +626,6 @@ public class Language extends ConfigManager {
                 main.getConfigurationSection(ConfigPath.GENERAL_CONFIGURATION_PRE_GAME_ITEMS_PATH),
                 Messages.GENERAL_CONFIGURATION_WAITING_ITEMS_NAME,
                 Messages.GENERAL_CONFIGURATION_WAITING_ITEMS_LORE);
-        language.getYml().options().copyDefaults(true);
-        language.save();
     }
 
     /**
@@ -627,9 +651,9 @@ public class Language extends ConfigManager {
             Object inventoryName = getYml().get(inventoryNamePath);
             Object itemName = getYml().get(itemNamePath);
             Object itemLore = getYml().get(itemLorePath);
-            if (inventoryName == null || (!hasOverride(inventoryNamePath) && isLegacyUnsetName(inventoryName) && !sameMessage(inventoryName, nameFallback))) set(inventoryNamePath, nameFallback);
-            if (itemName == null || (!hasOverride(itemNamePath) && isLegacyUnsetName(itemName) && !sameMessage(itemName, nameFallback))) set(itemNamePath, nameFallback);
-            if (itemLore == null || (!hasOverride(itemLorePath) && isLegacyUnsetLore(itemLore) && !sameMessage(itemLore, loreFallback))) set(itemLorePath, loreFallback);
+            if (inventoryName == null || (!hasOverride(inventoryNamePath) && isLegacyUnsetName(inventoryName) && !sameMessage(inventoryName, nameFallback))) setRuntimeDefault(inventoryNamePath, nameFallback);
+            if (itemName == null || (!hasOverride(itemNamePath) && isLegacyUnsetName(itemName) && !sameMessage(itemName, nameFallback))) setRuntimeDefault(itemNamePath, nameFallback);
+            if (itemLore == null || (!hasOverride(itemLorePath) && isLegacyUnsetLore(itemLore) && !sameMessage(itemLore, loreFallback))) setRuntimeDefault(itemLorePath, loreFallback);
             ConfigurationSection content = shop.getConfigurationSection(s + ConfigPath.SHOP_CATEGORY_CONTENT_PATH);
             if (content == null) continue;
             for (String c : content.getKeys(false)) {
@@ -637,8 +661,8 @@ public class Language extends ConfigManager {
                 String contentLorePath = Messages.SHOP_CONTENT_TIER_ITEM_LORE.replace("%category%", s).replace("%content%", c);
                 Object contentName = getYml().get(contentNamePath);
                 Object contentLore = getYml().get(contentLorePath);
-                if (contentName == null || (!hasOverride(contentNamePath) && isLegacyUnsetName(contentName) && !sameMessage(contentName, nameFallback))) set(contentNamePath, nameFallback);
-                if (contentLore == null || (!hasOverride(contentLorePath) && isLegacyUnsetLore(contentLore) && !sameMessage(contentLore, loreFallback))) set(contentLorePath, loreFallback);
+                if (contentName == null || (!hasOverride(contentNamePath) && isLegacyUnsetName(contentName) && !sameMessage(contentName, nameFallback))) setRuntimeDefault(contentNamePath, nameFallback);
+                if (contentLore == null || (!hasOverride(contentLorePath) && isLegacyUnsetLore(contentLore) && !sameMessage(contentLore, loreFallback))) setRuntimeDefault(contentLorePath, loreFallback);
             }
         }
     }
