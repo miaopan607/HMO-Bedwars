@@ -235,6 +235,7 @@ public class Messages {
     public static String FORMATTING_CHAT_SHOUT = "format-chat-global";
     public static String FORMATTING_CHAT_SERVER = "format-chat-server";
     public static String CHAT_GLOBAL_USAGE = "chat-global-usage";
+    public static String JOIN_WELCOME = "join-welcome";
     public static String HINT_CHAT_GLOBAL = "hint-chat-global";
     public static String HINT_REJOIN = "hint-rejoin";
     public static String HINT_READY_ITEM = "hint-ready-item";

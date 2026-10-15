@@ -76,6 +76,7 @@ public class SimplifiedChinese extends Language {
         yml.addDefault("team-color-name.DARK_GREEN", "深绿队");
         yml.addDefault("team-color-name.DARK_GRAY", "深灰队");
 
+        yml.addDefault(Messages.JOIN_WELCOME, Collections.emptyList());
         yml.addDefault(Messages.HINT_CHAT_GLOBAL, "&7使用&e@&7开头发送全服消息。");
         yml.addDefault(Messages.HINT_REJOIN, "&7使用&e/rejoin&7重新加入刚刚的对局。");
         yml.addDefault(Messages.HINT_READY_ITEM, "&7可右键快捷栏&e第 2 格&7的&c红石块&7准备。");

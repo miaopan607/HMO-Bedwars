@@ -62,6 +62,12 @@ public class CommandHintListener implements Listener {
             if (!player.isOnline()) return;
             if (sendLogin) sendLoginHints(player);
             sendArenaHints(player);
+            // 自定义欢迎语放在操作提示之后发送。
+            if (sendLogin) {
+                for (String line : Language.getList(player, Messages.JOIN_WELCOME)) {
+                    player.sendMessage(line.replace("{player}", player.getName()));
+                }
+            }
         }, 20L);
         pendingHints.put(playerId, task);
     }

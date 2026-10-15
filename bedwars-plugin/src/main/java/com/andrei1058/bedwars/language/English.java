@@ -76,6 +76,7 @@ public class English extends Language {
         yml.addDefault("team-color-name.DARK_GREEN", "Dark Green");
         yml.addDefault("team-color-name.DARK_GRAY", "Dark Gray");
 
+        yml.addDefault(Messages.JOIN_WELCOME, Collections.emptyList());
         yml.addDefault(Messages.HINT_CHAT_GLOBAL, "&7Start a message with &e@&7 to send it to the whole server.");
         yml.addDefault(Messages.HINT_REJOIN, "&7Use &e/rejoin&7 to rejoin your previous game.");
         yml.addDefault(Messages.HINT_READY_ITEM, "&7Right-click the &credstone block&7 in hotbar &eslot 2&7 to ready up.");
