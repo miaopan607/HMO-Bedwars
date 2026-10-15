@@ -6,6 +6,9 @@ main: com.andrei1058.bedwars.BedWars
 softdepend: [PlaceholderAPI,Citizens,SlimeWorldManager,Enhanced-SlimeWorldManager]
 #load: STARTUP
 permissions:
+  bw.rejoin:
+    description: Allows rejoining the previous game
+    default: true
   bw.shout:
     description: Allows sending arena-wide shout messages
     default: true
