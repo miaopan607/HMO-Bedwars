@@ -27,3 +27,4 @@ mvn -o clean install -DskipTests
 - 默认不新增永久测试。
 - 未经要求，不重启真实服务器、不迁移或删除真实数据。
 - 提交信息遵循 Conventional Commits：`type(scope): description`，描述使用中文。
+- 不要测试。
