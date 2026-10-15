@@ -676,6 +676,20 @@ public class English extends Language {
 
 
         /* Lobby Command Items */
+        yml.addDefault(Messages.LOBBY_MENU_TITLE, "&8Lobby Menu");
+        yml.addDefault(Messages.LOBBY_MENU_ITEM_NAME, "&ePlayer Menu");
+        yml.addDefault(Messages.LOBBY_MENU_ITEM_LORE, Collections.singletonList("&fRight-click for stats and Quick Buy settings!"));
+        yml.addDefault(Messages.LOBBY_MENU_STATS, "&eView Stats");
+        yml.addDefault(Messages.LOBBY_MENU_QUICK_BUY, "&eEdit Quick Buy");
+        yml.addDefault(Messages.QUICK_BUY_EDITOR_TITLE, "&8Edit Quick Buy");
+        yml.addDefault(Messages.QUICK_BUY_EDITOR_SELECT_SLOT_TITLE, "&8Select Quick Buy Slot");
+        yml.addDefault(Messages.QUICK_BUY_EDITOR_LOADING, "&eLoading...");
+        yml.addDefault(Messages.QUICK_BUY_EDITOR_LOAD_FAILED, "&cLoading failed. Please reopen the editor.");
+        yml.addDefault(Messages.QUICK_BUY_EDITOR_ADD, "&eClick to add to Quick Buy.");
+        yml.addDefault(Messages.QUICK_BUY_EDITOR_ADDED, "&aAlready in Quick Buy.");
+        yml.addDefault(Messages.QUICK_BUY_EDITOR_REMOVE, "&eShift-click to remove.");
+        yml.addDefault(Messages.QUICK_BUY_EDITOR_SELECT_SLOT, "&eClick to select or replace this slot.");
+        yml.addDefault(Messages.QUICK_BUY_EDITOR_BACK, "&eBack");
         yml.addDefault(Messages.GENERAL_CONFIGURATION_LOBBY_ITEMS_NAME.replace("%path%", "stats"), "&eStats");
         yml.addDefault(Messages.GENERAL_CONFIGURATION_LOBBY_ITEMS_LORE.replace("%path%", "stats"), Collections.singletonList("&fRight-click to see your stats!"));
         yml.addDefault(Messages.GENERAL_CONFIGURATION_LOBBY_ITEMS_NAME.replace("%path%", "arena-selector"), "&eArena Selector");

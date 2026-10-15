@@ -391,6 +391,22 @@ public class CategoryContent implements ICategoryContent {
         return pqbc != null && hasQuick(pqbc);
     }
 
+    /** 展示基础档商品，只提供编辑提示，不读取购买状态。 */
+    public ItemStack getEditorItemStack(Player player, boolean selected) {
+        IContentTier tier = contentTiers.get(0);
+        ItemStack item = tier.getItemStack().clone();
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName(replacePotionPlaceholders(getMsg(player, itemNamePath), tier)
+                    .replace("{color}", ChatColor.YELLOW.toString())
+                    .replace("{tier}", getRomanNumber(tier.getValue())));
+            meta.setLore(java.util.Collections.singletonList(getMsg(player,
+                    selected ? Messages.QUICK_BUY_EDITOR_ADDED : Messages.QUICK_BUY_EDITOR_ADD)));
+            item.setItemMeta(meta);
+        }
+        return item;
+    }
+
     public ItemStack getItemStack(Player player, ShopCache shopCache) {
         IContentTier ct;
         if (shopCache.getContentTier(identifier) == contentTiers.size()) {

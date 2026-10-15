@@ -1960,9 +1960,9 @@ public class Arena implements IArena {
                 ItemStack i = Misc.createItem(Material.valueOf(config.getYml().getString(ConfigPath.GENERAL_CONFIGURATION_LOBBY_ITEMS_MATERIAL.replace("%path%", item))),
                         (byte) config.getInt(ConfigPath.GENERAL_CONFIGURATION_LOBBY_ITEMS_DATA.replace("%path%", item)),
                         config.getBoolean(ConfigPath.GENERAL_CONFIGURATION_LOBBY_ITEMS_ENCHANTED.replace("%path%", item)),
-                        SupportPAPI.getSupportPAPI().replace(p, getMsg(p, Messages.GENERAL_CONFIGURATION_LOBBY_ITEMS_NAME.replace("%path%", item))),
-                        SupportPAPI.getSupportPAPI().replace(p, getList(p, Messages.GENERAL_CONFIGURATION_LOBBY_ITEMS_LORE.replace("%path%", item))),
-                        p, "RUNCOMMAND", config.getYml().getString(ConfigPath.GENERAL_CONFIGURATION_LOBBY_ITEMS_COMMAND.replace("%path%", item)));
+                        SupportPAPI.getSupportPAPI().replace(p, getMsg(p, item.equals("stats") ? Messages.LOBBY_MENU_ITEM_NAME : Messages.GENERAL_CONFIGURATION_LOBBY_ITEMS_NAME.replace("%path%", item))),
+                        SupportPAPI.getSupportPAPI().replace(p, getList(p, item.equals("stats") ? Messages.LOBBY_MENU_ITEM_LORE : Messages.GENERAL_CONFIGURATION_LOBBY_ITEMS_LORE.replace("%path%", item))),
+                        p, "RUNCOMMAND", item.equals("stats") ? "LOBBYMENU" : config.getYml().getString(ConfigPath.GENERAL_CONFIGURATION_LOBBY_ITEMS_COMMAND.replace("%path%", item)));
 
                 p.getInventory().setItem(config.getInt(ConfigPath.GENERAL_CONFIGURATION_LOBBY_ITEMS_SLOT.replace("%path%", item)), i);
             }

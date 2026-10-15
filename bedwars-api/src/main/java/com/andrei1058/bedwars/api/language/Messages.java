@@ -27,6 +27,21 @@ public class Messages {
 
     public static String PREFIX = "prefix";
 
+    public static String LOBBY_MENU_TITLE = "lobby-menu.title";
+    public static String LOBBY_MENU_ITEM_NAME = "lobby-menu.item-name";
+    public static String LOBBY_MENU_ITEM_LORE = "lobby-menu.item-lore";
+    public static String LOBBY_MENU_STATS = "lobby-menu.stats";
+    public static String LOBBY_MENU_QUICK_BUY = "lobby-menu.quick-buy";
+    public static String QUICK_BUY_EDITOR_TITLE = "quick-buy-editor.title";
+    public static String QUICK_BUY_EDITOR_SELECT_SLOT_TITLE = "quick-buy-editor.select-slot-title";
+    public static String QUICK_BUY_EDITOR_LOADING = "quick-buy-editor.loading";
+    public static String QUICK_BUY_EDITOR_LOAD_FAILED = "quick-buy-editor.load-failed";
+    public static String QUICK_BUY_EDITOR_ADD = "quick-buy-editor.add";
+    public static String QUICK_BUY_EDITOR_ADDED = "quick-buy-editor.added";
+    public static String QUICK_BUY_EDITOR_REMOVE = "quick-buy-editor.remove";
+    public static String QUICK_BUY_EDITOR_SELECT_SLOT = "quick-buy-editor.select-slot";
+    public static String QUICK_BUY_EDITOR_BACK = "quick-buy-editor.back";
+
     public static String COMMAND_READY_SUCCESS = "cmd-ready-success";
     public static String COMMAND_UNREADY_SUCCESS = "cmd-unready-success";
     public static String COMMAND_READY_COUNTDOWN_SHORTENED = "cmd-ready-countdown-shortened";

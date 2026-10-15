@@ -676,6 +676,20 @@ public class SimplifiedChinese extends Language {
 
 
         /* Lobby Command Items */
+        yml.addDefault(Messages.LOBBY_MENU_TITLE, "&8主城菜单");
+        yml.addDefault(Messages.LOBBY_MENU_ITEM_NAME, "&e玩家菜单");
+        yml.addDefault(Messages.LOBBY_MENU_ITEM_LORE, Collections.singletonList("&f右键查看战绩或编辑快速购买！"));
+        yml.addDefault(Messages.LOBBY_MENU_STATS, "&e查看战绩");
+        yml.addDefault(Messages.LOBBY_MENU_QUICK_BUY, "&e编辑快速购买");
+        yml.addDefault(Messages.QUICK_BUY_EDITOR_TITLE, "&8快速购买编辑");
+        yml.addDefault(Messages.QUICK_BUY_EDITOR_SELECT_SLOT_TITLE, "&8选择快捷槽位");
+        yml.addDefault(Messages.QUICK_BUY_EDITOR_LOADING, "&e正在加载……");
+        yml.addDefault(Messages.QUICK_BUY_EDITOR_LOAD_FAILED, "&c加载失败，请重新打开编辑器。");
+        yml.addDefault(Messages.QUICK_BUY_EDITOR_ADD, "&e点击添加到快速购买。");
+        yml.addDefault(Messages.QUICK_BUY_EDITOR_ADDED, "&a已添加到快速购买。");
+        yml.addDefault(Messages.QUICK_BUY_EDITOR_REMOVE, "&eShift 点击移除。");
+        yml.addDefault(Messages.QUICK_BUY_EDITOR_SELECT_SLOT, "&e点击选择或替换此槽位。");
+        yml.addDefault(Messages.QUICK_BUY_EDITOR_BACK, "&e返回");
         yml.addDefault(Messages.GENERAL_CONFIGURATION_LOBBY_ITEMS_NAME.replace("%path%", "stats"), "&e战绩");
         yml.addDefault(Messages.GENERAL_CONFIGURATION_LOBBY_ITEMS_LORE.replace("%path%", "stats"), Collections.singletonList("&f右键显示你的战绩！"));
         yml.addDefault(Messages.GENERAL_CONFIGURATION_LOBBY_ITEMS_NAME.replace("%path%", "arena-selector"), "&e选择游戏");

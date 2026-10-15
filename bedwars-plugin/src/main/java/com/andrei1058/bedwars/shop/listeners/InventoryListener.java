@@ -57,7 +57,7 @@ public class InventoryListener implements Listener {
         ShopCache shopCache = ShopCache.getShopCache(p.getUniqueId());
         PlayerQuickBuyCache cache = PlayerQuickBuyCache.getQuickBuyCache(p.getUniqueId());
 
-        if (cache == null) return;
+        if (cache == null || !cache.isLoaded()) return;
         if (shopCache == null) return;
 
         if(ShopIndex.getIndexViewers().contains(p.getUniqueId()) || ShopCategory.getCategoryViewers().contains(p.getUniqueId())) {

@@ -76,7 +76,7 @@ public class ShopIndex {
      */
     public void open(Player player, PlayerQuickBuyCache quickBuyCache, boolean callEvent) {
 
-        if (quickBuyCache == null) return;
+        if (quickBuyCache == null || !quickBuyCache.isLoaded()) return;
 
         if (callEvent) {
             ShopOpenEvent event = new ShopOpenEvent(player, Arena.getArenaByPlayer(player));

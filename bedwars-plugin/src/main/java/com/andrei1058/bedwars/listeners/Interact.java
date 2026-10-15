@@ -118,7 +118,13 @@ public class Interact implements Listener, com.andrei1058.bedwars.configuration.
             if (customData.length >= 2) {
                 if (customData[0].equals("RUNCOMMAND")) {
                     e.setCancelled(true);
-                    Bukkit.getScheduler().runTask(plugin, () -> Bukkit.dispatchCommand(p, customData[1]));
+                    Bukkit.getScheduler().runTask(plugin, () -> {
+                        if (customData[1].equals("LOBBYMENU")) {
+                            com.andrei1058.bedwars.shop.quickbuy.LobbyQuickBuyMenu.open(p);
+                        } else {
+                            Bukkit.dispatchCommand(p, customData[1]);
+                        }
+                    });
                 }
             }
         }

@@ -48,6 +48,8 @@ public class PlayerQuickBuyCache {
     private ItemStack emptyItem;
     private UUID player;
     private QuickBuyTask task;
+    private boolean loaded;
+    private boolean loadFailed;
 
     public static int[] quickSlots = new int[]{19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34, 37, 38, 39, 40, 41, 42, 43};
     private static final ConcurrentHashMap<UUID, PlayerQuickBuyCache> quickBuyCaches = new ConcurrentHashMap<>();
@@ -64,8 +66,8 @@ public class PlayerQuickBuyCache {
         }
         this.emptyItemNamePath = Messages.SHOP_QUICK_EMPTY_NAME;
         this.emptyItemLorePath = Messages.SHOP_QUICK_EMPTY_LORE;
-        task = new QuickBuyTask(player.getUniqueId());
         quickBuyCaches.put(this.player, this);
+        task = new QuickBuyTask(player.getUniqueId());
     }
 
 
@@ -92,12 +94,12 @@ public class PlayerQuickBuyCache {
     }
 
     public void destroy() {
-        elements.clear();
+        this.pushChangesToDB();
         if (task != null) {
             task.cancel();
         }
-        quickBuyCaches.remove(player);
-        this.pushChangesToDB();
+        quickBuyCaches.remove(player, this);
+        elements.clear();
     }
 
     public void setElement(int slot, CategoryContent cc) {
@@ -109,11 +111,7 @@ public class PlayerQuickBuyCache {
             addQuickElement(new QuickBuyElement(cc.getIdentifier(), slot));
             element = cc.getIdentifier();
         }
-        if (updateSlots.containsKey(slot)){
-            updateSlots.replace(slot, element);
-        } else {
-            updateSlots.put(slot, element);
-        }
+        updateSlots.put(slot, element);
     }
 
     @NotNull
@@ -157,8 +155,24 @@ public class PlayerQuickBuyCache {
         this.elements.add(e);
     }
 
+    public boolean isLoaded() {
+        return loaded;
+    }
+
+    public boolean isLoadFailed() {
+        return loadFailed;
+    }
+
+    void finishLoading(boolean failed) {
+        loadFailed = failed;
+        loaded = !failed;
+    }
+
     public void pushChangesToDB() {
+        if (!loaded || updateSlots.isEmpty()) return;
+        HashMap<Integer, String> changes = new HashMap<>(updateSlots);
+        List<QuickBuyElement> snapshot = new ArrayList<>(elements);
         Bukkit.getScheduler().runTaskAsynchronously(BedWars.plugin,
-                () -> BedWars.getRemoteDatabase().pushQuickBuyChanges(updateSlots, this.player, elements));
+                () -> BedWars.getRemoteDatabase().pushQuickBuyChanges(changes, this.player, snapshot));
     }
 }

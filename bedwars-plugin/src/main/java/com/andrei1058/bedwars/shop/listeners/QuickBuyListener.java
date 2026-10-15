@@ -35,20 +35,18 @@ public class QuickBuyListener implements Listener {
         if (e == null) return;
         if (e.isSpectator()) return;
         PlayerQuickBuyCache cache = PlayerQuickBuyCache.getQuickBuyCache(e.getPlayer().getUniqueId());
-        if (cache != null) {
-            cache.destroy();
+        if (cache == null) {
+            new PlayerQuickBuyCache(e.getPlayer());
         }
-        new PlayerQuickBuyCache(e.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onArenaJoin(PlayerReJoinEvent e){
         if (e == null) return;
         PlayerQuickBuyCache cache = PlayerQuickBuyCache.getQuickBuyCache(e.getPlayer().getUniqueId());
-        if (cache != null) {
-            cache.destroy();
+        if (cache == null) {
+            new PlayerQuickBuyCache(e.getPlayer());
         }
-        new PlayerQuickBuyCache(e.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
