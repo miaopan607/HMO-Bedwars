@@ -5,12 +5,12 @@
     <parent>
         <artifactId>HMO-Bedwars-parent</artifactId>
         <groupId>com.andrei1058.bedwars</groupId>
-        <version>0.2.4-beta</version>
+        <version>0.2.5-beta</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>versionsupport-common</artifactId>
-    <version>0.2.4-beta</version>
+    <version>0.2.5-beta</version>
 
     <repositories>
         <repository>
@@ -23,7 +23,7 @@
         <dependency>
             <groupId>com.andrei1058.bedwars</groupId>
             <artifactId>bedwars-api</artifactId>
-            <version>0.2.4-beta</version>
+            <version>0.2.5-beta</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

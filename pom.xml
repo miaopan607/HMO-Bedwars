@@ -7,7 +7,7 @@
     <groupId>com.andrei1058.bedwars</groupId>
     <artifactId>HMO-Bedwars-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.2.4-beta</version>
+    <version>0.2.5-beta</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
