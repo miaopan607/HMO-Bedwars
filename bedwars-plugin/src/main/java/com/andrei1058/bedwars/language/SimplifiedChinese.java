@@ -697,7 +697,7 @@ public class SimplifiedChinese extends Language {
 
         // Start of Sidebar
         yml.addDefault(Messages.SCOREBOARD_LOBBY, Arrays.asList(
-                "&6&l起床战争,&4&l起&6&l床战争,&6&l起&4&l床&6&l战争,&6&l起床&4&l战&6&l争,&6&l起床战&4&l争,&6&l起床战争,&6&l起床战争,&6&l{poweredBy},&6&l{poweredBy},&6&l{poweredBy},&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l{poweredBy},&e&l{poweredBy},&e&l{poweredBy}",
+                "&6&l起床战争,&4&l起&6&l床战争,&6&l起&4&l床&6&l战争,&6&l起床&4&l战&6&l争,&6&l起床战&4&l争,&6&l起床战争,&6&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争",
                 "&7{player}",
                 "",
                 "&f总胜场：&a{wins}",
@@ -705,7 +705,7 @@ public class SimplifiedChinese extends Language {
                 "", "&e{serverIp}")
         );
         yml.addDefault(Messages.SCOREBOARD_DEFAULT_WAITING, Arrays.asList(
-                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l{poweredBy},&f&l{poweredBy},&f&l{poweredBy},&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l{poweredBy},&e&l{poweredBy},&e&l{poweredBy}",
+                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争",
                 "&7{date} &8{server}",
                 "",
                 "&f地图：&a{map}",
@@ -720,7 +720,7 @@ public class SimplifiedChinese extends Language {
                 "&e{serverIp}")
         );
         yml.addDefault(Messages.SCOREBOARD_DEFAULT_WAITING_SPEC, Arrays.asList(
-                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l{poweredBy},&f&l{poweredBy},&f&l{poweredBy},&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l{poweredBy},&e&l{poweredBy},&e&l{poweredBy}",
+                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争",
                 "&7{date} &8{server}",
                 "&o&7正在观战",
                 "&f地图：&a{map}",
@@ -735,7 +735,7 @@ public class SimplifiedChinese extends Language {
                 "&e{serverIp}")
         );
         yml.addDefault(Messages.SCOREBOARD_DEFAULT_STARTING, Arrays.asList(
-                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l{poweredBy},&f&l{poweredBy},&f&l{poweredBy},&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l{poweredBy},&e&l{poweredBy},&e&l{poweredBy}",
+                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争",
                 "&7{date} &8{server}",
                 "",
                 "&f地图：&a{map}",
@@ -750,7 +750,7 @@ public class SimplifiedChinese extends Language {
                 "&e{serverIp}")
         );
         yml.addDefault(Messages.SCOREBOARD_DEFAULT_STARTING_SPEC, Arrays.asList(
-                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l{poweredBy},&f&l{poweredBy},&f&l{poweredBy},&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l{poweredBy},&e&l{poweredBy},&e&l{poweredBy}",
+                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争",
                 "&7{date} &8{server}",
                 "&o&7正在观战",
                 "&f地图：&a{map}",
@@ -765,7 +765,7 @@ public class SimplifiedChinese extends Language {
                 "&e{serverIp}")
         );
         yml.addDefault(Messages.SCOREBOARD_DEFAULT_PLAYING, Arrays.asList(
-                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l{poweredBy},&f&l{poweredBy},&f&l{poweredBy},&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l{poweredBy},&e&l{poweredBy},&e&l{poweredBy}",
+                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争",
                 "&7{date}",
                 "",
                 "&f{nextEvent}：&a{time}",
@@ -785,7 +785,7 @@ public class SimplifiedChinese extends Language {
         );
 
         yml.addDefault(Messages.SCOREBOARD_DEFAULT_PLAYING_SPEC_ELIMINATED, Arrays.asList(
-                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l{poweredBy},&f&l{poweredBy},&f&l{poweredBy},&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l{poweredBy},&e&l{poweredBy},&e&l{poweredBy}",
+                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争",
                 "&7{date}",
                 "&o&7正在观战 {spectatorTarget}",
                 "",
@@ -805,7 +805,7 @@ public class SimplifiedChinese extends Language {
                 "&e{serverIp}")
         );
         yml.addDefault(Messages.SCOREBOARD_DEFAULT_PLAYING_SPEC, Arrays.asList(
-                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l{poweredBy},&f&l{poweredBy},&f&l{poweredBy},&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l{poweredBy},&e&l{poweredBy},&e&l{poweredBy}",
+                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争",
                 "&7{date}",
                 "&o&7正在观战 {spectatorTarget}",
                 "",
@@ -825,7 +825,7 @@ public class SimplifiedChinese extends Language {
                 "&e{serverIp}")
         );
         yml.addDefault(Messages.SCOREBOARD_DEFAULT_RESTARTING_SPEC, Arrays.asList(
-                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l{poweredBy},&f&l{poweredBy},&f&l{poweredBy},&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l{poweredBy},&e&l{poweredBy},&e&l{poweredBy}",
+                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争",
                 "&7{date}",
                 "",
                 "&6获胜者：{winnerTeamColor}{winnerTeamName} &6⭐",
@@ -844,7 +844,7 @@ public class SimplifiedChinese extends Language {
         );
 
         yml.addDefault(Messages.SCOREBOARD_DEFAULT_RESTARTING_WIN1, Arrays.asList(
-                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l{poweredBy},&f&l{poweredBy},&f&l{poweredBy},&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l{poweredBy},&e&l{poweredBy},&e&l{poweredBy}",
+                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争",
                 "&7{date}",
                 "",
                 "&6获胜者：{winnerTeamColor}{winnerTeamName} &6⭐",
@@ -863,7 +863,7 @@ public class SimplifiedChinese extends Language {
         );
 
         yml.addDefault(Messages.SCOREBOARD_DEFAULT_RESTARTING_WIN2, Arrays.asList(
-                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l{poweredBy},&f&l{poweredBy},&f&l{poweredBy},&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l{poweredBy},&e&l{poweredBy},&e&l{poweredBy}",
+                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争",
                 "&7{date}",
                 "",
                 "&6获胜者：{winnerTeamColor}{winnerTeamName} &6⭐",
@@ -882,7 +882,7 @@ public class SimplifiedChinese extends Language {
         );
 
         yml.addDefault(Messages.SCOREBOARD_DEFAULT_RESTARTING_LOSER, Arrays.asList(
-                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l{poweredBy},&f&l{poweredBy},&f&l{poweredBy},&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l{poweredBy},&e&l{poweredBy},&e&l{poweredBy}",
+                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争",
                 "&7{date}",
                 "",
                 "&6获胜者：{winnerTeamColor}{winnerTeamName} &6⭐",
@@ -901,7 +901,7 @@ public class SimplifiedChinese extends Language {
         );
 
         yml.addDefault(Messages.SCOREBOARD_DEFAULT_PLAYING.replaceFirst("Default", "Doubles"), Arrays.asList(
-                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l{poweredBy},&f&l{poweredBy},&f&l{poweredBy},&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l{poweredBy},&e&l{poweredBy},&e&l{poweredBy}",
+                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争",
                 "&7{date}",
                 "",
                 "&f{nextEvent}：&a{time}",
@@ -919,7 +919,7 @@ public class SimplifiedChinese extends Language {
         );
 
         yml.addDefault(Messages.SCOREBOARD_DEFAULT_PLAYING_SPEC.replaceFirst("Default", "Doubles"), Arrays.asList(
-                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l{poweredBy},&f&l{poweredBy},&f&l{poweredBy},&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l{poweredBy},&e&l{poweredBy},&e&l{poweredBy}",
+                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争",
                 "&7{date}",
                 "&o&7正在观战 {spectatorTarget}",
                 "&f{nextEvent}：&a{time}",
@@ -936,7 +936,7 @@ public class SimplifiedChinese extends Language {
                 "&e{serverIp}")
         );
         yml.addDefault(Messages.SCOREBOARD_DEFAULT_PLAYING_SPEC_ELIMINATED.replaceFirst("Default", "Doubles"), Arrays.asList(
-                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l{poweredBy},&f&l{poweredBy},&f&l{poweredBy},&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l{poweredBy},&e&l{poweredBy},&e&l{poweredBy}",
+                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争",
                 "&7{date}",
                 "&o&7正在观战 {spectatorTarget}",
                 "&f{nextEvent}：&a{time}",
@@ -954,7 +954,7 @@ public class SimplifiedChinese extends Language {
         );
 
         yml.addDefault(Messages.SCOREBOARD_DEFAULT_PLAYING.replaceFirst("Default", "3v3v3v3"), Arrays.asList(
-                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l{poweredBy},&f&l{poweredBy},&f&l{poweredBy},&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l{poweredBy},&e&l{poweredBy},&e&l{poweredBy}",
+                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争",
                 "&7{date}",
                 "",
                 "&f{nextEvent}：&a{time}",
@@ -976,7 +976,7 @@ public class SimplifiedChinese extends Language {
         );
 
         yml.addDefault(Messages.SCOREBOARD_DEFAULT_PLAYING_SPEC.replaceFirst("Default", "3v3v3v3"), Arrays.asList(
-                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l{poweredBy},&f&l{poweredBy},&f&l{poweredBy},&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l{poweredBy},&e&l{poweredBy},&e&l{poweredBy}",
+                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争",
                 "&7{date}",
                 "&o&7正在观战 {spectatorTarget}",
                 "&f{nextEvent}：&a{time}",
@@ -994,7 +994,7 @@ public class SimplifiedChinese extends Language {
                 "&e{serverIp}")
         );
         yml.addDefault(Messages.SCOREBOARD_DEFAULT_PLAYING_SPEC_ELIMINATED.replaceFirst("Default", "3v3v3v3"), Arrays.asList(
-                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l{poweredBy},&f&l{poweredBy},&f&l{poweredBy},&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l{poweredBy},&e&l{poweredBy},&e&l{poweredBy}",
+                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争",
                 "&7{date}",
                 "&o&7正在观战 {spectatorTarget}",
                 "&f{nextEvent}：&a{time}",
@@ -1016,7 +1016,7 @@ public class SimplifiedChinese extends Language {
         );
 
         yml.addDefault(Messages.SCOREBOARD_DEFAULT_PLAYING.replaceFirst("Default", "4v4v4v4"), Arrays.asList(
-                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l{poweredBy},&f&l{poweredBy},&f&l{poweredBy},&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l{poweredBy},&e&l{poweredBy},&e&l{poweredBy}",
+                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争",
                 "&7{date}",
                 "",
                 "&f{nextEvent}：&a{time}",
@@ -1034,7 +1034,7 @@ public class SimplifiedChinese extends Language {
         );
 
         yml.addDefault(Messages.SCOREBOARD_DEFAULT_PLAYING_SPEC.replaceFirst("Default", "4v4v4v4"), Arrays.asList(
-                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l{poweredBy},&f&l{poweredBy},&f&l{poweredBy},&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l{poweredBy},&e&l{poweredBy},&e&l{poweredBy}",
+                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争",
                 "&7{date}",
                 "&o&7正在观战 {spectatorTarget}",
                 "&f{nextEvent}：&a{time}",
@@ -1048,7 +1048,7 @@ public class SimplifiedChinese extends Language {
                 "&e{serverIp}")
         );
         yml.addDefault(Messages.SCOREBOARD_DEFAULT_PLAYING_SPEC_ELIMINATED.replaceFirst("Default", "4v4v4v4"), Arrays.asList(
-                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l{poweredBy},&f&l{poweredBy},&f&l{poweredBy},&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l{poweredBy},&e&l{poweredBy},&e&l{poweredBy}",
+                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争",
                 "&7{date}",
                 "&o&7正在观战 {spectatorTarget}",
                 "&f{nextEvent}：&a{time}",
