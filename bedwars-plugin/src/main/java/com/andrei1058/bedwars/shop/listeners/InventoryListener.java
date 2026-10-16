@@ -80,7 +80,7 @@ public class InventoryListener implements Listener {
                 if (element.getSlot() == e.getSlot()) {
                     if (e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
                         cache.setElement(element.getSlot(), null);
-                        p.closeInventory();
+                        ShopManager.getShop().open(p, cache, false);
                         return;
                     }
                     element.getCategoryContent().execute(p, shopCache, element.getSlot());
@@ -124,7 +124,7 @@ public class InventoryListener implements Listener {
             if (cc != null) {
                 cache.setElement(e.getSlot(), cc);
             }
-            e.getWhoClicked().closeInventory();
+            ShopManager.getShop().open(p, cache, false);
         }
     }
 
