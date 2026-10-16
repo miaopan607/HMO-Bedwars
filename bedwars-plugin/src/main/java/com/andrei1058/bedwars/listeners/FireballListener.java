@@ -118,8 +118,8 @@ public class FireballListener implements Listener, com.andrei1058.bedwars.config
             }
 
             // debug
-            String debugMsg = String.format("[FireballDebug]: %s | BoomLoc: %.2f, %.2f, %.2f | PlayerLoc: %.2f, %.2f, %.2f | KB_Vel: %.2f, %.2f, %.2f", player.getName(), explosionLoc.getX(), explosionLoc.getY(), explosionLoc.getZ(), player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), finalVelocity.getX(), finalVelocity.getY(), finalVelocity.getZ());
-            System.out.println(debugMsg);
+            // String debugMsg = String.format("[FireballDebug]: %s | BoomLoc: %.2f, %.2f, %.2f | PlayerLoc: %.2f, %.2f, %.2f | KB_Vel: %.2f, %.2f, %.2f", player.getName(), explosionLoc.getX(), explosionLoc.getY(), explosionLoc.getZ(), player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), finalVelocity.getX(), finalVelocity.getY(), finalVelocity.getZ());
+            // System.out.println(debugMsg);
 
             // Prevent teammates from overriding last hit
             if (!isTeammate || isSelf) {
