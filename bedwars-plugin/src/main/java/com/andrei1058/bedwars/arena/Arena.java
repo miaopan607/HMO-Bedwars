@@ -758,6 +758,9 @@ public class Arena implements IArena {
             }
 
             SidebarService.getInstance().giveSidebar(p, this, false);
+            if (playerBefore) {
+                SidebarService.getInstance().handleJoin(this, p, true);
+            }
             nms.setCollide(p, this, false);
 
             if (!playerBefore) {
