@@ -148,7 +148,7 @@ public class UpgradesConfig extends ConfigManager {
             yml.addDefault("base-trap-3.receive", Collections.singletonList("remove-effect: INVISIBILITY,enemy"));
 
             addDefaultDisplayItem("base-trap-4", "IRON_PICKAXE", 0, 1, false);
-            yml.addDefault("base-trap-4.receive", Collections.singletonList("player-effect: SLOW_DIGGING,1,15,enemy"));
+            yml.addDefault("base-trap-4.receive", Collections.singletonList("player-effect: SLOW_DIGGING,1,10,enemy"));
 
             //noinspection ArraysAsListWithZeroOrOneArgument
             yml.addDefault("separator-back.on-click.player", Arrays.asList(""));
