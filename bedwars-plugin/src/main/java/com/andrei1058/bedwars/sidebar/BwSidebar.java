@@ -235,6 +235,14 @@ public class BwSidebar implements ISidebar {
         tabList.giveUpdateTabFormat(player, skipStateCheck, spectator);
     }
 
+    void refreshDepartedTabs() {
+        tabList.refreshDepartedTabs();
+    }
+
+    void clearDepartedTabs() {
+        tabList.clearDepartedTabs();
+    }
+
     @SuppressWarnings("removal")
     @Override
     public boolean isTabFormattingDisabled() {

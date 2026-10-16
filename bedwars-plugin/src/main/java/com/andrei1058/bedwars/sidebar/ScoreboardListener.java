@@ -102,6 +102,9 @@ public class ScoreboardListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void arenaLeave(@NotNull PlayerLeaveArenaEvent e) {
+        if (e.isSpectator()) {
+            SidebarService.getInstance().handleSpectatorLeave(e.getArena(), e.getPlayer());
+        }
         if (BedWars.getServerType() == ServerType.MULTIARENA || BedWars.getServerType() == ServerType.SHARED) {
             // add player to scoreboard tab list
             SidebarService.getInstance().applyLobbyTab(e.getPlayer());

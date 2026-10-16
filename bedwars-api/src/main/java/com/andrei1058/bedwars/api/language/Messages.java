@@ -289,6 +289,7 @@ public class Messages {
     public static String FORMATTING_SB_TAB_PLAYING_ELM_FOOTER = FORMATTING_SB_TAB_BASE+".playing.eliminated.footer";
     public static String FORMATTING_SB_TAB_PLAYING_ELM_PREFIX = FORMATTING_SB_TAB_BASE+".playing.eliminated.prefix";
     public static String FORMATTING_SB_TAB_PLAYING_ELM_SUFFIX = FORMATTING_SB_TAB_BASE+".playing.eliminated.suffix";
+    public static String FORMATTING_SB_TAB_PLAYING_ELM_DEPARTED = FORMATTING_SB_TAB_BASE+".playing.eliminated.departed";
 
     // TAB PLAYING FOR SPECTATORS
     public static String FORMATTING_SB_TAB_PLAYING_SPEC_HEADER = FORMATTING_SB_TAB_BASE+".playing.spectator.header";

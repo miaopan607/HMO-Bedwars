@@ -33,6 +33,7 @@ import com.andrei1058.bedwars.api.server.VersionSupport;
 import com.andrei1058.bedwars.support.version.common.VersionCommon;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.server.v1_8_R3.*;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -58,6 +59,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import static com.andrei1058.bedwars.api.language.Language.getMsg;
@@ -71,6 +73,8 @@ public class v1_8_R3 extends VersionSupport {
     private java.lang.reflect.Field equipmentSlotField; // Field 'b': Equipment slot (int)
     private java.lang.reflect.Field equipmentItemField; // Field 'c': ItemStack (net.minecraft.server.ItemStack)
     private Field entityMetadataPacketFieldB;
+    private final Field playerInfoAction;
+    private final Field playerInfoEntries;
 
     public v1_8_R3(Plugin pl, String name) {
         super(pl, name);
@@ -97,6 +101,40 @@ public class v1_8_R3 extends VersionSupport {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        try {
+            playerInfoAction = PacketPlayOutPlayerInfo.class.getDeclaredField("a");
+            playerInfoEntries = PacketPlayOutPlayerInfo.class.getDeclaredField("b");
+            playerInfoAction.setAccessible(true);
+            playerInfoEntries.setAccessible(true);
+        } catch (ReflectiveOperationException e) {
+            throw new IllegalStateException("Cannot initialize virtual TAB packets", e);
+        }
+    }
+
+    @Override
+    public void addVirtualTab(Player viewer, UUID entryId, String profileName, String displayName) {
+        sendVirtualTab(viewer, entryId, profileName, displayName, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER);
+    }
+
+    @Override
+    public void removeVirtualTab(Player viewer, UUID entryId) {
+        sendVirtualTab(viewer, entryId, "departed", "", PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void sendVirtualTab(Player viewer, UUID entryId, String profileName, String displayName,
+                                PacketPlayOutPlayerInfo.EnumPlayerInfoAction action) {
+        PacketPlayOutPlayerInfo packet = new PacketPlayOutPlayerInfo();
+        try {
+            playerInfoAction.set(packet, action);
+            List<PacketPlayOutPlayerInfo.PlayerInfoData> entries =
+                    (List<PacketPlayOutPlayerInfo.PlayerInfoData>) playerInfoEntries.get(packet);
+            entries.add(packet.new PlayerInfoData(new GameProfile(entryId, profileName), 0,
+                    WorldSettings.EnumGamemode.SURVIVAL, new ChatComponentText(displayName)));
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException("Cannot create virtual TAB packet", e);
+        }
+        ((CraftPlayer) viewer).getHandle().playerConnection.sendPacket(packet);
     }
 
     @Override

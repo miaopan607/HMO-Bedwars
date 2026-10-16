@@ -1222,6 +1222,7 @@ public class English extends Language {
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_PREFIX, List.of("&f&oSpectator "));
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_SUFFIX, List.of(" &c&oEliminated {teamColor}&o{teamName}", " {teamColor}&oEliminated"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_DEPARTED, "{teamColor}{playerName} &7[{teamName}] &cEliminated · Left");
         // spectator - playing state
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SPEC_HEADER, List.of(
                 "                                                                                                        ",

@@ -1221,6 +1221,7 @@ public class SimplifiedChinese extends Language {
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_PREFIX, List.of("&f&o观战者 "));
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_SUFFIX, List.of(" &c&o已淘汰 {teamColor}&o{teamName}", " {teamColor}&o已淘汰"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_DEPARTED, "{teamColor}{playerName} &7[{teamName}] &c已淘汰·已离开");
         // spectator - playing state
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SPEC_HEADER, List.of(
                 "                                                                                                        ",

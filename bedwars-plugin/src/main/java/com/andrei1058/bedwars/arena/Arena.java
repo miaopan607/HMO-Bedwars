@@ -1303,6 +1303,7 @@ public class Arena implements IArena {
         for (Player p : new ArrayList<>(spectators)) {
             removeSpectator(p, false);
         }
+        SidebarService.getInstance().clearDepartedTabs(this);
         if (getRestartingTask() != null) getRestartingTask().cancel();
         if (getStartingTask() != null) getStartingTask().cancel();
         if (getPlayingTask() != null) getPlayingTask().cancel();
@@ -1319,6 +1320,7 @@ public class Arena implements IArena {
      * Restart the arena.
      */
     public void restart() {
+        SidebarService.getInstance().clearDepartedTabs(this);
         if (getRestartingTask() != null) getRestartingTask().cancel();
         if (getStartingTask() != null) getStartingTask().cancel();
         if (getPlayingTask() != null) getPlayingTask().cancel();

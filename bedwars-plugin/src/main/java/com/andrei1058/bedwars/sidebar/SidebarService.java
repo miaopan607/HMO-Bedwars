@@ -20,6 +20,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static com.andrei1058.bedwars.BedWars.config;
@@ -31,6 +32,22 @@ public class SidebarService implements ISidebarService {
 
     private final SidebarManager sidebarHandler;
     private final HashMap<UUID, BwSidebar> sidebars = new HashMap<>();
+    private final Map<IArena, Map<UUID, DepartedTabEntry>> departedTabs = new HashMap<>();
+
+    static final class DepartedTabEntry {
+        final UUID playerId;
+        final UUID entryId;
+        final String playerName;
+        final ITeam team;
+
+        DepartedTabEntry(IArena arena, Player player, ITeam team) {
+            this.playerId = player.getUniqueId();
+            this.entryId = UUID.nameUUIDFromBytes(("HMO-Bedwars:departed:" + arena.getWorldName()
+                    + ":" + playerId).getBytes(StandardCharsets.UTF_8));
+            this.playerName = player.getName();
+            this.team = team;
+        }
+    }
 
     public static boolean init(JavaPlugin plugin) {
         if (null == instance) {
@@ -296,7 +313,43 @@ public class SidebarService implements ISidebarService {
         });
     }
 
+    void handleSpectatorLeave(IArena arena, Player player) {
+        if (arena.getStatus() != GameState.playing) return;
+        ITeam team = arena.getExTeam(player.getUniqueId());
+        if (team == null) return;
+        Map<UUID, DepartedTabEntry> entries = departedTabs.computeIfAbsent(arena, key -> new LinkedHashMap<>());
+        entries.put(player.getUniqueId(), new DepartedTabEntry(arena, player, team));
+        // 等现有离开流程发送隐藏数据包后再补发参考名单。
+        Bukkit.getScheduler().runTaskLater(BedWars.plugin, () -> {
+            if (departedTabs.get(arena) == entries) refreshDepartedTabs(arena);
+        }, 2L);
+    }
+
+    Collection<DepartedTabEntry> getDepartedTabs(IArena arena) {
+        Map<UUID, DepartedTabEntry> entries = departedTabs.get(arena);
+        return entries == null ? Collections.emptyList() : entries.values();
+    }
+
+    public void clearDepartedTabs(IArena arena) {
+        departedTabs.remove(arena);
+        sidebars.values().forEach(sidebar -> {
+            if (arena.equals(sidebar.getArena())) sidebar.clearDepartedTabs();
+        });
+    }
+
+    private void refreshDepartedTabs(IArena arena) {
+        sidebars.values().forEach(sidebar -> {
+            if (arena.equals(sidebar.getArena())) sidebar.refreshDepartedTabs();
+        });
+    }
+
+    private void removeDepartedTab(IArena arena, UUID playerId) {
+        Map<UUID, DepartedTabEntry> entries = departedTabs.get(arena);
+        if (entries != null && entries.remove(playerId) != null) refreshDepartedTabs(arena);
+    }
+
     public void handleReJoin(IArena arena, Player player) {
+        removeDepartedTab(arena, player.getUniqueId());
         this.sidebars.forEach((k, v) -> {
             if (null != v.getArena() && v.getArena().equals(arena)) {
                 v.giveUpdateTabFormat(player, false);
@@ -305,6 +358,7 @@ public class SidebarService implements ISidebarService {
     }
 
     public void handleJoin(IArena arena, Player player, @Nullable Boolean spectator) {
+        removeDepartedTab(arena, player.getUniqueId());
         this.sidebars.forEach((k, v) -> {
             if (null != v.getArena() && v.getArena().equals(arena)) {
                 if (!v.getPlayer().equals(player)) {

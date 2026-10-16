@@ -77,6 +77,12 @@ public abstract class VersionSupport {
      */
     public abstract void sendTitle(Player p, String title, String subtitle, int fadeIn, int stay, int fadeOut);
 
+    /** 添加仅在指定玩家 TAB 中显示的虚拟条目，不创建实体。 */
+    public abstract void addVirtualTab(Player viewer, UUID entryId, String profileName, String displayName);
+
+    /** 移除指定玩家 TAB 中的虚拟条目。 */
+    public abstract void removeVirtualTab(Player viewer, UUID entryId);
+
     /**
      * Send action-bar message
      */

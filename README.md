@@ -34,6 +34,8 @@ GitHub Actions 在推送和 PR 时按 POM 版本构建，可从成功任务的 `
 
 自定义文案写入 `Languages/overrides/messages_en.yml` 或 `messages_zh_cn.yml`，仅填写需要覆盖的键。内置 `Languages/messages_<iso>.yml` 会在启动和重载时重新生成，不要直接修改。
 
+启用对局 TAB 格式化时，最终淘汰后退出观战的玩家仍会显示在同局 TAB 中，保留原队伍并标记“已淘汰·已离开”；重新加入观战时恢复真实玩家条目，竞技场重置时清理名单。文案键为 `format-tab.playing.eliminated.departed`，支持 `{playerName}`、`{teamColor}`、`{teamName}`。
+
 ## 许可证
 
 沿用 [GPL-3.0](LICENSE)，保留原作者 Andrei Dascălu 及第三方依赖署名。
