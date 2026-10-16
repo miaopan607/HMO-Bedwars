@@ -101,6 +101,13 @@ public class ChatFormatting implements Listener {
         if (Arena.getArenaByPlayer(p) != null) {
             IArena a = Arena.getArenaByPlayer(p);
 
+            // 结算期普通聊天面向整局玩家和旁观者。
+            if (a.getStatus() == GameState.restarting) {
+                setRecipients(e, a.getPlayers(), a.getSpectators());
+                e.setFormat(parsePHolders(language.m(Messages.FORMATTING_CHAT_SHOUT), p, a.getTeam(p)));
+                return;
+            }
+
             // spectator chat
             if (a.isSpectator(p)) {
                 setRecipients(e, a.getSpectators());
