@@ -103,6 +103,8 @@ public class ConfigPath {
     public static final String GENERAL_CONFIGURATION_TEAM_ASSIGNMENT_PREFER_PAIRS = "team-assignment.prefer-pairs";
     public static final String GENERAL_CONFIGURATION_TEAM_SELECTOR_ENABLED = "team-selector.enabled";
     public static final String GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS = "ender-dragon-breaks";
+    public static final String GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS_END_STONE = "ender-dragon-breaks-end-stone";
+    public static final String GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS_OBSIDIAN = "ender-dragon-breaks-obsidian";
     public static final String GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS_MAP = "ender-dragon-breaks-map";
 
     // Replace %path% with name

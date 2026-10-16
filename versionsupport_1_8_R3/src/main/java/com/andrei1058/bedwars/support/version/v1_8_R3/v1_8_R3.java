@@ -294,10 +294,24 @@ public class v1_8_R3 extends VersionSupport {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void registerEntities() {
         registerEntity("Silverfish2", 60, Silverfish.class);
         registerEntity("IGolem", 99, IGolem.class);
         registerEntity("BwVilager", 120, VillagerShop.class);
+        // 自定义龙沿用原版类型编号与保存名称。
+        try {
+            Field namesField = EntityTypes.class.getDeclaredField("d");
+            Field idsField = EntityTypes.class.getDeclaredField("f");
+            namesField.setAccessible(true);
+            idsField.setAccessible(true);
+            Map<Class<?>, String> names = (Map<Class<?>, String>) namesField.get(null);
+            Map<Class<?>, Integer> ids = (Map<Class<?>, Integer>) idsField.get(null);
+            names.put(BedWarsDragon.class, names.get(EntityEnderDragon.class));
+            ids.put(BedWarsDragon.class, ids.get(EntityEnderDragon.class));
+        } catch (ReflectiveOperationException e) {
+            throw new IllegalStateException("Cannot register BedWars dragon entity mappings", e);
+        }
     }
 
     @Override
@@ -525,7 +539,10 @@ public class v1_8_R3 extends VersionSupport {
 
     @Override
     public void spawnDragon(Location l, ITeam bwt) {
-        l.getWorld().spawnEntity(l, EntityType.ENDER_DRAGON);
+        CraftWorld world = (CraftWorld) l.getWorld();
+        BedWarsDragon dragon = new BedWarsDragon(world.getHandle());
+        dragon.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
+        world.getHandle().addEntity(dragon, CreatureSpawnEvent.SpawnReason.CUSTOM);
     }
 
     @Override

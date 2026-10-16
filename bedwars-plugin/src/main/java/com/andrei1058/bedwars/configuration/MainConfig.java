@@ -218,6 +218,8 @@ public class MainConfig extends ConfigManager {
         yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_TEAM_ASSIGNMENT_PREFER_PAIRS, true);
         yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_TEAM_SELECTOR_ENABLED, false);
         yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS, true);
+        yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS_END_STONE, true);
+        yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS_OBSIDIAN, true);
         yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS_MAP, false);
 
         yml.addDefault(ConfigPath.LOBBY_VOID_TELEPORT_ENABLED, true);
