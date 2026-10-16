@@ -645,6 +645,8 @@ public class Arena implements IArena {
                 new PlayerGoods(p, true);
                 playerLocation.put(p, p.getLocation());
             }
+            p.setGameMode(GameMode.ADVENTURE);
+
             TeleportManager.teleportC(p, getWaitingLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
 
             if (!isStatusChange) {
