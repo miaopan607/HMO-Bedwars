@@ -38,6 +38,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -45,6 +46,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -52,10 +54,17 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 import static com.andrei1058.bedwars.BedWars.nms;
 import static com.andrei1058.bedwars.api.language.Language.getMsg;
 
 public class SpectatorListeners implements Listener {
+
+    // 记录由普通观战临时进入的第一人称旁观。
+    private final Set<UUID> normalFirstPersonSpectators = new HashSet<>();
 
     @EventHandler
     public void onSpectatorItemInteract(PlayerInteractEvent e) {
@@ -151,6 +160,7 @@ public class SpectatorListeners implements Listener {
     @EventHandler
     // Refresh placeholders from GUIs
     public void onPlayerLeave(PlayerLeaveArenaEvent e) {
+        normalFirstPersonSpectators.remove(e.getPlayer().getUniqueId());
         if (e.getArena().isPlayer(e.getPlayer())) {
             TeleporterGUI.refreshAllGUIs();
         }
@@ -174,6 +184,9 @@ public class SpectatorListeners implements Listener {
             SpectatorFirstPersonEnterEvent event = new SpectatorFirstPersonEnterEvent(p, target, a, player -> getMsg(player, Messages.ARENA_SPECTATOR_FIRST_PERSON_ENTER_TITLE), player -> getMsg(player, Messages.ARENA_SPECTATOR_FIRST_PERSON_ENTER_SUBTITLE));
             Bukkit.getPluginManager().callEvent(event);
             if (event.isCancelled()) return;
+            if (p.getGameMode() != GameMode.SPECTATOR) {
+                normalFirstPersonSpectators.add(p.getUniqueId());
+            }
             p.getInventory().setHeldItemSlot(5);
             p.setGameMode(GameMode.SPECTATOR);
             p.setSpectatorTarget(target);
@@ -181,20 +194,35 @@ public class SpectatorListeners implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     // Triggered when a spectator leaves first person
     public void onSneak(PlayerToggleSneakEvent e) {
+        if (!e.isSneaking()) return;
         Player p = e.getPlayer();
         IArena a = Arena.getArenaByPlayer(p);
         if (a == null) return;
         if (a.isSpectator(p) && p.getSpectatorTarget() != null) {
+            leaveFirstPerson(p, a);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onGameModeChange(PlayerGameModeChangeEvent e) {
+        if (e.getNewGameMode() != GameMode.SPECTATOR) {
+            normalFirstPersonSpectators.remove(e.getPlayer().getUniqueId());
+        }
+    }
+
+    private void leaveFirstPerson(Player p, IArena a) {
+        p.setSpectatorTarget(null);
+        if (normalFirstPersonSpectators.remove(p.getUniqueId())) {
             p.setGameMode(GameMode.ADVENTURE);
             p.setAllowFlight(true);
             p.setFlying(true);
-            SpectatorFirstPersonLeaveEvent event = new SpectatorFirstPersonLeaveEvent(p, a, player -> getMsg(player, Messages.ARENA_SPECTATOR_FIRST_PERSON_LEAVE_TITLE), player -> getMsg(player, Messages.ARENA_SPECTATOR_FIRST_PERSON_LEAVE_SUBTITLE));
-            Bukkit.getPluginManager().callEvent(event);
-            nms.sendTitle(p, event.getTitle().apply(p), event.getSubTitle().apply(p), event.getFadeIn(), event.getStay(), event.getFadeOut());
         }
+        SpectatorFirstPersonLeaveEvent event = new SpectatorFirstPersonLeaveEvent(p, a, player -> getMsg(player, Messages.ARENA_SPECTATOR_FIRST_PERSON_LEAVE_TITLE), player -> getMsg(player, Messages.ARENA_SPECTATOR_FIRST_PERSON_LEAVE_SUBTITLE));
+        Bukkit.getPluginManager().callEvent(event);
+        nms.sendTitle(p, event.getTitle().apply(p), event.getSubTitle().apply(p), event.getFadeIn(), event.getStay(), event.getFadeOut());
     }
 
     @EventHandler
@@ -206,12 +234,7 @@ public class SpectatorListeners implements Listener {
             if (!(e.getTo().getWorld().equals(e.getPlayer().getWorld())) && e.getCause() == PlayerTeleportEvent.TeleportCause.SPECTATE) {
                 Player p = e.getPlayer();
                 e.setCancelled(true);
-                p.setGameMode(GameMode.ADVENTURE);
-                p.setAllowFlight(true);
-                p.setFlying(true);
-                SpectatorFirstPersonLeaveEvent event = new SpectatorFirstPersonLeaveEvent(p, Arena.getArenaByPlayer(p), player -> getMsg(player, Messages.ARENA_SPECTATOR_FIRST_PERSON_LEAVE_TITLE), player -> getMsg(player, Messages.ARENA_SPECTATOR_FIRST_PERSON_LEAVE_SUBTITLE));
-                Bukkit.getPluginManager().callEvent(event);
-                nms.sendTitle(p, event.getTitle().apply(p), event.getSubTitle().apply(p), event.getFadeIn(), event.getStay(), event.getFadeOut());
+                leaveFirstPerson(p, a);
             }
         }
     }
@@ -222,12 +245,7 @@ public class SpectatorListeners implements Listener {
         for (Player p : e.getArena().getSpectators()) {
             if (p.getSpectatorTarget() == null) continue;
             if (p.getSpectatorTarget() == e.getVictim()) {
-                p.setGameMode(GameMode.ADVENTURE);
-                p.setAllowFlight(true);
-                p.setFlying(true);
-                SpectatorFirstPersonLeaveEvent event = new SpectatorFirstPersonLeaveEvent(p, e.getArena(), player -> getMsg(player, Messages.ARENA_SPECTATOR_FIRST_PERSON_LEAVE_TITLE), player -> getMsg(player, Messages.ARENA_SPECTATOR_FIRST_PERSON_LEAVE_SUBTITLE));
-                Bukkit.getPluginManager().callEvent(event);
-                nms.sendTitle(p, event.getTitle().apply(p), event.getSubTitle().apply(p), event.getFadeIn(), event.getStay(), event.getFadeOut());
+                leaveFirstPerson(p, e.getArena());
             }
         }
     }
