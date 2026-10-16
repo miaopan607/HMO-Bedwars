@@ -224,6 +224,8 @@ public class ChatFormatting implements Listener {
                     .replace("{TeamColor}", team.getColor().chat() + "")
                     .replace("{TeamName}", team.getDisplayName(Language.getPlayerLanguage(player)).toUpperCase());
             content = content.replace("{team}", teamFormat);
+        } else {
+            content = content.replace("{team}", "");
         }
         // 正文尚未插入，只整理格式中可选等级和身份留下的多余空格。
         return SupportPAPI.getSupportPAPI().replace(player, content).replaceAll(" {2,}", " ").trim().replace("{message}", "%2$s");
