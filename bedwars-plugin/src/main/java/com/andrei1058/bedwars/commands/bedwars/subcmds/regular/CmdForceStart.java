@@ -26,6 +26,11 @@ public class CmdForceStart extends AbstractCmdStart {
     }
 
     @Override
+    protected boolean canStartFromArena(IArena arena, Player player) {
+        return arena.isPlayer(player) || arena.isSpectator(player);
+    }
+
+    @Override
     protected boolean doStart(IArena a, Player p, String[] args) {
         if (a.getStartingTask() == null){
             a.changeStatus(GameState.starting);

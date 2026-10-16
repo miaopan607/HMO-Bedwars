@@ -108,17 +108,19 @@ public class ChatFormatting implements Listener {
                 return;
             }
 
+            // 赛前普通聊天面向整场玩家和旁观者。
+            if (a.getStatus() == GameState.waiting || a.getStatus() == GameState.starting) {
+                setRecipients(e, a.getPlayers(), a.getSpectators());
+                e.setFormat(parsePHolders(language.m(a.isSpectator(p)
+                        ? Messages.FORMATTING_CHAT_SPECTATOR
+                        : Messages.FORMATTING_CHAT_WAITING), p, null));
+                return;
+            }
+
             // spectator chat
             if (a.isSpectator(p)) {
                 setRecipients(e, a.getSpectators());
                 e.setFormat(parsePHolders(language.m(Messages.FORMATTING_CHAT_SPECTATOR), p, null));
-                return;
-            }
-
-            // arena lobby chat
-            if (a.getStatus() == GameState.waiting || a.getStatus() == GameState.starting) {
-                setRecipients(e, a.getPlayers());
-                e.setFormat(parsePHolders(language.m(Messages.FORMATTING_CHAT_WAITING), p, null));
                 return;
             }
 

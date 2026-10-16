@@ -40,6 +40,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.andrei1058.bedwars.BedWars.nms;
 import static com.andrei1058.bedwars.api.language.Language.getList;
@@ -142,6 +143,9 @@ public class GameStartingTask implements Runnable, StartingTask {
                 return;
             }
 
+            for (Player spectator : getArena().getSpectators()) {
+                sendStart(spectator);
+            }
             task.cancel();
             getArena().changeStatus(GameState.playing);
 
@@ -161,19 +165,23 @@ public class GameStartingTask implements Runnable, StartingTask {
 
         //Send countdown
         if (getCountdown() % 10 == 0 || getCountdown() <= 5) {
-            if (getCountdown() < 5) {
-                Sounds.playSound(ConfigPath.SOUNDS_COUNTDOWN_TICK_X + getCountdown(), getArena().getPlayers());
-            } else {
-                Sounds.playSound(ConfigPath.SOUNDS_COUNTDOWN_TICK, getArena().getPlayers());
-            }
-            for (Player player : getArena().getPlayers()) {
-                Language playerLang = Language.getPlayerLanguage(player);
-                String[] titleSubtitle = Language.getCountDownTitle(playerLang, getCountdown());
-                nms.sendTitle(player, titleSubtitle[0], titleSubtitle[1], 0, 20, 10);
-                player.sendMessage(getMsg(player, Messages.ARENA_STATUS_START_COUNTDOWN_CHAT).replace("{time}", String.valueOf(getCountdown())));
-            }
+            String soundPath = getCountdown() < 5
+                    ? ConfigPath.SOUNDS_COUNTDOWN_TICK_X + getCountdown()
+                    : ConfigPath.SOUNDS_COUNTDOWN_TICK;
+            sendCountdown(getArena().getPlayers(), soundPath);
+            sendCountdown(getArena().getSpectators(), soundPath);
         }
         countdown--;
+    }
+
+    private void sendCountdown(List<Player> recipients, String soundPath) {
+        Sounds.playSound(soundPath, recipients);
+        for (Player player : recipients) {
+            Language playerLang = Language.getPlayerLanguage(player);
+            String[] titleSubtitle = Language.getCountDownTitle(playerLang, getCountdown());
+            nms.sendTitle(player, titleSubtitle[0], titleSubtitle[1], 0, 20, 10);
+            player.sendMessage(getMsg(player, Messages.ARENA_STATUS_START_COUNTDOWN_CHAT).replace("{time}", String.valueOf(getCountdown())));
+        }
     }
 
     //Spawn players
@@ -194,13 +202,17 @@ public class GameStartingTask implements Runnable, StartingTask {
                 if (!getArena().getPlayers().contains(p)) {
                     continue;
                 }
-                Sounds.playSound(ConfigPath.SOUND_GAME_START, p);
-                nms.sendTitle(p, getMsg(p, Messages.ARENA_STATUS_START_PLAYER_TITLE), null, 0, 30, 10);
+                sendStart(p);
                 for (String tut : getList(p, Messages.ARENA_STATUS_START_PLAYER_TUTORIAL)) {
                     p.sendMessage(SupportPAPI.getSupportPAPI().replace(p, tut));
                 }
             }
         }
+    }
+
+    private void sendStart(Player player) {
+        Sounds.playSound(ConfigPath.SOUND_GAME_START, player);
+        nms.sendTitle(player, getMsg(player, Messages.ARENA_STATUS_START_PLAYER_TITLE), null, 0, 30, 10);
     }
 
     /**

@@ -30,7 +30,7 @@ public abstract class AbstractCmdStart extends SubCommand {
             p.sendMessage(getMsg(p, Messages.COMMAND_FORCESTART_NOT_IN_GAME));
             return true;
         }
-        if (!a.isPlayer(p)){
+        if (!canStartFromArena(a, p)){
             p.sendMessage(getMsg(p, Messages.COMMAND_FORCESTART_NOT_IN_GAME));
             return true;
         }
@@ -41,6 +41,10 @@ public abstract class AbstractCmdStart extends SubCommand {
         if (a.getStatus() == GameState.playing) return true;
         if (a.getStatus() == GameState.restarting) return true;
         return doStart(a, p, args);
+    }
+
+    protected boolean canStartFromArena(IArena arena, Player player) {
+        return arena.isPlayer(player);
     }
 
     protected abstract boolean hasStartPermission(CommandSender s);
@@ -62,7 +66,7 @@ public abstract class AbstractCmdStart extends SubCommand {
         if (a != null){
             GameState status = a.getStatus();
             if (status == GameState.waiting || status == GameState.starting){
-                if (!a.isPlayer(p)) return false;
+                if (!canStartFromArena(a, p)) return false;
             } else {
                 return false;
             }
