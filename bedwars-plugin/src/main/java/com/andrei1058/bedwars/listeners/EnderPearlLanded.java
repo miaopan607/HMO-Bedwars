@@ -23,5 +23,6 @@ public class EnderPearlLanded implements Listener {
         if (!Arena.isInArena(player) || iArena.isSpectator(player)) return;
 
         Sounds.playSound("ender-pearl-landed", iArena.getPlayers());
+        Sounds.playSound("ender-pearl-landed", iArena.getSpectators());
     }
 }

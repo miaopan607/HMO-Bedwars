@@ -919,9 +919,7 @@ public class Arena implements IArena {
         }
         if (status == GameState.starting && (maxInTeam > players.size() && teamuri || players.size() < minPlayers && !teamuri)) {
             changeStatus(GameState.waiting);
-            for (Player on : players) {
-                on.sendMessage(getMsg(on, Messages.ARENA_START_COUNTDOWN_STOPPED_INSUFF_PLAYERS_CHAT));
-            }
+            sendInsufficientPlayersMessage();
         } else if (status == GameState.playing) {
             BedWars.debug("removePlayer debug1");
             int alive_teams = 0;
@@ -1074,9 +1072,7 @@ public class Arena implements IArena {
                     }
                     if (status == GameState.starting && (maxInTeam > players.size() && teamuri || players.size() < minPlayers && !teamuri)) {
                         changeStatus(GameState.waiting);
-                        for (Player on : players) {
-                            on.sendMessage(getMsg(on, Messages.ARENA_START_COUNTDOWN_STOPPED_INSUFF_PLAYERS_CHAT));
-                        }
+                        sendInsufficientPlayersMessage();
                     }
                 }
             }
@@ -1596,6 +1592,10 @@ public class Arena implements IArena {
                 Language playerLang = Language.getPlayerLanguage(player);
                 nms.sendTitle(player, playerLang.m(Messages.ARENA_STATUS_START_COUNTDOWN_CANCELLED_TITLE), playerLang.m(Messages.ARENA_STATUS_START_COUNTDOWN_CANCELLED_SUB_TITLE), 0, 40, 10);
             }
+            for (Player spectator : getSpectators()) {
+                Language playerLang = Language.getPlayerLanguage(spectator);
+                nms.sendTitle(spectator, playerLang.m(Messages.ARENA_STATUS_START_COUNTDOWN_CANCELLED_TITLE), playerLang.m(Messages.ARENA_STATUS_START_COUNTDOWN_CANCELLED_SUB_TITLE), 0, 40, 10);
+            }
         }
         this.status = status;
     }
@@ -1774,11 +1774,19 @@ public class Arena implements IArena {
                     // We don't meet normal start requirements AND not everyone is ready.
                     // So we should cancel the start.
                     changeStatus(GameState.waiting);
-                    for (Player on : players) {
-                        on.sendMessage(getMsg(on, Messages.ARENA_START_COUNTDOWN_STOPPED_INSUFF_PLAYERS_CHAT));
-                    }
+                    sendInsufficientPlayersMessage();
                 }
             }
+        }
+    }
+
+    // 人数不足的取消原因同时通知参赛玩家和旁观者。
+    private void sendInsufficientPlayersMessage() {
+        for (Player player : players) {
+            player.sendMessage(getMsg(player, Messages.ARENA_START_COUNTDOWN_STOPPED_INSUFF_PLAYERS_CHAT));
+        }
+        for (Player spectator : spectators) {
+            spectator.sendMessage(getMsg(spectator, Messages.ARENA_START_COUNTDOWN_STOPPED_INSUFF_PLAYERS_CHAT));
         }
     }
 
@@ -1815,9 +1823,7 @@ public class Arena implements IArena {
 
                     if (!meetsNormalStart) {
                         changeStatus(GameState.waiting);
-                        for (Player on : players) {
-                            on.sendMessage(getMsg(on, Messages.ARENA_START_COUNTDOWN_STOPPED_INSUFF_PLAYERS_CHAT));
-                        }
+                        sendInsufficientPlayersMessage();
                     }
                 }
             }

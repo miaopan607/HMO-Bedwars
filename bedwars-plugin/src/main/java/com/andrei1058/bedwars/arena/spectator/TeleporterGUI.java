@@ -132,10 +132,15 @@ public class TeleporterGUI {
         assert im != null;
         IArena currentArena = Arena.getArenaByPlayer(targetPlayer);
         ITeam targetPlayerTeam = currentArena.getTeam(targetPlayer);
+        // 赛前展示预选队伍，未选队时使用中性文案。
+        if (targetPlayerTeam == null && currentArena instanceof Arena) {
+            targetPlayerTeam = ((Arena) currentArena).getSelectedTeam(targetPlayer);
+        }
 
         im.setDisplayName(getMsg(GUIholder, Messages.ARENA_SPECTATOR_TELEPORTER_GUI_HEAD_NAME)
-                .replace("{team}", targetPlayerTeam.getDisplayName(Language.getPlayerLanguage(GUIholder)))
-                .replace("{teamColor}", String.valueOf(targetPlayerTeam.getColor().chat()))
+                .replace("{team}", targetPlayerTeam == null ? getMsg(GUIholder, Messages.TEAM_SELECTOR_NONE)
+                        : targetPlayerTeam.getDisplayName(Language.getPlayerLanguage(GUIholder)))
+                .replace("{teamColor}", targetPlayerTeam == null ? "" : String.valueOf(targetPlayerTeam.getColor().chat()))
                 .replace("{player}", targetPlayer.getDisplayName())
                 .replace("{playername}", targetPlayer.getName()));
         List<String> lore = new ArrayList<>();

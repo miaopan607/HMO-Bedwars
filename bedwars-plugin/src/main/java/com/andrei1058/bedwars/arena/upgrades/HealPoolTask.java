@@ -82,6 +82,9 @@ public class HealPoolTask extends BukkitRunnable {
                             for (Player p : arena.getPlayers()) {
                                 BedWars.nms.playVillagerEffect(p, l);
                             }
+                            for (Player spectator : arena.getSpectators()) {
+                                BedWars.nms.playVillagerEffect(spectator, l);
+                            }
                         }
                     }
                 }

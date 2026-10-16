@@ -42,6 +42,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -121,9 +122,10 @@ public class SpectatorListeners implements Listener {
                     if (target == null) return;
                     if (target.isDead()) return;
                     if (!target.isOnline()) return;
+                    if (!a.isPlayer(target)) return;
                     SpectatorTeleportToPlayerEvent event = new SpectatorTeleportToPlayerEvent(p, target, a);
                     Bukkit.getPluginManager().callEvent(event);
-                    if (!event.isCancelled()) {
+                    if (!event.isCancelled() && a.isPlayer(target)) {
                         p.teleport(target);
                     }
                     Sounds.playSound("spectator-gui-click", p);
@@ -133,37 +135,38 @@ public class SpectatorListeners implements Listener {
         }
     }
 
-    @EventHandler
-    // Refresh placeholders from GUIs
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onDamage(EntityDamageEvent e) {
+        if (e.getEntity().getType() != EntityType.PLAYER) return;
+        refreshTeleporterAfterStateChange((Player) e.getEntity());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onHealthChange(EntityRegainHealthEvent e) {
         if (e.getEntity().getType() != EntityType.PLAYER) return;
-        Player p = (Player) e.getEntity();
-        IArena arena = Arena.getArenaByPlayer(p);
-        if (arena == null) return;
-        if (arena.isPlayer(p)) {
-            TeleporterGUI.refreshAllGUIs();
-        }
+        refreshTeleporterAfterStateChange((Player) e.getEntity());
     }
 
-    @EventHandler
-    // Refresh placeholders from GUIs
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onFoodChange(FoodLevelChangeEvent e) {
         if (e.getEntity().getType() != EntityType.PLAYER) return;
-        Player p = (Player) e.getEntity();
-        IArena arena = Arena.getArenaByPlayer(p);
-        if (arena == null) return;
-        if (arena.isPlayer(p)) {
-            TeleporterGUI.refreshAllGUIs();
+        refreshTeleporterAfterStateChange((Player) e.getEntity());
+    }
+
+    // 等待事件结算后读取玩家状态，菜单更新统一在主线程执行。
+    private void refreshTeleporterAfterStateChange(Player player) {
+        if (TeleporterGUI.getRefresh().isEmpty()) return;
+        IArena arena = Arena.getArenaByPlayer(player);
+        if (arena != null && arena.isPlayer(player)) {
+            Bukkit.getScheduler().runTask(BedWars.plugin, TeleporterGUI::refreshAllGUIs);
         }
     }
 
     @EventHandler
-    // Refresh placeholders from GUIs
+    // 离场事件先于成员移除，下一 tick 刷新最终名单。
     public void onPlayerLeave(PlayerLeaveArenaEvent e) {
         normalFirstPersonSpectators.remove(e.getPlayer().getUniqueId());
-        if (e.getArena().isPlayer(e.getPlayer())) {
-            TeleporterGUI.refreshAllGUIs();
-        }
+        refreshTeleporterAfterStateChange(e.getPlayer());
     }
 
     @EventHandler
