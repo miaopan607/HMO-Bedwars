@@ -1094,233 +1094,102 @@ public class English extends Language {
 
         // End of Sidebar
 
-        // start of TAB
-        // main lobby tab format
-        yml.addDefault(Messages.FORMATTING_SB_TAB_LOBBY_HEADER, List.of(
-                "                                                                                                        ",
-                "&a{serverIp}",
-                ""
-        ));
+        // TAB 使用统一静态页眉，玩家状态放在页脚与行尾。
+        String tabSeparator = "&8&m--------------------------------";
+        List<String> tabHeader = List.of(
+                "&a&lHMO BEDWARS",
+                "&7Bed Wars &8· &7Player List",
+                tabSeparator
+        );
+        yml.addDefault(Messages.FORMATTING_SB_TAB_LOBBY_HEADER, tabHeader);
         yml.addDefault(Messages.FORMATTING_SB_TAB_LOBBY_FOOTER, List.of(
-                "",
-                "&fThere are {on} players on this lobby",
-                "Powered by {poweredBy},&a{serverIp}",
-                ""
+                tabSeparator,
+                "&7Lobby players &8· &f{on}"
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_LOBBY_PREFIX, List.of(""));
         yml.addDefault(Messages.FORMATTING_SB_TAB_LOBBY_SUFFIX, List.of(""));
-        // player waiting lobby
-        yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_HEADER, List.of(
-                "                                                                                                        ",
-                "&a{serverIp}",
-                ""
-        ));
+
+        yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_HEADER, tabHeader);
         yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_FOOTER, List.of(
-                "",
-                "Waiting for more players,Waiting for more players.,Waiting for more players.., Waiting for more players...",
-                "&f{on}&a/&f{max}",
-                "",
-                "&a{serverIp}",
-                "&fPowered by {poweredBy}",
-                ""
+                tabSeparator,
+                "&7Waiting for players &8· &f{on}/{max}"
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_PREFIX, List.of(""));
         yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_SUFFIX, List.of(""));
-        // spectator waiting lobby
-        yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_HEADER_SPEC, List.of(
-                "                                                                                                        ",
-                "&a{serverIp}",
-                ""
-        ));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_HEADER_SPEC, tabHeader);
         yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_FOOTER_SPEC, List.of(
-                "",
-                "&7&oYou are spectating",
-                "Waiting for more players,Waiting for more players.,Waiting for more players.., Waiting for more players...",
-                "&f{on}&a/&f{max}",
-                "",
-                "&a{serverIp}",
-                "&fPowered by {poweredBy}",
-                ""
+                tabSeparator,
+                "&7Spectating &8· &f{on}/{max}"
         ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_PREFIX_SPEC, List.of(""));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_PREFIX_SPEC, List.of("&7[S] "));
         yml.addDefault(Messages.FORMATTING_SB_TAB_WAITING_SUFFIX_SPEC, List.of(""));
-        // player starting lobby
-        yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_HEADER, List.of(
-                "                                                                                                        ",
-                "&a{serverIp}",
-                "&7{date}",
-                "&7Map: &f{map} &7Mode: &f{group}",
-                ""
-        ));
+
+        yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_HEADER, tabHeader);
         yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_FOOTER, List.of(
-                "",
-                "&fStarting in &a{time} &fseconds,&fStarting in &a{time} &fseconds.,&fStarting in &a{time} &fseconds..,&fStarting in &a{time} &fseconds..",
-                "&f{on}&a/&f{max}",
-                "",
-                "&a{serverIp}",
-                "&fPowered by {poweredBy}",
-                ""
+                tabSeparator,
+                "&7Starting in &f{time}s &8· &f{on}/{max}"
         ));
         yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_PREFIX, List.of(""));
         yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_SUFFIX, List.of(""));
-        // spectator starting lobby
-        yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_HEADER_SPEC, List.of(
-                "                                                                                                        ",
-                "&a{serverIp}",
-                "&7{date}",
-                "&7Map: &f{map} &7Mode: &f{group}",
-                "",
-                "&7&oYou are spectating"
-        ));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_HEADER_SPEC, tabHeader);
         yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_FOOTER_SPEC, List.of(
-                "",
-                "&fStarting in &a{time} &fseconds,&fStarting in &a{time} &fseconds.,&fStarting in &a{time} &fseconds..,&fStarting in &a{time} &fseconds..",
-                "&f{on}&a/&f{max}",
-                "",
-                "&a{serverIp}",
-                "&fPowered by {poweredBy}",
-                ""
+                tabSeparator,
+                "&7Spectating &8· &7Starting in &f{time}s"
         ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_PREFIX_SPEC, List.of(""));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_PREFIX_SPEC, List.of("&7[S] "));
         yml.addDefault(Messages.FORMATTING_SB_TAB_STARTING_SUFFIX_SPEC, List.of(""));
-        // player playing
-        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_HEADER, List.of(
-                "                                                                                                        ",
-                "&a{serverIp}",
-                "&7{date}",
-                "&7Map: &f{map} &7Mode: &f{group}",
-                "",
-                "{nextEvent} in {time}",
-                ""
-        ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_FOOTER, List.of(
-                "",
-                "&fYou are playing on the {teamColor}{teamName} Team",
-                "&a{serverIp}",
-                "&fPowered by {poweredBy}",
-                ""
-        ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_PREFIX, List.of("{teamColor}{teamName} "));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SUFFIX, List.of(""));
-        // player eliminated - playing state
-        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_HEADER, List.of(
-                "                                                                                                        ",
-                "&a{serverIp}",
-                "&7{date}",
-                "&7Map: &f{map} &7Mode: &f{group}",
-                "",
-                "{nextEvent} in {time}",
-                "",
-                "&7&oAYou've been eliminated,&f&oAYou've been eliminated"
-        ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_FOOTER, List.of(
-                "",
-                "&fYou have played in the {teamColor}{teamName} Team",
-                "&a{serverIp}",
-                "&fPowered by {poweredBy}",
-                ""
-        ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_PREFIX, List.of("&f&oSpectator "));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_SUFFIX, List.of(" &c&oEliminated {teamColor}&o{teamName}", " {teamColor}&oEliminated"));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_DEPARTED, "{teamColor}{playerName} &7[{teamName}] &cEliminated · Left");
-        // spectator - playing state
-        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SPEC_HEADER, List.of(
-                "                                                                                                        ",
-                "&a{serverIp}",
-                "&7{date}",
-                "&7Map: &f{map} &7Mode: &f{group}",
-                "",
-                "{nextEvent} in {time}",
-                "",
-                "&7&oYou are spectating"
-        ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SPEC_FOOTER, List.of(
-                "",
-                "&fPowered by {poweredBy}",
-                ""
-        ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SPEC_PREFIX, List.of("&f&oSpectator "));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SPEC_SUFFIX, List.of(""));
-        // winner alive - restarting state
-        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN1_HEADER, List.of(
-                "                                                                                                        ",
-                "&6⭐ {winnerTeamColor}&lYour team won the game! &6⭐",
-                "&7{date}", "&7Map: &f{map} &7Mode: &f{group}",
-                ""
-        ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN1_FOOTER, List.of(
-                "",
-                "&6&lYou won in the {teamColor}&l{teamName} Team&6&l!,&6&lYou won in the {teamColor}&l{teamName} Team&6&l!,&f&lYou won in the {teamColor}&l{teamName} Team&f&l!",
-                "&7Statistics from this match",
-                "&eKills: &f{kills} &8| &eFinal Kills: &f{finalKills} &8| &eBeds Destroyed: &f{beds} &8| &eDeaths: &f{deaths},&eKills: &7{kills} &8| &eFinal Kills: &7{finalKills} &8| &eBeds Destroyed: &7{beds} &8| &eDeaths: &7{deaths}",
-                "",
-                "&fThanks for playing {player}!",
-                "&a{serverIp}",
-                "&fPowered by {poweredBy}",
-                ""
-        ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN1_PREFIX, List.of("&6&l⭐ {teamColor}{teamName} "));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN1_SUFFIX, List.of(""));
-        // winner dead - restarting state
-        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN2_HEADER, List.of(
-                "                                                                                                        ",
-                "&6⭐ {winnerTeamColor}&l{winnerTeamName} Team won the game! &6⭐",
-                "&7{date}",
-                "&7Map: &f{map} &7Mode: &f{group}",
-                ""
-        ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN2_FOOTER, List.of(
-                "",
-                "&6&lYou won in the {teamColor}&l{teamName} Team&6&l!,&6&lYou won in the {teamColor}&l{teamName} Team&6&l!,&f&lYou won in the {teamColor}&l{teamName} Team&f&l!",
-                "&7Statistics from this match",
-                "&eKills: &f{kills} &8| &eFinal Kills: &f{finalKills} &8| &eBeds Destroyed: &f{beds} &8| &eDeaths: &f{deaths},&eKills: &7{kills} &8| &eFinal Kills: &7{finalKills} &8| &eBeds Destroyed: &7{beds} &8| &eDeaths: &7{deaths}",
 
-                "&fThanks for playing {player}!",
-                "&a{serverIp}",
-                "&fPowered by {poweredBy}",
-                ""
+        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_HEADER, tabHeader);
+        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_FOOTER, List.of(
+                tabSeparator,
+                "&7Playing &8· {teamColor}{teamName}"
         ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN2_PREFIX, List.of("&6&l⭐ {teamColor}{teamName} "));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN2_SUFFIX, List.of("", " &c&oEliminated"));
-        // loser - restarting state
-        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_ELM_HEADER, List.of(
-                "                                                                                                        ",
-                "&6⭐ {winnerTeamColor}&l{winnerTeamName} Team won the game! &6⭐",
-                "&7{date}",
-                "&7Map: &f{map} &7Mode: &f{group}",
-                ""
+        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_PREFIX, List.of("{teamColor}[{teamLetter}] "));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SUFFIX, List.of(""));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_HEADER, tabHeader);
+        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_FOOTER, List.of(
+                tabSeparator,
+                "&7Spectating &8· &7Formerly {teamColor}{teamName} &8· &7Eliminated"
         ));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_PREFIX, List.of("{teamColor}[{teamLetter}] "));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_SUFFIX, List.of("&7 · Eliminated"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_DEPARTED, "{teamColor}[{teamLetter}] {playerName}&7 · Eliminated · Left");
+        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SPEC_HEADER, tabHeader);
+        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SPEC_FOOTER, List.of(
+                tabSeparator,
+                "&7Spectating"
+        ));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SPEC_PREFIX, List.of("&7[S] "));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SPEC_SUFFIX, List.of(""));
+
+        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN1_HEADER, tabHeader);
+        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN1_FOOTER, List.of(
+                tabSeparator,
+                "&7Game over &8· {teamColor}{teamName} &7won"
+        ));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN1_PREFIX, List.of("{teamColor}[{teamLetter}] "));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN1_SUFFIX, List.of("&7 · Winner"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN2_HEADER, tabHeader);
+        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN2_FOOTER, List.of(
+                tabSeparator,
+                "&7Spectating &8· {teamColor}{teamName} &7won"
+        ));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN2_PREFIX, List.of("{teamColor}[{teamLetter}] "));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN2_SUFFIX, List.of("&7 · Eliminated"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_ELM_HEADER, tabHeader);
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_ELM_FOOTER, List.of(
-                "",
-                "&fYou have lost in the {teamColor}{teamName} Team",
-                "&7Statistics from this match",
-                "&eKills: &f{kills} &8| &eFinal Kills: &f{finalKills} &8| &eBeds Destroyed: &f{beds} &8| &eDeaths: &f{deaths},&eKills: &7{kills} &8| &eFinal Kills: &7{finalKills} &8| &eBeds Destroyed: &7{beds} &8| &eDeaths: &7{deaths}",
-                "&fThanks for playing {player}!",
-                "&a{serverIp}",
-                "&fPowered by {poweredBy}",
-                ""
+                tabSeparator,
+                "&7Game over &8· {winnerTeamColor}{winnerTeamName} &7won"
         ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_ELM_PREFIX, List.of("{teamColor}{teamName} "));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_ELM_SUFFIX, List.of("", " &c&oEliminated"));
-        // spectator - restarting state
-        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_SPEC_HEADER, List.of(
-                "                                                                                                        ",
-                "&a{serverIp}",
-                "&6⭐ {winnerTeamColor}&l{winnerTeamName} Team won the game! &6⭐",
-                "&7{date}",
-                "&7Map: &f{map} &7Mode: &f{group}",
-                "",
-                "&fThanks for playing {player}!",
-                ""
-        ));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_ELM_PREFIX, List.of("{teamColor}[{teamLetter}] "));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_ELM_SUFFIX, List.of("&7 · Eliminated"));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_SPEC_HEADER, tabHeader);
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_SPEC_FOOTER, List.of(
-                "",
-                "&fPowered by {poweredBy}",
-                ""
+                tabSeparator,
+                "&7Game over &8· {winnerTeamColor}{winnerTeamName} &7won"
         ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_SPEC_PREFIX, List.of("&f&oSpectator "));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_SPEC_PREFIX, List.of("&7[S] "));
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_SPEC_SUFFIX, List.of(""));
-        // end of tab
 
         //
         yml.addDefault(Messages.SHOP_INDEX_NAME, "&8Quick Buy");

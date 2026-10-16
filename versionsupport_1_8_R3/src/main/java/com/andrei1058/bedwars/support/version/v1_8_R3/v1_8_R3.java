@@ -117,8 +117,8 @@ public class v1_8_R3 extends VersionSupport {
     }
 
     @Override
-    public void removeVirtualTab(Player viewer, UUID entryId) {
-        sendVirtualTab(viewer, entryId, "departed", "", PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER);
+    public void removeVirtualTab(Player viewer, UUID entryId, String profileName) {
+        sendVirtualTab(viewer, entryId, profileName, "", PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER);
     }
 
     @SuppressWarnings("unchecked")
@@ -129,12 +129,22 @@ public class v1_8_R3 extends VersionSupport {
             playerInfoAction.set(packet, action);
             List<PacketPlayOutPlayerInfo.PlayerInfoData> entries =
                     (List<PacketPlayOutPlayerInfo.PlayerInfoData>) playerInfoEntries.get(packet);
-            entries.add(packet.new PlayerInfoData(new GameProfile(entryId, profileName), 0,
+            entries.add(packet.new PlayerInfoData(new GameProfile(entryId, profileName), -1,
                     WorldSettings.EnumGamemode.SURVIVAL, new ChatComponentText(displayName)));
         } catch (IllegalAccessException e) {
             throw new IllegalStateException("Cannot create virtual TAB packet", e);
         }
-        ((CraftPlayer) viewer).getHandle().playerConnection.sendPacket(packet);
+        // 1.8 客户端先按计分板队伍排序，虚拟条目也要注册对应队伍。
+        PlayerConnection connection = ((CraftPlayer) viewer).getHandle().playerConnection;
+        ScoreboardTeam team = new ScoreboardTeam(null, profileName);
+        if (action == PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER) {
+            team.getPlayerNameSet().add(profileName);
+            connection.sendPacket(new PacketPlayOutScoreboardTeam(team, 0));
+            connection.sendPacket(packet);
+        } else {
+            connection.sendPacket(packet);
+            connection.sendPacket(new PacketPlayOutScoreboardTeam(team, 1));
+        }
     }
 
     @Override

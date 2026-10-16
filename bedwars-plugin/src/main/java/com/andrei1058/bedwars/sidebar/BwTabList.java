@@ -46,13 +46,14 @@ import static com.andrei1058.bedwars.BedWars.*;
 
 public class BwTabList {
 
-    private static final char SPECTATOR_PREFIX = 'z';
-    private static final char ELIMINATED_FROM_TEAM_PREFIX = 'z';
+    private static final char SPECTATOR_PREFIX = 'y';
+    private static final char ELIMINATED_FROM_TEAM_PREFIX = 'x';
+    private static final char DEPARTED_PREFIX = 'z';
 
     // Player list container. Used to manipulate deployed player tab: lines ecc.
     // Key is player uuid.
     private final HashMap<UUID, PlayerTab> deployedPerPlayerTabList = new HashMap<>();
-    private final Set<UUID> deployedDepartedTabs = new HashSet<>();
+    private final Map<UUID, String> deployedDepartedTabs = new HashMap<>();
     // playing-restarting team order prefix for tab
     // this is concatenated to player identifier to keep tab-list ordered
     // and still let players have individual placeholders
@@ -121,30 +122,33 @@ public class BwTabList {
             return;
         }
 
-        Set<UUID> stale = new HashSet<>(deployedDepartedTabs);
+        Language language = Language.getPlayerLanguage(sidebar.getPlayer());
+        Set<UUID> stale = new HashSet<>(deployedDepartedTabs.keySet());
         for (SidebarService.DepartedTabEntry entry : SidebarService.getInstance().getDepartedTabs(arena)) {
             Player player = Bukkit.getPlayer(entry.playerId);
             if (player != null && (arena.isPlayer(player) || arena.isSpectator(player))) continue;
             stale.remove(entry.entryId);
-            if (deployedDepartedTabs.contains(entry.entryId)) continue;
-            String profileName = "z" + String.format(Locale.ROOT, "%03d", arena.getTeams().indexOf(entry.team))
+            if (deployedDepartedTabs.containsKey(entry.entryId)) continue;
+            String profileName = DEPARTED_PREFIX + getTeamTabOrderPrefix(entry.team)
                     + entry.entryId.toString().replace("-", "").substring(0, 12);
+            String teamName = entry.team.getDisplayName(language);
+            String teamColor = entry.team.getColor().chat().toString();
             String displayName = Language.getMsg(sidebar.getPlayer(), Messages.FORMATTING_SB_TAB_PLAYING_ELM_DEPARTED)
                     .replace("{playerName}", entry.playerName)
-                    .replace("{teamColor}", entry.team.getColor().chat().toString())
-                    .replace("{teamName}", entry.team.getDisplayName(Language.getPlayerLanguage(sidebar.getPlayer())));
+                    .replace("{teamColor}", teamColor)
+                    .replace("{teamName}", teamName)
+                    .replace("{teamLetter}", teamColor + teamName.substring(0, 1));
             BedWars.nms.addVirtualTab(sidebar.getPlayer(), entry.entryId, profileName, displayName);
-            deployedDepartedTabs.add(entry.entryId);
+            deployedDepartedTabs.put(entry.entryId, profileName);
         }
         for (UUID entryId : stale) {
-            BedWars.nms.removeVirtualTab(sidebar.getPlayer(), entryId);
-            deployedDepartedTabs.remove(entryId);
+            BedWars.nms.removeVirtualTab(sidebar.getPlayer(), entryId, deployedDepartedTabs.remove(entryId));
         }
     }
 
     void clearDepartedTabs() {
-        for (UUID entryId : deployedDepartedTabs) {
-            BedWars.nms.removeVirtualTab(sidebar.getPlayer(), entryId);
+        for (Map.Entry<UUID, String> entry : deployedDepartedTabs.entrySet()) {
+            BedWars.nms.removeVirtualTab(sidebar.getPlayer(), entry.getKey(), entry.getValue());
         }
         deployedDepartedTabs.clear();
     }
