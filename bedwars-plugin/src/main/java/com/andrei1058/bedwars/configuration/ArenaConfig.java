@@ -63,12 +63,9 @@ public class ArenaConfig extends ConfigManager {
         yml.addDefault(ConfigPath.ARENA_USE_BED_HOLO, true);
         yml.addDefault(ConfigPath.ARENA_ALLOW_MAP_BREAK, false);
         yml.addDefault(ConfigPath.ARENA_SUDDEN_DEATH_REMOVE_RESOURCE_GENERATOR, false);
+        // 仅添加 Minecraft 1.8.8 支持的游戏规则。
         ArrayList<String> rules = new ArrayList<>();
         rules.add("doDaylightCycle:false");
-        rules.add("announceAdvancements:false");
-        rules.add("doInsomnia:false");
-        rules.add("doImmediateRespawn:true");
-        rules.add("doWeatherCycle:false");
         rules.add("doFireTick:false");
         yml.addDefault(ConfigPath.ARENA_GAME_RULES, rules);
         yml.options().copyDefaults(true);
