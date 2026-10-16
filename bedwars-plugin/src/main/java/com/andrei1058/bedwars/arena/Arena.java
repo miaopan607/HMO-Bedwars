@@ -401,6 +401,8 @@ public class Arena implements IArena {
             String[] rule = s.split(":");
             if (rule.length == 2) world.setGameRuleValue(rule[0], rule[1]);
         }
+        // 地图加载或重置后统一设为正午。
+        world.setTime(6000L);
         world.setAutoSave(false);
 
         /* Clear setup armor-stands */
