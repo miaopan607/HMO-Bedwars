@@ -243,6 +243,10 @@ public class BwSidebar implements ISidebar {
         tabList.clearDepartedTabs();
     }
 
+    void refreshHealthDisplay() {
+        tabList.handleHealthIcon();
+    }
+
     @SuppressWarnings("removal")
     @Override
     public boolean isTabFormattingDisabled() {

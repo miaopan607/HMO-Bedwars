@@ -312,6 +312,9 @@ public class SidebarService implements ISidebarService {
     }
 
     public void refreshHealth(IArena arena, Player player, int health) {
+        if (arena.isSpectator(player)) {
+            return;
+        }
         this.sidebars.forEach((k, v) -> {
             if (null != v.getArena() && v.getArena().equals(arena)) {
                 v.getHandle().setPlayerHealth(player, health);
@@ -369,6 +372,9 @@ public class SidebarService implements ISidebarService {
             if (null != v.getArena() && v.getArena().equals(arena)) {
                 if (!v.getPlayer().equals(player)) {
                     v.giveUpdateTabFormat(player, false, spectator);
+                }
+                if (Boolean.TRUE.equals(spectator)) {
+                    v.refreshHealthDisplay();
                 }
             }
         });

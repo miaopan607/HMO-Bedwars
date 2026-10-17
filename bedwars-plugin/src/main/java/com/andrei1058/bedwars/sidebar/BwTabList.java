@@ -158,11 +158,11 @@ public class BwTabList {
             return;
         }
 
+        sidebar.getHandle().hidePlayersHealth();
         if (null == sidebar.getArena()) {
-            sidebar.getHandle().hidePlayersHealth();
             return;
-        } else if (sidebar.getArena().getStatus() != GameState.playing) {
-            sidebar.getHandle().hidePlayersHealth();
+        }
+        if (sidebar.getArena().getStatus() != GameState.playing) {
             return;
         }
 
@@ -186,16 +186,14 @@ public class BwTabList {
             };
         }
 
-        if (config.getBoolean(ConfigPath.SB_CONFIG_SIDEBAR_HEALTH_ENABLE)) {
-            sidebar.getHandle().showPlayersHealth(line, config.getBoolean(ConfigPath.SB_CONFIG_SIDEBAR_HEALTH_IN_TAB));
+        if (!config.getBoolean(ConfigPath.SB_CONFIG_SIDEBAR_HEALTH_ENABLE)) {
+            return;
         }
+        sidebar.getHandle().showPlayersHealth(line, config.getBoolean(ConfigPath.SB_CONFIG_SIDEBAR_HEALTH_IN_TAB));
 
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             if (null != sidebar.getArena() && null != sidebar.getHandle()) {
                 sidebar.getArena().getPlayers().forEach(player -> sidebar.getHandle().setPlayerHealth(player, (int) Math.ceil(player.getHealth())));
-                if (sidebar.getArena().isSpectator(sidebar.getPlayer())) {
-                    sidebar.getArena().getSpectators().forEach(player -> sidebar.getHandle().setPlayerHealth(player, (int) Math.ceil(player.getHealth())));
-                }
             }
         }, 10L);
     }
