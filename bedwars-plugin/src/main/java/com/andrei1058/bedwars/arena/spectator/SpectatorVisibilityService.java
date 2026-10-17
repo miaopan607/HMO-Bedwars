@@ -46,7 +46,7 @@ public final class SpectatorVisibilityService {
         preferences.put(uuid, visible);
         IArena arena = Arena.getArenaByPlayer(player);
         if (arena != null)
-            BedWars.nms.updateSpectatorView(player, new ArrayList<>(arena.getSpectators()), visible);
+            refreshArena(arena);
         database.execute(() -> {
             try {
                 BedWars.getRemoteDatabase().setSpectatorVisibility(uuid, visible);
@@ -63,8 +63,20 @@ public final class SpectatorVisibilityService {
 
     public void refreshArena(IArena arena) {
         List<Player> spectators = new ArrayList<>(arena.getSpectators());
-        for (Player viewer : spectators)
-            BedWars.nms.updateSpectatorView(viewer, spectators, isShowingSpectators(viewer.getUniqueId()));
+        List<Player> visibleSpectators = new ArrayList<>();
+        List<Player> attachedSpectators = new ArrayList<>();
+        for (Player spectator : spectators) {
+            if (spectator.getSpectatorTarget() == null)
+                visibleSpectators.add(spectator);
+            else
+                attachedSpectators.add(spectator);
+        }
+        for (Player viewer : spectators) {
+            BedWars.nms.updateSpectatorView(viewer, visibleSpectators, isShowingSpectators(viewer.getUniqueId()));
+            for (Player attachedSpectator : attachedSpectators)
+                if (attachedSpectator != viewer)
+                    BedWars.nms.spigotHidePlayer(attachedSpectator, viewer);
+        }
     }
 
     public void removeSpectator(Player player, IArena arena) {
