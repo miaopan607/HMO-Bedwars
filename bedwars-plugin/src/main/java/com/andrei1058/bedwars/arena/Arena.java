@@ -1293,6 +1293,8 @@ public class Arena implements IArena {
         }
 
         reJoin.getBwt().reJoin(p, ev.getRespawnTime());
+        // Refresh the tab list after the player has been restored to the team.
+        SidebarService.getInstance().handleReJoin(this, p);
         reJoin.destroy(false);
 
         SidebarService.getInstance().giveSidebar(p, this, true);
