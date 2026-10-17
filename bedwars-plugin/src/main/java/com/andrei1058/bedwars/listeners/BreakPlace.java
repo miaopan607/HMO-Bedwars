@@ -379,21 +379,7 @@ public class BreakPlace implements Listener, com.andrei1058.bedwars.configuratio
                 return;
             }
 
-            // allow breaking of grass
-            // drops are removed in another event
             switch (e.getBlock().getType().toString()) {
-                case "LONG_GRASS":
-                case "TALL_GRASS":
-                case "TALL_SEAGRASS":
-                case "SEAGRASS":
-                case "SUGAR_CANE":
-                case "SUGAR_CANE_BLOCK":
-                case "GRASS_PATH":
-                case "DOUBLE_PLANT":
-                    if (e.isCancelled()) {
-                        e.setCancelled(false);
-                    }
-                    return;
                 case "FIRE":
                 case "SOUL_FIRE":
                     if (a.isBlockPlaced(e.getBlock())) {
