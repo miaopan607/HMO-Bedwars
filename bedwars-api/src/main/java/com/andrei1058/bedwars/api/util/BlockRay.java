@@ -8,10 +8,7 @@ import org.bukkit.util.Vector;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-/*
-    Used for tracing blocks between two vectors.
-    Note: this could return the same blocks multiple times.
-*/
+/** Traces each sampled block coordinate once between two vectors. */
 public class BlockRay implements Iterator<Block> {
     private final World world;
 
@@ -30,6 +27,7 @@ public class BlockRay implements Iterator<Block> {
     private double lcz;
 
     private int currentBlock;
+    private int queueSize;
 
     private final Block[] blockQueue;
 
@@ -62,56 +60,31 @@ public class BlockRay implements Iterator<Block> {
         this.yOffset = src.getBlockY() + 0.5;
         this.zOffset = src.getBlockZ() + 0.5;
 
-        // The last vector components (last offset)
-        this.lcx = 0;
-        this.lcy = 0;
-        this.lcz = 0;
+        double sections = delta.length() / step;
+        this.multiple = 1 / sections;
+        this.parts = NumberConversions.ceil(sections);
 
-        // How much one part is worth
-        this.multiple = (1 / (delta.length() / step));
-
-        // How many sections `delta` could be split up to
-        this.parts = NumberConversions.ceil(delta.length() / step);
-
-        // Where we hold our components per step
-        // 0 -> X component
-        // 1 -> Y component
-        // 2 -> Z component
-        // 3 -> XY component
-        // 4 -> XZ component
-        // 5 -> ZY component
-        // 6 -> Resultant
+        // Buffer distinct components in their original visitation order.
         this.blockQueue = new Block[7];
-
-        // The current component (gets decremented whenever next() is called)
-        this.currentBlock = 6;
 
         scan();
     }
 
     @Override
     public boolean hasNext() {
-        return consumed <= parts || currentBlock >= 0;
+        while (currentBlock >= queueSize && consumed <= parts) {
+            scan();
+        }
+        return currentBlock < queueSize;
     }
 
-    /**
-     * This could return similar blocks multiple times.
-     *
-     * @return Current block at the ray's position.
-     */
     @Override
     public Block next() {
         if (!hasNext()) {
             throw new NoSuchElementException("No more blocks");
         }
 
-        if (currentBlock < 0) {
-            scan();
-            currentBlock = 6;
-        }
-
-        return blockQueue[currentBlock--];
-
+        return blockQueue[currentBlock++];
     }
 
     private void scan() {
@@ -127,61 +100,31 @@ public class BlockRay implements Iterator<Block> {
         int currentYFloor = NumberConversions.floor(yOffset + cy);
         int currentZFloor = NumberConversions.floor(zOffset + cz);
 
-
-        // Get the X component separately
-        blockQueue[0] = world.getBlockAt(
-                currentXFloor,
-                lastYFloor,
-                lastZFloor
-        );
-
-        // Get the Y component separately
-        blockQueue[1] = world.getBlockAt(
-                lastXFloor,
-                currentYFloor,
-                lastZFloor
-        );
-
-        // Get the Z component separately
-        blockQueue[2] = world.getBlockAt(
-                lastXFloor,
-                lastYFloor,
-                currentZFloor
-        );
-
-        // Get the XY separately
-        blockQueue[3] = world.getBlockAt(
-                currentXFloor,
-                currentYFloor,
-                lastZFloor
-        );
-
-        // Get the XZ separately
-        blockQueue[4] = world.getBlockAt(
-                currentXFloor,
-                lastYFloor,
-                currentZFloor
-        );
-
-        // Get the ZY separately
-        blockQueue[5] = world.getBlockAt(
-                lastXFloor,
-                currentYFloor,
-                currentZFloor
-        );
-
-        // Get the resultant (cx, cy, cz) together
-        blockQueue[6] =  world.getBlockAt(
-                currentXFloor,
-                currentYFloor,
-                currentZFloor
-        );
+        queueSize = 0;
+        currentBlock = 0;
+        queueBlock(currentXFloor, currentYFloor, currentZFloor, lastXFloor, lastYFloor, lastZFloor);
+        queueBlock(lastXFloor, currentYFloor, currentZFloor, lastXFloor, lastYFloor, lastZFloor);
+        queueBlock(currentXFloor, lastYFloor, currentZFloor, lastXFloor, lastYFloor, lastZFloor);
+        queueBlock(currentXFloor, currentYFloor, lastZFloor, lastXFloor, lastYFloor, lastZFloor);
+        queueBlock(lastXFloor, lastYFloor, currentZFloor, lastXFloor, lastYFloor, lastZFloor);
+        queueBlock(lastXFloor, currentYFloor, lastZFloor, lastXFloor, lastYFloor, lastZFloor);
+        queueBlock(currentXFloor, lastYFloor, lastZFloor, lastXFloor, lastYFloor, lastZFloor);
 
         lcx = cx;
         lcy = cy;
         lcz = cz;
 
         consumed += 1;
+    }
+
+    private void queueBlock(int x, int y, int z, int previousX, int previousY, int previousZ) {
+        // Adjacent monotone sampling steps only share their common endpoint.
+        if (consumed > 0 && x == previousX && y == previousY && z == previousZ) return;
+        for (int i = 0; i < queueSize; i++) {
+            Block queued = blockQueue[i];
+            if (queued.getX() == x && queued.getY() == y && queued.getZ() == z) return;
+        }
+        blockQueue[queueSize++] = world.getBlockAt(x, y, z);
     }
 
 }

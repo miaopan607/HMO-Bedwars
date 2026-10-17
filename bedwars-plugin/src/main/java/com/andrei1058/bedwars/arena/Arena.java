@@ -52,6 +52,7 @@ import com.andrei1058.bedwars.api.sidebar.ISidebar;
 import com.andrei1058.bedwars.api.tasks.PlayingTask;
 import com.andrei1058.bedwars.api.tasks.RestartingTask;
 import com.andrei1058.bedwars.api.tasks.StartingTask;
+import com.andrei1058.bedwars.api.util.BlockCoordinate;
 import com.andrei1058.bedwars.arena.stats.GameStatsManager;
 import com.andrei1058.bedwars.arena.stats.StatisticsOrdered;
 import com.andrei1058.bedwars.arena.tasks.GamePlayingTask;
@@ -91,7 +92,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -218,7 +218,8 @@ public class Arena implements IArena {
     private World world;
     private String group = "Default", arenaName, worldName;
     private List<ITeam> teams = new ArrayList<>();
-    private LinkedList<org.bukkit.util.Vector> placed = new LinkedList<>();
+    private final Set<BlockCoordinate> placed = new HashSet<>();
+    private final Set<BlockCoordinate> placedView = Collections.unmodifiableSet(placed);
     private List<String> nextEvents = new ArrayList<>();
     private List<Region> regionsList = new ArrayList<>();
     private int renderDistance;
@@ -1479,22 +1480,18 @@ public class Arena implements IArena {
     @Override
     public void addPlacedBlock(Block block) {
         if (block == null) return;
-        placed.add(new org.bukkit.util.Vector(block.getX(), block.getY(), block.getZ()));
+        placed.add(new BlockCoordinate(block.getX(), block.getY(), block.getZ()));
     }
 
     @Override
     public void removePlacedBlock(Block block) {
         if (block == null) return;
-        if (!isBlockPlaced(block)) return;
-        placed.remove(new org.bukkit.util.Vector(block.getX(), block.getY(), block.getZ()));
+        placed.remove(new BlockCoordinate(block.getX(), block.getY(), block.getZ()));
     }
 
     @Override
     public boolean isBlockPlaced(Block block) {
-        for (org.bukkit.util.Vector v : getPlaced()) {
-            if (v.getX() == block.getX() && v.getY() == block.getY() && v.getZ() == block.getZ()) return true;
-        }
-        return false;
+        return placed.contains(new BlockCoordinate(block.getX(), block.getY(), block.getZ()));
     }
 
     /**
@@ -2644,8 +2641,8 @@ public class Arena implements IArena {
         return regionsList;
     }
 
-    public LinkedList<Vector> getPlaced() {
-        return placed;
+    public Set<BlockCoordinate> getPlaced() {
+        return placedView;
     }
 
     public static LinkedList<IArena> getEnableQueue() {
@@ -2691,7 +2688,7 @@ public class Arena implements IArena {
         }
         playerLocation.entrySet().removeIf(e -> Objects.requireNonNull(e.getValue().getWorld()).getName().equalsIgnoreCase(worldName));
         teams = null;
-        placed = null;
+        placed.clear();
         nextEvents = null;
         regionsList = null;
         respawnSessions = null;

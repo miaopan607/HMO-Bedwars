@@ -6,12 +6,17 @@ import com.andrei1058.bedwars.api.configuration.ConfigPath;
 import com.andrei1058.bedwars.api.server.VersionSupport;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.util.NumberConversions;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.LinkedList;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class BlastProtectionUtil {
 
@@ -23,77 +28,105 @@ public class BlastProtectionUtil {
         this.api = api;
     }
 
-
     /**
-     * Check if block is protected by blast-proof glass or an unbreakable block from a point of view
-     * <p>
-     * if pov is null, block is checked by {@link VersionSupport#isGlass(Material)} and {@link IArena#isBlockPlaced(Block)} instead.
-     * Otherwise, a ray tracing is performed to check whether there is any glass block or an unbreakable block.
-     * <p>
-     * If arena is null, then glass only be checked.
+     * Checks blast protection for one block in the POV's world.
      *
-     * @param arena Arena instance.
-     * @param pov   the point of view.
-     * @param block the block instance.
-     * @param step  how frequent to check the ray (0.25 - 0.5 recommended).
-     * @return whether there's unbreakable block between the pov and the block
+     * @param arena owning arena, required
+     * @param pov explosion point of view, required
+     * @param block block in the same world as the POV
+     * @param step ray sampling distance (0.25 - 0.5 recommended)
+     * @return whether the block is protected
      */
     public boolean isProtected(@NotNull IArena arena, Location pov, @NotNull Block block, double step) {
+        return isProtected(createContext(arena, pov, step), block);
+    }
 
-        if (arena.isProtected(block.getLocation()) || arena.isTeamBed(block.getLocation())) {
-            return true;
+    /**
+     * Filters one explosion's same-world candidates with a shared classification cache.
+     */
+    public void filterBlocks(@NotNull IArena arena, @NotNull Location pov, @NotNull List<Block> blocks, double step) {
+        if (blocks.isEmpty()) return;
+        ExplosionContext context = createContext(arena, pov, step);
+        blocks.removeIf(block -> isProtected(context, block));
+    }
+
+    private ExplosionContext createContext(IArena arena, Location pov, double step) {
+        boolean rayBlockedByGlass = api.getConfigs().getMainConfig()
+                .getBoolean(ConfigPath.GENERAL_TNT_RAY_BLOCKED_BY_GLASS);
+        return new ExplosionContext(arena, pov, step, rayBlockedByGlass);
+    }
+
+    private boolean isProtected(ExplosionContext context, Block block) {
+        Location location = block.getLocation();
+        if (context.arena.isProtected(location) || context.arena.isTeamBed(location)) return true;
+
+        Vector target = location.toVector();
+        int protectedWeight = 0;
+        int processedWeight = 0;
+        for (Map.Entry<Vector, Integer> entry : context.origins.entrySet()) {
+            Vector origin = entry.getKey();
+            int weight = entry.getValue();
+            boolean blocked = false;
+            // Same-block rays remain unblocked votes in the original 27-ray threshold.
+            if (!origin.equals(target)) {
+                BlockRay ray = new BlockRay(context.world, origin, target, context.step);
+                while (ray.hasNext()) {
+                    if (isBlocking(context, ray.next())) {
+                        blocked = true;
+                        break;
+                    }
+                }
+            }
+            processedWeight += weight;
+            if (blocked) protectedWeight += weight;
+            if (protectedWeight >= 22) return true;
+            if (protectedWeight + (27 - processedWeight) < 22) return false;
         }
+        return protectedWeight >= 22;
+    }
 
-        boolean rayBlockedByGlass = api.getConfigs().getMainConfig().getBoolean(ConfigPath.GENERAL_TNT_RAY_BLOCKED_BY_GLASS);
+    private boolean isBlocking(ExplosionContext context, Block block) {
+        BlockCoordinate coordinate = new BlockCoordinate(block.getX(), block.getY(), block.getZ());
+        Boolean cached = context.blocking.get(coordinate);
+        if (cached != null) return cached;
 
-        // Trace blocks from pov to the block location
-        final Location target = block.getLocation();
+        Material type = block.getType();
+        boolean blocked = type != Material.AIR
+                && ((context.rayBlockedByGlass && versionSupport.isGlass(type))
+                || (!context.allowMapBreak && !context.placed.contains(coordinate)));
+        context.blocking.put(coordinate, blocked);
+        return blocked;
+    }
 
-        LinkedList<Vector> targetVectors = new LinkedList<>();
+    private static final class ExplosionContext {
+        private final IArena arena;
+        private final World world;
+        private final double step;
+        private final boolean rayBlockedByGlass;
+        private final boolean allowMapBreak;
+        private final Set<BlockCoordinate> placed;
+        private final Map<BlockCoordinate, Boolean> blocking = new HashMap<>();
+        private final Map<Vector, Integer> origins = new LinkedHashMap<>();
 
-        double alteredRayStep = 0.73;
-        // x
-        for (double XrayRadius = alteredRayStep * -1; XrayRadius <= alteredRayStep; XrayRadius+= alteredRayStep) {
-            // y
-            for (double YrayRadius = alteredRayStep * -1; YrayRadius <= alteredRayStep; YrayRadius+= alteredRayStep) {
-                // z
-                for (double ZrayRadius = alteredRayStep * -1; ZrayRadius <= alteredRayStep; ZrayRadius+= alteredRayStep) {
-                    targetVectors.add(pov.clone().toVector().toBlockVector().add(new Vector(XrayRadius, YrayRadius, ZrayRadius)));
+        private ExplosionContext(IArena arena, Location pov, double step, boolean rayBlockedByGlass) {
+            this.arena = arena;
+            this.world = pov.getWorld();
+            this.step = step;
+            this.rayBlockedByGlass = rayBlockedByGlass;
+            this.allowMapBreak = arena.isAllowMapBreak();
+            this.placed = arena.getPlaced();
+            // Group actual integer origins, retaining all 27 votes and their visitation order.
+            for (double x = -0.73; x <= 0.73; x += 0.73) {
+                for (double y = -0.73; y <= 0.73; y += 0.73) {
+                    for (double z = -0.73; z <= 0.73; z += 0.73) {
+                        Vector origin = new Vector(
+                                NumberConversions.floor(pov.getX() + x),
+                                NumberConversions.floor(pov.getY() + y),
+                                NumberConversions.floor(pov.getZ() + z));
+                        origins.merge(origin, 1, Integer::sum);
+                    }
                 }
             }
         }
-
-        AtomicInteger protectedTimes = new AtomicInteger();
-        int totalRays = targetVectors.size();
-
-        targetVectors.forEach(targetVector -> {
-            BlockRay ray;
-            try {
-                ray = new BlockRay(block.getWorld(), targetVector, target.toVector(), step);
-            } catch (IllegalArgumentException ignored) {
-                return;
-            }
-
-            while (ray.hasNext()) {
-                Block nextBlock = ray.next();
-
-                if (nextBlock.getType() == Material.AIR) {
-                    continue;
-                }
-
-                if (rayBlockedByGlass && versionSupport.isGlass(nextBlock.getType())) {
-                    // If a block is a glass
-                    protectedTimes.getAndIncrement();
-                    return;
-                }
-
-                if (!arena.isBlockPlaced(nextBlock) && !arena.isAllowMapBreak()) {
-                    protectedTimes.getAndIncrement();
-                    return;
-                }
-            }
-        });
-
-        return totalRays - protectedTimes.get() < 6;
     }
 }

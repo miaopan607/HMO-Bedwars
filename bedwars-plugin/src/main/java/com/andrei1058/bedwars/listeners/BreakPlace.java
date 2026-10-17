@@ -636,28 +636,28 @@ public class BreakPlace implements Listener, com.andrei1058.bedwars.configuratio
     public void onBlow(@NotNull EntityExplodeEvent e) {
         if (e.isCancelled()) return;
         IArena a = Arena.getArenaByIdentifier(e.getLocation().getWorld().getName());
-        //End dragon destroys
-        boolean isDragon = e.getEntity().getType() == EntityType.ENDER_DRAGON;
-        boolean canDragonBreak = (config.getBoolean(ConfigPath.GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS) && isDragon);
-        boolean canDragonBreakEndStone = canDragonBreak && config.getBoolean(ConfigPath.GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS_END_STONE);
-        boolean canDragonBreakObsidian = canDragonBreak && config.getBoolean(ConfigPath.GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS_OBSIDIAN);
-        boolean breaksMap = config.getBoolean(ConfigPath.GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS_MAP);
-        if (a != null) {
-            if (a.getStatus() == GameState.playing) {
-                e.blockList().removeIf((b) -> {
-                    Material type = b.getType();
-                    if (isDragon && ((type == Material.ENDER_STONE && !canDragonBreakEndStone)
-                            || (type == Material.OBSIDIAN && !canDragonBreakObsidian))) {
-                        return true;
-                    }
-                    return canDragonBreak
-                            ? !breaksMap && (a.isProtected(b.getLocation()) || !a.isBlockPlaced(b))
-                            : blastProtection.isProtected(a, e.getLocation(), b, 0.3);
-                });
+        if (a == null) return;
+        if (a.getStatus() != GameState.playing) {
+            e.blockList().clear();
+            return;
+        }
+        if (e.getEntity().getType() == EntityType.ENDER_DRAGON) {
+            boolean canDragonBreak = config.getBoolean(ConfigPath.GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS);
+            boolean canDragonBreakEndStone = canDragonBreak && config.getBoolean(ConfigPath.GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS_END_STONE);
+            boolean canDragonBreakObsidian = canDragonBreak && config.getBoolean(ConfigPath.GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS_OBSIDIAN);
+            e.blockList().removeIf(b -> {
+                Material type = b.getType();
+                return (type == Material.ENDER_STONE && !canDragonBreakEndStone)
+                        || (type == Material.OBSIDIAN && !canDragonBreakObsidian);
+            });
+            if (canDragonBreak) {
+                if (!config.getBoolean(ConfigPath.GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS_MAP)) {
+                    e.blockList().removeIf(b -> a.isProtected(b.getLocation()) || !a.isBlockPlaced(b));
+                }
                 return;
             }
-            e.blockList().clear();
         }
+        blastProtection.filterBlocks(a, e.getLocation(), e.blockList(), 0.3);
     }
 
     @EventHandler
@@ -666,11 +666,27 @@ public class BreakPlace implements Listener, com.andrei1058.bedwars.configuratio
         if (e.blockList().isEmpty()) return;
 
         IArena a = Arena.getArenaByIdentifier(e.blockList().get(0).getWorld().getName());
-        if (a != null) {
-            if (a.getNextEvent() != NextEvent.GAME_END) {
-                e.blockList().removeIf((b) -> blastProtection.isProtected(a, e.getBlock().getLocation(), b, 0.3));
-            }
+        if (a != null && a.getNextEvent() != NextEvent.GAME_END) {
+            blastProtection.filterBlocks(a, e.getBlock().getLocation(), e.blockList(), 0.3);
         }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onEntityExplodeMonitor(EntityExplodeEvent event) {
+        if (event.isCancelled() || event.blockList().isEmpty()) return;
+        // Custom dragon explosions do not destroy every material in their event list.
+        if (event.getEntity().getType() == EntityType.ENDER_DRAGON) return;
+        IArena arena = Arena.getArenaByIdentifier(event.getLocation().getWorld().getName());
+        if (arena == null) return;
+        event.blockList().forEach(arena::removePlacedBlock);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onBlockExplodeMonitor(BlockExplodeEvent event) {
+        if (event.isCancelled() || event.blockList().isEmpty()) return;
+        IArena arena = Arena.getArenaByIdentifier(event.getBlock().getWorld().getName());
+        if (arena == null) return;
+        event.blockList().forEach(arena::removePlacedBlock);
     }
 
     @EventHandler

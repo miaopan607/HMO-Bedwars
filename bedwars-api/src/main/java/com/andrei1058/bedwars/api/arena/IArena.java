@@ -30,11 +30,11 @@ import com.andrei1058.bedwars.api.region.Region;
 import com.andrei1058.bedwars.api.tasks.PlayingTask;
 import com.andrei1058.bedwars.api.tasks.RestartingTask;
 import com.andrei1058.bedwars.api.tasks.StartingTask;
+import com.andrei1058.bedwars.api.util.BlockCoordinate;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
@@ -420,9 +420,10 @@ public interface IArena {
     void sendEmeraldsUpgradeMessages();
 
     /**
-     * List of placed blocks.
+     * Read-only live view of placed block coordinates.
+     * Use addPlacedBlock/removePlacedBlock to update the arena.
      */
-    LinkedList<Vector> getPlaced();
+    Set<BlockCoordinate> getPlaced();
 
     /**
      * This is used to destroy arena data when it restarts.
