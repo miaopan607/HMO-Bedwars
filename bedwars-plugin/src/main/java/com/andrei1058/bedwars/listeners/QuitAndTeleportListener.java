@@ -28,6 +28,7 @@ import com.andrei1058.bedwars.api.server.ServerType;
 import com.andrei1058.bedwars.arena.Arena;
 import com.andrei1058.bedwars.arena.LastHit;
 import com.andrei1058.bedwars.arena.SetupSession;
+import com.andrei1058.bedwars.arena.spectator.SpectatorVisibilityService;
 import com.andrei1058.bedwars.arena.team.BedWarsTeam;
 import com.andrei1058.bedwars.commands.bedwars.subcmds.regular.CmdStats;
 import com.andrei1058.bedwars.sidebar.SidebarService;
@@ -89,6 +90,7 @@ public class QuitAndTeleportListener implements Listener {
         }
 
         SidebarService.getInstance().remove(e.getPlayer());
+        SpectatorVisibilityService.getInstance().forget(p.getUniqueId());
 
         BedWarsTeam.reSpawnInvulnerability.remove(e.getPlayer().getUniqueId());
 

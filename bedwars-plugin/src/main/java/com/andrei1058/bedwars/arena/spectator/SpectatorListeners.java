@@ -48,6 +48,8 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -193,6 +195,7 @@ public class SpectatorListeners implements Listener {
             p.getInventory().setHeldItemSlot(5);
             p.setGameMode(GameMode.SPECTATOR);
             p.setSpectatorTarget(target);
+            refreshNextTick(p);
             nms.sendTitle(p, event.getTitle().apply(p).replace("{playername}", p.getName()).replace("{player}", target.getDisplayName()), event.getSubTitle().apply(p).replace("{player}", target.getDisplayName()), event.getFadeIn(), event.getStay(), event.getFadeOut());
         }
     }
@@ -214,6 +217,7 @@ public class SpectatorListeners implements Listener {
         if (e.getNewGameMode() != GameMode.SPECTATOR) {
             normalFirstPersonSpectators.remove(e.getPlayer().getUniqueId());
         }
+        refreshNextTick(e.getPlayer());
     }
 
     private void leaveFirstPerson(Player p, IArena a) {
@@ -226,6 +230,25 @@ public class SpectatorListeners implements Listener {
         SpectatorFirstPersonLeaveEvent event = new SpectatorFirstPersonLeaveEvent(p, a, player -> getMsg(player, Messages.ARENA_SPECTATOR_FIRST_PERSON_LEAVE_TITLE), player -> getMsg(player, Messages.ARENA_SPECTATOR_FIRST_PERSON_LEAVE_SUBTITLE));
         Bukkit.getPluginManager().callEvent(event);
         nms.sendTitle(p, event.getTitle().apply(p), event.getSubTitle().apply(p), event.getFadeIn(), event.getStay(), event.getFadeOut());
+        refreshNextTick(p);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onSpectatorRespawn(PlayerRespawnEvent e) {
+        refreshNextTick(e.getPlayer());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onSpectatorWorldChange(PlayerChangedWorldEvent e) {
+        refreshNextTick(e.getPlayer());
+    }
+
+    private void refreshNextTick(Player player) {
+        Bukkit.getScheduler().runTask(BedWars.plugin, () -> {
+            IArena arena = Arena.getArenaByPlayer(player);
+            if (arena != null && arena.isSpectator(player))
+                SpectatorVisibilityService.getInstance().refreshArena(arena);
+        });
     }
 
     @EventHandler

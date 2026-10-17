@@ -81,7 +81,18 @@ public class English extends Language {
         yml.addDefault(Messages.HINT_REJOIN, "&7Use &e/rejoin&7 to rejoin your previous game.");
         yml.addDefault(Messages.HINT_READY_ITEM, "&7Right-click the &credstone block&7 in hotbar &eslot 2&7 to ready up.");
         yml.addDefault(Messages.HINT_CHAT_SHOUT, "&7Start a message with &e!&7 to send it to everyone in your game.");
-        yml.addDefault(Messages.HINT_SPECTATOR_MODE, "&7Use &e/{command} spec&7 to toggle vanilla spectator mode.");
+        yml.addDefault(Messages.HINT_SPECTATOR_MODE, "&7Use &e/{command} spec&7 to toggle vanilla spectator mode, or &e/{command} spectators&7 to toggle other spectators.");
+        yml.addDefault(Messages.COMMAND_SPECTATORS_DISPLAY, "&a▪ &7/{command} {subcommand} &b(toggle other spectators)");
+        yml.addDefault(Messages.COMMAND_SPECTATORS_ONLY, "{prefix}&cOnly spectators can use this command.");
+        yml.addDefault(Messages.SPECTATOR_VISIBILITY_SHOWN, "{prefix}&aOther spectators are now visible.");
+        yml.addDefault(Messages.SPECTATOR_VISIBILITY_HIDDEN, "{prefix}&7Other spectators are now hidden.");
+        yml.addDefault(Messages.SPECTATOR_VISIBILITY_STATE_SHOWN, "&aShown");
+        yml.addDefault(Messages.SPECTATOR_VISIBILITY_STATE_HIDDEN, "&7Hidden");
+        yml.addDefault(Messages.SPECTATOR_VISIBILITY_ACTION_SHOW, "show");
+        yml.addDefault(Messages.SPECTATOR_VISIBILITY_ACTION_HIDE, "hide");
+        yml.addDefault(Messages.SPECTATOR_VISIBILITY_SAVE_FAILED, "{prefix}&cThe setting is active for this session, but could not be saved for your next login.");
+        yml.addDefault(Messages.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_NAME.replace("%path%", "visibility"), "&eSpectators: {state}");
+        yml.addDefault(Messages.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_LORE.replace("%path%", "visibility"), Collections.singletonList("&7Right-click to {action} other spectators."));
 
         yml.addDefault(Messages.COMMAND_MAIN, Arrays.asList("", "&a▪ &7/" + mainCmd + " stats", "&a▪ &7/" + mainCmd + " join &o<arena/group>", "&a▪ &7/" + mainCmd + " leave", "&a▪ &7/" + mainCmd + " lang", "&a▪ &7/" + mainCmd + " gui", "&a▪ &7/" + mainCmd + " start &b(vip)", "&a▪ &7/" + mainCmd + " specmode &b(spectator)"));
         yml.addDefault(Messages.SERVER_SPAWN_PROTECTION_WARNING, "spawn-protection is enabled in server.properties; this may affect BedWars arenas. It is recommended to set it to 0.");

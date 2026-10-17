@@ -21,6 +21,7 @@
 package com.andrei1058.bedwars.arena;
 
 import com.andrei1058.bedwars.BedWars;
+import com.andrei1058.bedwars.arena.spectator.SpectatorVisibilityService;
 import com.andrei1058.bedwars.api.arena.GameState;
 import com.andrei1058.bedwars.api.arena.IArena;
 import com.andrei1058.bedwars.api.arena.NextEvent;
@@ -107,6 +108,12 @@ import static com.andrei1058.bedwars.arena.upgrades.BaseListener.isOnABase;
 
 @SuppressWarnings("WeakerAccess")
 public class Arena implements IArena {
+    private static final String[] SPECTATOR_ITEM_REQUIRED_PATHS = {
+            ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_MATERIAL,
+            ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_DATA,
+            ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_SLOT,
+            ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_ENCHANTED,
+            ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_COMMAND};
 
     private static final HashMap<String, IArena> arenaByName = new HashMap<>();
     private static final HashMap<Player, IArena> arenaByPlayer = new HashMap<>();
@@ -669,6 +676,7 @@ public class Arena implements IArena {
         p.getInventory().setArmorContents(null);
         TeamSelector.updatePreview(this, p);
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            if (getArenaByPlayer(p) != this || !isPlayer(p) || isSpectator(p)) return;
             // bungee mode invisibility issues
             if (getServerType() == ServerType.BUNGEE) {
                 // fix invisibility issue
@@ -757,6 +765,7 @@ public class Arena implements IArena {
                 }
                 setArenaByPlayer(p, this);
             }
+            SpectatorVisibilityService.getInstance().refreshArena(this);
 
             SidebarService.getInstance().giveSidebar(p, this, false);
             if (playerBefore) {
@@ -775,7 +784,7 @@ public class Arena implements IArena {
             p.setGameMode(GameMode.ADVENTURE);
 
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                if (leaving.contains(p)) return;
+                if (leaving.contains(p) || getArenaByPlayer(p) != this || !isSpectator(p)) return;
                 p.setAllowFlight(true);
                 p.setFlying(true);
             }, 5L);
@@ -784,13 +793,11 @@ public class Arena implements IArena {
                 p.getPassenger().remove();
 
             Bukkit.getScheduler().runTask(plugin, () -> {
-                if (leaving.contains(p)) return;
+                if (leaving.contains(p) || getArenaByPlayer(p) != this || !isSpectator(p)) return;
                 for (Player on : Bukkit.getOnlinePlayers()) {
                     if (on == p) continue;
-                    if (getSpectators().contains(on)) {
-                        BedWars.nms.spigotShowPlayer(p, on);
-                        BedWars.nms.spigotShowPlayer(on, p);
-                    } else if (getPlayers().contains(on)) {
+                    if (getSpectators().contains(on)) continue;
+                    if (getPlayers().contains(on)) {
                         BedWars.nms.spigotHidePlayer(p, on);
                         BedWars.nms.spigotShowPlayer(on, p);
                     } else {
@@ -820,6 +827,7 @@ public class Arena implements IArena {
 
                 p.getInventory().setArmorContents(null);
                 p.setFireTicks(0);
+                SpectatorVisibilityService.getInstance().refreshArena(this);
             });
 
             leaving.remove(p);
@@ -1042,6 +1050,7 @@ public class Arena implements IArena {
 
         if (!BedWars.isShuttingDown()) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                if (getArenaByPlayer(p) != null) return;
                 for (Player on : Bukkit.getOnlinePlayers()) {
                     if (on.equals(p)) continue;
                     if (getArenaByPlayer(on) == null) {
@@ -1145,6 +1154,7 @@ public class Arena implements IArena {
         Bukkit.getPluginManager().callEvent(new PlayerLeaveArenaEvent(p, this, null));
         spectators.remove(p);
         removeArenaByPlayer(p, this);
+        SpectatorVisibilityService.getInstance().removeSpectator(p, this);
         for (Player viewer : Bukkit.getOnlinePlayers()) {
             ArenaGUI.refreshInv(viewer, this, players.size());
         }
@@ -1185,6 +1195,7 @@ public class Arena implements IArena {
 
         if (!BedWars.isShuttingDown()) {
             Bukkit.getScheduler().runTask(plugin, () -> {
+                if (getArenaByPlayer(p) != null) return;
                 for (Player on : Bukkit.getOnlinePlayers()) {
                     if (on.equals(p)) continue;
                     if (getArenaByPlayer(on) == null) {
@@ -2038,37 +2049,43 @@ public class Arena implements IArena {
     public void sendSpectatorCommandItems(Player p) {
         if (config.getYml().get(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_PATH) == null) return;
         p.getInventory().clear();
-
         for (String item : config.getYml().getConfigurationSection(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_PATH).getKeys(false)) {
-            if (config.getYml().get(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_MATERIAL.replace("%path%", item)) == null) {
-                BedWars.plugin.getLogger().severe(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_MATERIAL.replace("%path%", item) + " is not set!");
-                continue;
-            }
-            if (config.getYml().get(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_DATA.replace("%path%", item)) == null) {
-                BedWars.plugin.getLogger().severe(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_DATA.replace("%path%", item) + " is not set!");
-                continue;
-            }
-            if (config.getYml().get(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_SLOT.replace("%path%", item)) == null) {
-                BedWars.plugin.getLogger().severe(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_SLOT.replace("%path%", item) + " is not set!");
-                continue;
-            }
-            if (config.getYml().get(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_ENCHANTED.replace("%path%", item)) == null) {
-                BedWars.plugin.getLogger().severe(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_ENCHANTED.replace("%path%", item) + " is not set!");
-                continue;
-            }
-            if (config.getYml().get(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_COMMAND.replace("%path%", item)) == null) {
-                BedWars.plugin.getLogger().severe(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_COMMAND.replace("%path%", item) + " is not set!");
-                continue;
-            }
-            ItemStack i = Misc.createItem(Material.valueOf(config.getYml().getString(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_MATERIAL.replace("%path%", item))),
-                    (byte) config.getInt(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_DATA.replace("%path%", item)),
-                    config.getBoolean(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_ENCHANTED.replace("%path%", item)),
-                    SupportPAPI.getSupportPAPI().replace(p, getMsg(p, Messages.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_NAME.replace("%path%", item))),
-                    SupportPAPI.getSupportPAPI().replace(p, getList(p, Messages.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_LORE.replace("%path%", item))),
-                    p, "RUNCOMMAND", config.getYml().getString(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_COMMAND.replace("%path%", item)));
-
-            p.getInventory().setItem(config.getInt(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_SLOT.replace("%path%", item)), i);
+            ItemStack stack = createSpectatorCommandItem(p, item);
+            if (stack != null)
+                p.getInventory().setItem(config.getInt(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_SLOT.replace("%path%", item)), stack);
         }
+    }
+
+    /** 只刷新开关物品，保留其他栏位与当前观战方式。 */
+    public void updateSpectatorVisibilityItem(Player p) {
+        if (p.getGameMode() == GameMode.SPECTATOR) return;
+        ItemStack stack = createSpectatorCommandItem(p, "visibility");
+        if (stack != null)
+            p.getInventory().setItem(config.getInt(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_SLOT.replace("%path%", "visibility")), stack);
+    }
+
+    private ItemStack createSpectatorCommandItem(Player p, String item) {
+        for (String path : SPECTATOR_ITEM_REQUIRED_PATHS) {
+            if (config.getYml().get(path.replace("%path%", item)) == null) {
+                BedWars.plugin.getLogger().severe(path.replace("%path%", item) + " is not set!");
+                return null;
+            }
+        }
+        int data = config.getInt(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_DATA.replace("%path%", item));
+        String name = getMsg(p, Messages.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_NAME.replace("%path%", item));
+        List<String> lore = getList(p, Messages.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_LORE.replace("%path%", item));
+        if ("visibility".equals(item)) {
+            boolean visible = SpectatorVisibilityService.getInstance().isShowingSpectators(p.getUniqueId());
+            if (!visible) data = config.getInt(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_VISIBILITY_HIDDEN_DATA);
+            String state = getMsg(p, visible ? Messages.SPECTATOR_VISIBILITY_STATE_SHOWN : Messages.SPECTATOR_VISIBILITY_STATE_HIDDEN);
+            String action = getMsg(p, visible ? Messages.SPECTATOR_VISIBILITY_ACTION_HIDE : Messages.SPECTATOR_VISIBILITY_ACTION_SHOW);
+            name = name.replace("{state}", state).replace("{action}", action);
+            lore.replaceAll(line -> line.replace("{state}", state).replace("{action}", action));
+        }
+        return Misc.createItem(Material.valueOf(config.getYml().getString(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_MATERIAL.replace("%path%", item))),
+                (byte) data, config.getBoolean(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_ENCHANTED.replace("%path%", item)),
+                SupportPAPI.getSupportPAPI().replace(p, name), SupportPAPI.getSupportPAPI().replace(p, lore),
+                p, "RUNCOMMAND", config.getYml().getString(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_COMMAND.replace("%path%", item)));
     }
 
     /**

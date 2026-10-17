@@ -23,6 +23,7 @@ package com.andrei1058.bedwars.database;
 import com.andrei1058.bedwars.shop.quickbuy.QuickBuyElement;
 import com.andrei1058.bedwars.stats.PlayerStats;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -84,6 +85,10 @@ public interface Database {
      * Get a player language.
      */
     String getLanguage(UUID player);
+
+    boolean getSpectatorVisibility(UUID player) throws SQLException;
+
+    void setSpectatorVisibility(UUID player, boolean visible) throws SQLException;
 
     /**
      * @param updateSlots key is slot id and value is the element.

@@ -153,6 +153,9 @@ public class MySQL implements Database {
             try (Statement statement = connection.createStatement()) {
                 statement.executeUpdate(sql);
             }
+            try (Statement statement = connection.createStatement()) {
+                statement.executeUpdate("CREATE TABLE IF NOT EXISTS spectator_preferences (uuid VARCHAR(36) PRIMARY KEY, show_spectators BOOLEAN NOT NULL DEFAULT TRUE)");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -386,6 +389,27 @@ public class MySQL implements Database {
             e.printStackTrace();
         }
         return Language.getDefaultLanguage().getIso();
+    }
+
+    @Override
+    public boolean getSpectatorVisibility(UUID player) throws SQLException {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT show_spectators FROM spectator_preferences WHERE uuid = ?")) {
+            statement.setString(1, player.toString());
+            try (ResultSet result = statement.executeQuery()) {
+                return !result.next() || result.getBoolean(1);
+            }
+        }
+    }
+
+    @Override
+    public void setSpectatorVisibility(UUID player, boolean visible) throws SQLException {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement("INSERT INTO spectator_preferences (uuid, show_spectators) VALUES (?, ?) ON DUPLICATE KEY UPDATE show_spectators = VALUES(show_spectators)")) {
+            statement.setString(1, player.toString());
+            statement.setBoolean(2, visible);
+            statement.executeUpdate();
+        }
     }
 
     @Override

@@ -83,6 +83,13 @@ public abstract class VersionSupport {
     /** 移除虚拟条目及其排序队伍，profileName 须与添加时一致。 */
     public abstract void removeVirtualTab(Player viewer, UUID entryId, String profileName);
 
+    /** 更新当前旁观者的客户端表示与实体追踪规则。 */
+    public abstract void updateSpectatorView(Player viewer, List<Player> spectators, boolean showOthers);
+
+    public abstract void clearSpectatorView(Player viewer);
+
+    public abstract void clearSpectatorViews();
+
     /**
      * Send action-bar message
      */

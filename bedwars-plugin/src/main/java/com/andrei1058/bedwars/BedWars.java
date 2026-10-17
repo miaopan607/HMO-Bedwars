@@ -35,6 +35,7 @@ import com.andrei1058.bedwars.arena.VoidChunkGenerator;
 import com.andrei1058.bedwars.arena.despawnables.TargetListener;
 import com.andrei1058.bedwars.arena.feature.SpoilPlayerTNTFeature;
 import com.andrei1058.bedwars.arena.spectator.SpectatorListeners;
+import com.andrei1058.bedwars.arena.spectator.SpectatorVisibilityService;
 import com.andrei1058.bedwars.arena.stats.DefaultStatsHandler;
 import com.andrei1058.bedwars.arena.tasks.OneTick;
 import com.andrei1058.bedwars.arena.tasks.Refresh;
@@ -319,6 +320,7 @@ public class BedWars extends JavaPlugin {
             remoteDatabase = new SQLite();
             remoteDatabase.init();
         }
+        SpectatorVisibilityService.init();
 
         /* Citizens support */
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
@@ -472,6 +474,8 @@ public class BedWars extends JavaPlugin {
                 ex.printStackTrace();
             }
         }
+        if (SpectatorVisibilityService.getInstance() != null)
+            SpectatorVisibilityService.getInstance().shutdown();
 
     }
 

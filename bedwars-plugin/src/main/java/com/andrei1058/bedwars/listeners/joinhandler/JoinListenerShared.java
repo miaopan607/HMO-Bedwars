@@ -48,6 +48,7 @@ public class JoinListenerShared implements Listener {
         }
 
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            if (Arena.isInArena(p)) return;
             // Hide new player to players and spectators, and vice versa
             for (Player inArena : Arena.getArenaByPlayer().keySet()){
                 if (inArena.equals(p)) continue;

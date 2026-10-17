@@ -182,6 +182,12 @@ public class MainConfig extends ConfigManager {
         /* Spectator Command Items */
         saveSpectatorCommandItem("teleporter", "bw teleporter", false, "SKULL_ITEM", 3, 0);
         saveSpectatorCommandItem("leave", "bw leave", false, "BED", 0, 8);
+        yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_MATERIAL.replace("%path%", "visibility"), "INK_SACK");
+        yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_DATA.replace("%path%", "visibility"), 10);
+        yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_VISIBILITY_HIDDEN_DATA, 8);
+        yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_ENCHANTED.replace("%path%", "visibility"), false);
+        yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_SLOT.replace("%path%", "visibility"), 4);
+        yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_COMMAND.replace("%path%", "visibility"), "bw spectators");
 
         yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_ARENA_SELECTOR_SETTINGS_SIZE, 27);
         yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_ARENA_SELECTOR_SETTINGS_SHOW_PLAYING, true);

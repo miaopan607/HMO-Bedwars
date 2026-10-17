@@ -94,6 +94,9 @@ public class SQLite implements Database {
                         "iso VARCHAR(200));";
                 st.executeUpdate(sql);
             }
+            try (Statement st = connection.createStatement()) {
+                st.executeUpdate("CREATE TABLE IF NOT EXISTS spectator_preferences (uuid VARCHAR(36) PRIMARY KEY, show_spectators BOOLEAN NOT NULL DEFAULT TRUE)");
+            }
         }catch (SQLException e) {
             e.printStackTrace();
         }
@@ -324,6 +327,27 @@ public class SQLite implements Database {
             e.printStackTrace();
         }
         return iso;
+    }
+
+    @Override
+    public boolean getSpectatorVisibility(UUID player) throws SQLException {
+        checkConnection();
+        try (PreparedStatement statement = connection.prepareStatement("SELECT show_spectators FROM spectator_preferences WHERE uuid = ?")) {
+            statement.setString(1, player.toString());
+            try (ResultSet result = statement.executeQuery()) {
+                return !result.next() || result.getBoolean(1);
+            }
+        }
+    }
+
+    @Override
+    public void setSpectatorVisibility(UUID player, boolean visible) throws SQLException {
+        checkConnection();
+        try (PreparedStatement statement = connection.prepareStatement("INSERT OR REPLACE INTO spectator_preferences (uuid, show_spectators) VALUES (?, ?)")) {
+            statement.setString(1, player.toString());
+            statement.setBoolean(2, visible);
+            statement.executeUpdate();
+        }
     }
 
     @Override

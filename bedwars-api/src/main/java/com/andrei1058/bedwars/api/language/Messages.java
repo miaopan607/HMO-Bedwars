@@ -241,6 +241,15 @@ public class Messages {
     public static String HINT_READY_ITEM = "hint-ready-item";
     public static String HINT_CHAT_SHOUT = "hint-chat-shout";
     public static String HINT_SPECTATOR_MODE = "hint-spectator-mode";
+    public static final String COMMAND_SPECTATORS_DISPLAY = "command-spectators-display";
+    public static final String COMMAND_SPECTATORS_ONLY = "command-spectators-only";
+    public static final String SPECTATOR_VISIBILITY_SHOWN = "spectator-visibility-shown";
+    public static final String SPECTATOR_VISIBILITY_HIDDEN = "spectator-visibility-hidden";
+    public static final String SPECTATOR_VISIBILITY_STATE_SHOWN = "spectator-visibility-state-shown";
+    public static final String SPECTATOR_VISIBILITY_STATE_HIDDEN = "spectator-visibility-state-hidden";
+    public static final String SPECTATOR_VISIBILITY_ACTION_SHOW = "spectator-visibility-action-show";
+    public static final String SPECTATOR_VISIBILITY_ACTION_HIDE = "spectator-visibility-action-hide";
+    public static final String SPECTATOR_VISIBILITY_SAVE_FAILED = "spectator-visibility-save-failed";
     public static String FORMATTING_CHAT_TEAM = "format-chat-team";
     public static String FORMATTING_CHAT_SPECTATOR = "format-chat-spectator";
     public static String FORMATTING_SCOREBOARD_DATE = "format-sb-date";

@@ -75,6 +75,7 @@ public class v1_8_R3 extends VersionSupport {
     private Field entityMetadataPacketFieldB;
     private final Field playerInfoAction;
     private final Field playerInfoEntries;
+    private final SpectatorVisibilitySupport spectatorVisibility = new SpectatorVisibilitySupport();
 
     public v1_8_R3(Plugin pl, String name) {
         super(pl, name);
@@ -109,6 +110,21 @@ public class v1_8_R3 extends VersionSupport {
         } catch (ReflectiveOperationException e) {
             throw new IllegalStateException("Cannot initialize virtual TAB packets", e);
         }
+    }
+
+    @Override
+    public void updateSpectatorView(Player viewer, List<Player> spectators, boolean showOthers) {
+        spectatorVisibility.update(viewer, spectators, showOthers);
+    }
+
+    @Override
+    public void clearSpectatorView(Player viewer) {
+        spectatorVisibility.clear(viewer);
+    }
+
+    @Override
+    public void clearSpectatorViews() {
+        spectatorVisibility.clearAll();
     }
 
     @Override

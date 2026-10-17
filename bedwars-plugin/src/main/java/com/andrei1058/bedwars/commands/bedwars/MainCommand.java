@@ -69,6 +69,7 @@ public class MainCommand extends BukkitCommand implements ParentCommand {
         new CmdLang(this, "lang");
         new CmdTeleporter(this, "teleporter");
         new CmdSpecMode(this, "spec");
+        new CmdSpectators(this, "spectators");
         if (getServerType() != ServerType.BUNGEE) {
             new CmdGUI(this, "gui");
         }
@@ -254,6 +255,7 @@ public class MainCommand extends BukkitCommand implements ParentCommand {
             case "leave": return hover ? Messages.COMMAND_LEAVE_DISPLAY_HOVER : Messages.COMMAND_LEAVE_DISPLAY;
             case "stats": return hover ? Messages.COMMAND_STATS_DISPLAY_HOVER : Messages.COMMAND_STATS_DISPLAY;
             case "spec": return hover ? Messages.COMMAND_SPEC_MODE_DISPLAY_HOVER : Messages.COMMAND_SPEC_MODE_DISPLAY;
+            case "spectators": return hover ? null : Messages.COMMAND_SPECTATORS_DISPLAY;
         }
         return null;
     }

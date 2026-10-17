@@ -121,6 +121,7 @@ public class ConfigPath {
     public static final String GENERAL_CONFIGURATION_SPECTATOR_ITEMS_SLOT = GENERAL_CONFIGURATION_SPECTATOR_ITEMS_PATH + ".%path%.slot";
     public static final String GENERAL_CONFIGURATION_SPECTATOR_ITEMS_ENCHANTED = GENERAL_CONFIGURATION_SPECTATOR_ITEMS_PATH + ".%path%.enchanted";
     public static final String GENERAL_CONFIGURATION_SPECTATOR_ITEMS_COMMAND = GENERAL_CONFIGURATION_SPECTATOR_ITEMS_PATH + ".%path%.command";
+    public static final String GENERAL_CONFIGURATION_SPECTATOR_VISIBILITY_HIDDEN_DATA = "spectator-items.visibility.hidden-data";
 
     public static final String GENERAL_CONFIGURATION_STATS_PATH = "stats-gui";
     public static final String GENERAL_CONFIGURATION_STATS_GUI_SIZE = GENERAL_CONFIGURATION_STATS_PATH + ".inv-size";

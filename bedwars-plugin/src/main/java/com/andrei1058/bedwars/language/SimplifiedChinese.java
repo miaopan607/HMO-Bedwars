@@ -81,7 +81,18 @@ public class SimplifiedChinese extends Language {
         yml.addDefault(Messages.HINT_REJOIN, "&7使用&e/rejoin&7重新加入刚刚的对局。");
         yml.addDefault(Messages.HINT_READY_ITEM, "&7可右键快捷栏&e第 2 格&7的&c红石块&7准备。");
         yml.addDefault(Messages.HINT_CHAT_SHOUT, "&7使用&e!&7开头发送全局消息。");
-        yml.addDefault(Messages.HINT_SPECTATOR_MODE, "&7使用&e/{command} spec&7切换原版旁观模式。");
+        yml.addDefault(Messages.HINT_SPECTATOR_MODE, "&7使用&e/{command} spec&7切换原版旁观模式，使用&e/{command} spectators&7切换其他旁观者显示。");
+        yml.addDefault(Messages.COMMAND_SPECTATORS_DISPLAY, "&a▪ &7/{command} {subcommand} &b（切换其他旁观者显示）");
+        yml.addDefault(Messages.COMMAND_SPECTATORS_ONLY, "{prefix}&c只有旁观者可以使用此命令。");
+        yml.addDefault(Messages.SPECTATOR_VISIBILITY_SHOWN, "{prefix}&a已显示其他旁观者。");
+        yml.addDefault(Messages.SPECTATOR_VISIBILITY_HIDDEN, "{prefix}&7已隐藏其他旁观者。");
+        yml.addDefault(Messages.SPECTATOR_VISIBILITY_STATE_SHOWN, "&a已显示");
+        yml.addDefault(Messages.SPECTATOR_VISIBILITY_STATE_HIDDEN, "&7已隐藏");
+        yml.addDefault(Messages.SPECTATOR_VISIBILITY_ACTION_SHOW, "显示");
+        yml.addDefault(Messages.SPECTATOR_VISIBILITY_ACTION_HIDE, "隐藏");
+        yml.addDefault(Messages.SPECTATOR_VISIBILITY_SAVE_FAILED, "{prefix}&c设置已在本次在线生效，但保存失败，重连后可能恢复。");
+        yml.addDefault(Messages.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_NAME.replace("%path%", "visibility"), "&e旁观者：{state}");
+        yml.addDefault(Messages.GENERAL_CONFIGURATION_SPECTATOR_ITEMS_LORE.replace("%path%", "visibility"), Collections.singletonList("&7右键{action}其他旁观者。"));
 
         yml.addDefault(Messages.COMMAND_MAIN, Arrays.asList("", "&a▪ &7/" + mainCmd + " stats", "&a▪ &7/" + mainCmd + " join &o<游戏/模式>", "&a▪ &7/" + mainCmd + " leave", "&a▪ &7/" + mainCmd + " lang", "&a▪ &7/" + mainCmd + " gui", "&a▪ &7/" + mainCmd + " start &b（赞助者）", "&a▪ &7/" + mainCmd + " specmode &b（旁观者）"));
         yml.addDefault(Messages.SERVER_SPAWN_PROTECTION_WARNING, "server.properties 中启用了 spawn-protection，这可能会影响 BedWars 竞技场，建议将其设为 0。");
