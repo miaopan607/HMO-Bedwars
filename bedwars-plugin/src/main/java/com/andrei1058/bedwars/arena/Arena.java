@@ -219,6 +219,7 @@ public class Arena implements IArena {
     private GameState status = GameState.restarting;
     // Prevent this arena from starting until explicitly unblocked.
     private boolean startBlocked = false;
+    private @Nullable UUID startBlocker;
     private YamlConfiguration yml;
     private ArenaConfig cm;
     private int minPlayers = 2, maxPlayers = 10, maxInTeam = 1, islandRadius = 10;
@@ -905,6 +906,7 @@ public class Arena implements IArena {
         //players.remove must be under call event in order to check if the player is a spectator or not
         players.remove(p);
         removeArenaByPlayer(p, this);
+        clearStartBlockIfPlayer(p);
 
         for (PotionEffect pf : p.getActivePotionEffects()) {
             p.removePotionEffect(pf.getType());
@@ -1143,6 +1145,7 @@ public class Arena implements IArena {
         Bukkit.getPluginManager().callEvent(new PlayerLeaveArenaEvent(p, this, null));
         spectators.remove(p);
         removeArenaByPlayer(p, this);
+        clearStartBlockIfPlayer(p);
         SpectatorVisibilityService.getInstance().removeSpectator(p, this);
         for (Player viewer : Bukkit.getOnlinePlayers()) {
             ArenaGUI.refreshInv(viewer, this, players.size());
@@ -1661,9 +1664,7 @@ public class Arena implements IArena {
         }
         restartingTask = null;
 
-        players.forEach(c -> SidebarService.getInstance().giveSidebar(c, this, false));
-
-        spectators.forEach(c -> SidebarService.getInstance().giveSidebar(c, this, false));
+        refreshArenaSidebars();
 
         if (status == GameState.starting) {
             startingTask = new GameStartingTask(this);
@@ -1890,13 +1891,35 @@ public class Arena implements IArena {
         if (status != GameState.waiting && status != GameState.starting) return;
         if (startBlocked == blocked) return;
 
+        GameState previousStatus = status;
         startBlocked = blocked;
         if (blocked) {
             if (status == GameState.starting) changeStatus(GameState.waiting);
         } else {
+            startBlocker = null;
             checkNormalStart();
             checkReady();
         }
+        if (status == previousStatus) {
+            refreshArenaSidebars();
+        }
+    }
+
+    public void setStartBlockedBy(@NotNull UUID playerId) {
+        if (startBlocked || (status != GameState.waiting && status != GameState.starting)) return;
+        startBlocker = playerId;
+        setStartBlocked(true);
+    }
+
+    private void clearStartBlockIfPlayer(@NotNull Player player) {
+        if (startBlocked && player.getUniqueId().equals(startBlocker)) {
+            setStartBlocked(false);
+        }
+    }
+
+    private void refreshArenaSidebars() {
+        players.forEach(player -> SidebarService.getInstance().giveSidebar(player, this, false));
+        spectators.forEach(spectator -> SidebarService.getInstance().giveSidebar(spectator, this, false));
     }
 
 

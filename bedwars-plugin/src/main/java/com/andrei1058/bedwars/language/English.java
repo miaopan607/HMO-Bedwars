@@ -780,6 +780,36 @@ public class English extends Language {
                 "",
                 "&e{serverIp}")
         );
+        yml.addDefault(Messages.SCOREBOARD_DEFAULT_BLOCKED, Arrays.asList(
+                "&f&lBED WARS,&f&lBED WARS,&f&lBED WARS,&f&lBED WARS,&f&lBED WARS,&f&lBED WARS,&f&lBED WARS,&e&lBED WARS,&e&lBED WARS,&e&lBED WARS,&e&lBED WARS,&e&lBED WARS,&e&lBED WARS,&e&lBED WARS",
+                "&7{date} &8{server}",
+                "",
+                "&fMap: &a{map}",
+                "",
+                "&fPlayers: &a{on}/{max}",
+                "",
+                "&cStart blocked; waiting for admin",
+                "",
+                "&fMode: &a{group}",
+                "&fVersion: &7{version}",
+                "",
+                "&e{serverIp}")
+        );
+        yml.addDefault(Messages.SCOREBOARD_DEFAULT_BLOCKED_SPEC, Arrays.asList(
+                "&f&lBED WARS,&f&lBED WARS,&f&lBED WARS,&f&lBED WARS,&f&lBED WARS,&f&lBED WARS,&f&lBED WARS,&e&lBED WARS,&e&lBED WARS,&e&lBED WARS,&e&lBED WARS,&e&lBED WARS,&e&lBED WARS,&e&lBED WARS",
+                "&7{date} &8{server}",
+                "&o&7Spectating",
+                "&fMap: &a{map}",
+                "",
+                "&fPlayers: &a{on}/{max}",
+                "",
+                "&cStart blocked; waiting for admin",
+                "",
+                "&fMode: &a{group}",
+                "&fVersion: &7{version}",
+                "",
+                "&e{serverIp}")
+        );
         yml.addDefault(Messages.SCOREBOARD_DEFAULT_STARTING, Arrays.asList(
                 "&f&lBED WARS,&f&lBED WARS,&f&lBED WARS,&f&lBED WARS,&f&lBED WARS,&f&lBED WARS,&f&lBED WARS,&e&lBED WARS,&e&lBED WARS,&e&lBED WARS,&e&lBED WARS,&e&lBED WARS,&e&lBED WARS,&e&lBED WARS",
                 "&7{date} &8{server}",

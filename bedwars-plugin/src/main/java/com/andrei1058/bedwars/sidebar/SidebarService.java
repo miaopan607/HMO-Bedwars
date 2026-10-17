@@ -161,7 +161,13 @@ public class SidebarService implements ISidebarService {
                 lines = Language.getList(player, Messages.SCOREBOARD_LOBBY);
             }
         } else {
-            if (arena.getStatus() == GameState.waiting) {
+            if (arena.isStartBlocked()) {
+                if (arena.isSpectator(player)) {
+                    lines = getScoreboard(player, "sidebar." + arena.getGroup() + ".blocked.spectator", Messages.SCOREBOARD_DEFAULT_BLOCKED_SPEC);
+                } else {
+                    lines = getScoreboard(player, "sidebar." + arena.getGroup() + ".blocked.player", Messages.SCOREBOARD_DEFAULT_BLOCKED);
+                }
+            } else if (arena.getStatus() == GameState.waiting) {
                 if (arena.isSpectator(player)) {
                     lines = getScoreboard(player, "sidebar." + arena.getGroup() + ".waiting.spectator", Messages.SCOREBOARD_DEFAULT_WAITING_SPEC);
                 } else {

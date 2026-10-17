@@ -778,6 +778,36 @@ public class SimplifiedChinese extends Language {
                 "",
                 "&e{serverIp}")
         );
+        yml.addDefault(Messages.SCOREBOARD_DEFAULT_BLOCKED, Arrays.asList(
+                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争",
+                "&7{date} &8{server}",
+                "",
+                "&f地图：&a{map}",
+                "",
+                "&f玩家数：&a{on}/{max}",
+                "",
+                "&c阻断中，等待管理员恢复",
+                "",
+                "&f模式：&a{group}",
+                "&f版本：&7{version}",
+                "",
+                "&e{serverIp}")
+        );
+        yml.addDefault(Messages.SCOREBOARD_DEFAULT_BLOCKED_SPEC, Arrays.asList(
+                "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争",
+                "&7{date} &8{server}",
+                "&o&7正在观战",
+                "&f地图：&a{map}",
+                "",
+                "&f玩家数：&a{on}/{max}",
+                "",
+                "&c阻断中，等待管理员恢复",
+                "",
+                "&f模式：&a{group}",
+                "&f版本：&7{version}",
+                "",
+                "&e{serverIp}")
+        );
         yml.addDefault(Messages.SCOREBOARD_DEFAULT_STARTING, Arrays.asList(
                 "&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&f&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争,&e&l起床战争",
                 "&7{date} &8{server}",

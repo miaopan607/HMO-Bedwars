@@ -52,7 +52,11 @@ public class CmdBlockStart extends SubCommand {
         }
 
         boolean blocked = !arena.isStartBlocked();
-        arena.setStartBlocked(blocked);
+        if (blocked) {
+            ((Arena) arena).setStartBlockedBy(p.getUniqueId());
+        } else {
+            arena.setStartBlocked(false);
+        }
         String message = blocked ? Messages.COMMAND_BLOCK_START_ENABLED : Messages.COMMAND_BLOCK_START_DISABLED;
         for (Player player : arena.getPlayers()) {
             player.sendMessage(getMsg(player, message));

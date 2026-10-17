@@ -379,6 +379,8 @@ public class Messages {
     public static String SCOREBOARD_LOBBY = "sidebar.lobby";
     public static String SCOREBOARD_DEFAULT_WAITING = "sidebar.Default.waiting.player";
     public static String SCOREBOARD_DEFAULT_WAITING_SPEC = "sidebar.Default.waiting.spectator";
+    public static String SCOREBOARD_DEFAULT_BLOCKED = "sidebar.Default.blocked.player";
+    public static String SCOREBOARD_DEFAULT_BLOCKED_SPEC = "sidebar.Default.blocked.spectator";
     public static String SCOREBOARD_DEFAULT_STARTING = "sidebar.Default.starting.player";
     public static String SCOREBOARD_DEFAULT_STARTING_SPEC = "sidebar.Default.starting.spectator";
     public static String SCOREBOARD_DEFAULT_PLAYING = "sidebar.Default.playing.alive";
