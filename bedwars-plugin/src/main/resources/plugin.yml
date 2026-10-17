@@ -18,3 +18,6 @@ permissions:
   bw.global.bypass:
     description: Bypasses the server-wide chat cooldown
     default: false
+  bw.blockstart:
+    description: Allows blocking arena starts
+    default: op

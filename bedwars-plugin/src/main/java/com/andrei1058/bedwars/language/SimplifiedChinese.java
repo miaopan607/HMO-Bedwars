@@ -326,6 +326,8 @@ public class SimplifiedChinese extends Language {
         yml.addDefault(Messages.COMMAND_FORCE_END_GAME_SUCCESS, "&a正在强制结束游戏……");
         yml.addDefault(Messages.COMMAND_FORCE_START_DISPLAY, "&6 ▪ &7/{command} {subcommand} &7 - &e强制开始竞技场");
         yml.addDefault(Messages.COMMAND_FORCE_START_DISPLAY_HOVER, "&f强制开始竞技场。\n&f权限：&c{permission}");
+        yml.addDefault(Messages.COMMAND_BLOCK_START_DISPLAY, "&6 ▪ &7/{command} {subcommand} &7 - &e切换当前竞技场开场阻断");
+        yml.addDefault(Messages.COMMAND_BLOCK_START_DISPLAY_HOVER, "&f阻断或恢复当前竞技场开场。\n&f权限：&c{permission}");
         yml.addDefault(Messages.COMMAND_START_DISPLAY, "&6 ▪ &7/{command} {subcommand} &7 - &e将开始倒计时缩短至 5 秒");
         yml.addDefault(Messages.COMMAND_START_DISPLAY_HOVER, "&f将竞技场的开始倒计时缩短至 5 秒。\n&f权限：&c{permission}");
         yml.addDefault(Messages.COMMAND_READY_DISPLAY, "&e/{command} {subcommand} &7- 切换准备状态。");
@@ -523,6 +525,12 @@ public class SimplifiedChinese extends Language {
         yml.addDefault(Messages.COMMAND_START_NOT_ENOUGH_PLAYERS, "&c▪ &7玩家人数不足以开始游戏！");
         yml.addDefault(Messages.COMMAND_FORCESTART_SUCCESS, "&c▪ &7游戏开始倒计时缩短！");
         yml.addDefault(Messages.COMMAND_FORCESTART_NO_PERM, "{prefix}&7你不可以强制开始游戏！\n&7请考虑赞助以得到对应权限！");
+        yml.addDefault(Messages.COMMAND_BLOCK_START_ENABLED, "&c管理员已阻断本竞技场开场，取消阻断前无法开始游戏。");
+        yml.addDefault(Messages.COMMAND_BLOCK_START_DISABLED, "&a管理员已取消开场阻断，竞技场将按正常条件开场。");
+        yml.addDefault(Messages.COMMAND_BLOCK_START_BLOCKED, "&c本竞技场已阻断开场，请先由管理员取消阻断。");
+        yml.addDefault(Messages.COMMAND_BLOCK_START_NO_PERMISSION, "&c你没有管理开场阻断的权限。");
+        yml.addDefault(Messages.COMMAND_BLOCK_START_NOT_IN_ARENA, "&c你不在竞技场中。");
+        yml.addDefault(Messages.COMMAND_BLOCK_START_INVALID_STATE, "&c只能在游戏开场前切换开场阻断。");
         yml.addDefault(Messages.COMMAND_COOLDOWN, "&c你不能这么做！ 请等待 {seconds} 秒！");
         yml.addDefault(Messages.COMMAND_SPECTATOR_MODE_SWITCH_VANILLA, "{prefix}&a已切换到原版旁观模式。");
         yml.addDefault(Messages.COMMAND_SPECTATOR_MODE_SWITCH_NORMAL, "{prefix}&a已切换到普通观战模式。");

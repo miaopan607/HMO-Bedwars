@@ -809,6 +809,14 @@ public class Messages {
     public static String COMMAND_FORCE_END_GAME_SUCCESS = "cmd-force-end-game-success";
     public static String COMMAND_FORCE_START_DISPLAY = "cmd-force-start-display";
     public static String COMMAND_FORCE_START_DISPLAY_HOVER = "cmd-force-start-display-hover";
+    public static String COMMAND_BLOCK_START_DISPLAY = "cmd-block-start-display";
+    public static String COMMAND_BLOCK_START_DISPLAY_HOVER = "cmd-block-start-display-hover";
+    public static String COMMAND_BLOCK_START_ENABLED = "cmd-block-start-enabled";
+    public static String COMMAND_BLOCK_START_DISABLED = "cmd-block-start-disabled";
+    public static String COMMAND_BLOCK_START_BLOCKED = "cmd-block-start-blocked";
+    public static String COMMAND_BLOCK_START_NO_PERMISSION = "cmd-block-start-no-permission";
+    public static String COMMAND_BLOCK_START_NOT_IN_ARENA = "cmd-block-start-not-in-arena";
+    public static String COMMAND_BLOCK_START_INVALID_STATE = "cmd-block-start-invalid-state";
     public static String COMMAND_START_DISPLAY = "cmd-start-display";
     public static String COMMAND_START_DISPLAY_HOVER = "cmd-start-display-hover";
     public static String COMMAND_READY_DISPLAY = "cmd-ready-display";

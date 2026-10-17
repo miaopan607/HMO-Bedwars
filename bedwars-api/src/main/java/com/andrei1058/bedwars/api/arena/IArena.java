@@ -119,6 +119,16 @@ public interface IArena {
     GameState getStatus();
 
     /**
+     * Whether arena starts are blocked.
+     */
+    boolean isStartBlocked();
+
+    /**
+     * Enable or disable arena start blocking.
+     */
+    void setStartBlocked(boolean blocked);
+
+    /**
      * Get players in arena.
      */
     List<Player> getPlayers();

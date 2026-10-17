@@ -223,6 +223,10 @@ public class GameStartingTask implements Runnable, StartingTask {
             cancel();
             return false;
         }
+        if (getArena().isStartBlocked()) {
+            getArena().changeStatus(GameState.waiting);
+            return false;
+        }
         if (getArena().getPlayers().isEmpty()) {
             getArena().changeStatus(GameState.waiting);
             cancel();

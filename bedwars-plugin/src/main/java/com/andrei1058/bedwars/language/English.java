@@ -326,6 +326,8 @@ public class English extends Language {
         yml.addDefault(Messages.COMMAND_FORCE_END_GAME_SUCCESS, "&aForce ending the game...");
         yml.addDefault(Messages.COMMAND_FORCE_START_DISPLAY, "&6 ▪ &7/{command} {subcommand} &7 - &eForce start an arena");
         yml.addDefault(Messages.COMMAND_FORCE_START_DISPLAY_HOVER, "&fForce start an arena.\n&fPermission: &c{permission}");
+        yml.addDefault(Messages.COMMAND_BLOCK_START_DISPLAY, "&6 ▪ &7/{command} {subcommand} &7 - &eToggle arena start blocking");
+        yml.addDefault(Messages.COMMAND_BLOCK_START_DISPLAY_HOVER, "&fBlock or allow starts in your arena.\n&fPermission: &c{permission}");
         yml.addDefault(Messages.COMMAND_START_DISPLAY, "&6 ▪ &7/{command} {subcommand} &7 - &eShorten the start countdown to 5s");
         yml.addDefault(Messages.COMMAND_START_DISPLAY_HOVER, "&fShorten the start countdown to 5s in an arena.\n&fPermission: &c{permission}");
         yml.addDefault(Messages.COMMAND_READY_DISPLAY, "&e/{command} {subcommand} &7- Toggle ready status.");
@@ -523,6 +525,12 @@ public class English extends Language {
         yml.addDefault(Messages.COMMAND_START_NOT_ENOUGH_PLAYERS, "&c▪ &7Not enough players to start the game！");
         yml.addDefault(Messages.COMMAND_FORCESTART_SUCCESS, "§c▪ §7Countdown shortened!");
         yml.addDefault(Messages.COMMAND_FORCESTART_NO_PERM, "{prefix}&7You can't forcestart the arena.\n§7Please consider donating for VIP features.");
+        yml.addDefault(Messages.COMMAND_BLOCK_START_ENABLED, "&cAn administrator has blocked arena starts until the block is removed.");
+        yml.addDefault(Messages.COMMAND_BLOCK_START_DISABLED, "&aAn administrator has allowed arena starts. Normal start conditions apply.");
+        yml.addDefault(Messages.COMMAND_BLOCK_START_BLOCKED, "&cArena starts are blocked. An administrator must remove the block first.");
+        yml.addDefault(Messages.COMMAND_BLOCK_START_NO_PERMISSION, "&cYou do not have permission to manage arena start blocking.");
+        yml.addDefault(Messages.COMMAND_BLOCK_START_NOT_IN_ARENA, "&cYou are not in an arena.");
+        yml.addDefault(Messages.COMMAND_BLOCK_START_INVALID_STATE, "&cStart blocking can only be changed before the game starts.");
         yml.addDefault(Messages.COMMAND_COOLDOWN, "&cYou can't do that yet! Wait {seconds} more seconds!");
         yml.addDefault(Messages.COMMAND_SPECTATOR_MODE_SWITCH_VANILLA, "{prefix}&aSwitched to Vanilla Spectator Mode.");
         yml.addDefault(Messages.COMMAND_SPECTATOR_MODE_SWITCH_NORMAL, "{prefix}&aSwitched to Normal Spectator Mode.");

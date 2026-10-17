@@ -40,6 +40,10 @@ public abstract class AbstractCmdStart extends SubCommand {
         }
         if (a.getStatus() == GameState.playing) return true;
         if (a.getStatus() == GameState.restarting) return true;
+        if (a.isStartBlocked()) {
+            p.sendMessage(getMsg(p, Messages.COMMAND_BLOCK_START_BLOCKED));
+            return true;
+        }
         return doStart(a, p, args);
     }
 

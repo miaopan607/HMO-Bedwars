@@ -217,6 +217,8 @@ public class Arena implements IArena {
     private List<Player> spectators = new ArrayList<>();
     private List<Block> signs = new ArrayList<>();
     private GameState status = GameState.restarting;
+    // Prevent this arena from starting until explicitly unblocked.
+    private boolean startBlocked = false;
     private YamlConfiguration yml;
     private ArenaConfig cm;
     private int minPlayers = 2, maxPlayers = 10, maxInTeam = 1, islandRadius = 10;
@@ -621,22 +623,9 @@ public class Arena implements IArena {
             /* check if you can start the arena */
             boolean isStatusChange = false;
             if (status == GameState.waiting) {
-                int teams = 0, teammates = 0;
-                for (Player on : getPlayers()) {
-                    if (getParty().isOwner(on)) {
-                        teams++;
-                    }
-                    if (getParty().hasParty(on)) {
-                        teammates++;
-                    }
-                }
-                if (minPlayers <= players.size() && teams > 0 && players.size() != teammates / teams) {
-                    changeStatus(GameState.starting);
-                    isStatusChange = true;
-                } else if (players.size() >= minPlayers && teams == 0) {
-                    changeStatus(GameState.starting);
-                    isStatusChange = true;
-                }
+                GameState previousStatus = status;
+                checkNormalStart();
+                isStatusChange = previousStatus != status;
             }
 
             //half full arena time shorten
@@ -1596,6 +1585,7 @@ public class Arena implements IArena {
      * Set game status without starting stats.
      */
     public void setStatus(GameState status) {
+        if (startBlocked && (status == GameState.starting || status == GameState.playing)) return;
         if (this.status != GameState.playing && status == GameState.playing) {
             startTime = Instant.now();
         }
@@ -1617,7 +1607,7 @@ public class Arena implements IArena {
      * Change game status starting tasks.
      */
     public void changeStatus(GameState status) {
-
+        if (startBlocked && (status == GameState.starting || status == GameState.playing)) return;
         // prevent called twice #https://github.com/andrei1058/BedWars1058/issues/774
         if (status == this.status) {
             return;
@@ -1737,7 +1727,27 @@ public class Arena implements IArena {
         p.updateInventory();
     }
 
+    private boolean meetsNormalStartConditions() {
+        int teams = 0, teammates = 0;
+        for (Player on : getPlayers()) {
+            if (getParty().isOwner(on)) {
+                teams++;
+            }
+            if (getParty().hasParty(on)) {
+                teammates++;
+            }
+        }
+        return (minPlayers <= players.size() && teams > 0 && players.size() != teammates / teams)
+                || (players.size() >= minPlayers && teams == 0);
+    }
+
+    private void checkNormalStart() {
+        if (status != GameState.waiting || startBlocked || players.isEmpty()) return;
+        if (meetsNormalStartConditions()) changeStatus(GameState.starting);
+    }
+
     public void checkReady() {
+        if (startBlocked) return;
         if (!BedWars.config.getBoolean(ConfigPath.GENERAL_CONFIGURATION_ENABLE_READY_CHECK)) return;
         if (players.isEmpty()) return;
 
@@ -1768,22 +1778,7 @@ public class Arena implements IArena {
         } else {
             // Check if we need to cancel the countdown or restore it
             if (status == GameState.starting && startingTask != null) {
-                int teams = 0, teammates = 0;
-                for (Player on : getPlayers()) {
-                    if (getParty().isOwner(on)) {
-                        teams++;
-                    }
-                    if (getParty().hasParty(on)) {
-                        teammates++;
-                    }
-                }
-                
-                // Normal start condition: minPlayers <= players.size() && teams > 0 && players.size() != teammates / teams
-                // OR players.size() >= minPlayers && teams == 0
-                boolean meetsNormalStart = (minPlayers <= players.size() && teams > 0 && players.size() != teammates / teams) || 
-                                         (players.size() >= minPlayers && teams == 0);
-
-                if (!meetsNormalStart) {
+                if (!meetsNormalStartConditions()) {
                     // We don't meet normal start requirements AND not everyone is ready.
                     // So we should cancel the start.
                     changeStatus(GameState.waiting);
@@ -1821,20 +1816,7 @@ public class Arena implements IArena {
                 
                 // Force check min players logic to potentially cancel countdown
                 if (status == GameState.starting) {
-                    int teams = 0, teammates = 0;
-                    for (Player on : getPlayers()) {
-                        if (getParty().isOwner(on)) {
-                            teams++;
-                        }
-                        if (getParty().hasParty(on)) {
-                            teammates++;
-                        }
-                    }
-                    
-                    boolean meetsNormalStart = (minPlayers <= players.size() && teams > 0 && players.size() != teammates / teams) || 
-                                             (players.size() >= minPlayers && teams == 0);
-
-                    if (!meetsNormalStart) {
+                    if (!meetsNormalStartConditions()) {
                         changeStatus(GameState.waiting);
                         sendInsufficientPlayersMessage();
                     }
@@ -1896,6 +1878,25 @@ public class Arena implements IArena {
     @Override
     public GameState getStatus() {
         return status;
+    }
+
+    @Override
+    public boolean isStartBlocked() {
+        return startBlocked;
+    }
+
+    @Override
+    public void setStartBlocked(boolean blocked) {
+        if (status != GameState.waiting && status != GameState.starting) return;
+        if (startBlocked == blocked) return;
+
+        startBlocked = blocked;
+        if (blocked) {
+            if (status == GameState.starting) changeStatus(GameState.waiting);
+        } else {
+            checkNormalStart();
+            checkReady();
+        }
     }
 
 

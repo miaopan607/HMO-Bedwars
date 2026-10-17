@@ -76,6 +76,7 @@ public class MainCommand extends BukkitCommand implements ParentCommand {
         new CmdStats(this, "stats");
         new CmdForceStart(this, "forceStart");
         new com.andrei1058.bedwars.commands.bedwars.subcmds.regular.CmdForceEndGame(this, "forceEndGame");
+        new CmdBlockStart(this, "blockStart");
         new CmdStart(this, "start");
         if (BedWars.getServerType() != ServerType.BUNGEE) {
             new com.andrei1058.bedwars.commands.bedwars.subcmds.sensitive.SetLobby(this, "setLobby"); //priority 1
@@ -213,6 +214,8 @@ public class MainCommand extends BukkitCommand implements ParentCommand {
                         hover = hover.replace("{permission}", com.andrei1058.bedwars.configuration.Permissions.PERMISSION_FORCE_END_GAME);
                     } else if (sb instanceof CmdForceStart) {
                         hover = hover.replace("{permission}", com.andrei1058.bedwars.configuration.Permissions.PERMISSION_FORCESTART);
+                    } else if (sb instanceof CmdBlockStart) {
+                        hover = hover.replace("{permission}", com.andrei1058.bedwars.configuration.Permissions.PERMISSION_BLOCK_START);
                     } else if (sb instanceof CmdStart) {
                         hover = hover.replace("{permission}", com.andrei1058.bedwars.configuration.Permissions.PERMISSION_START);
                     }
@@ -243,6 +246,7 @@ public class MainCommand extends BukkitCommand implements ParentCommand {
             case "config": return hover ? null : Messages.CONFIG_SET_DISPLAY;
             case "cmds": return hover ? Messages.COMMAND_LIST_DISPLAY_HOVER : Messages.COMMAND_LIST_DISPLAY;
             case "forceStart": return hover ? Messages.COMMAND_FORCE_START_DISPLAY_HOVER : Messages.COMMAND_FORCE_START_DISPLAY;
+            case "blockStart": return hover ? Messages.COMMAND_BLOCK_START_DISPLAY_HOVER : Messages.COMMAND_BLOCK_START_DISPLAY;
             case "start": return hover ? Messages.COMMAND_START_DISPLAY_HOVER : Messages.COMMAND_START_DISPLAY;
             case "forceEndGame": return hover ? Messages.COMMAND_FORCE_END_GAME_DISPLAY_HOVER : Messages.COMMAND_FORCE_END_GAME_DISPLAY;
             case "ready": return hover ? null : Messages.COMMAND_READY_DISPLAY;
