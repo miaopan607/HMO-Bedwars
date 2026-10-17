@@ -346,7 +346,7 @@ public class CategoryContent implements ICategoryContent {
                 player.sendMessage(getMsg(player, Messages.SHOP_NEW_PURCHASE).replace("{item}", displayItem.getItemMeta().getDisplayName()));
             }
         } else {
-            player.sendMessage(getMsg(player, Messages.SHOP_NEW_PURCHASE).replace("{item}", ChatColor.stripColor(getMsg(player, itemNamePath))).replace("{color}", "").replace("{tier}", ""));
+            player.sendMessage(getMsg(player, Messages.SHOP_NEW_PURCHASE).replace("{item}", ChatColor.stripColor(replacePotionPlaceholders(getMsg(player, itemNamePath), ct))).replace("{color}", "").replace("{tier}", ""));
         }
 
 
