@@ -32,6 +32,8 @@ import com.andrei1058.bedwars.api.server.VersionSupport;
 import com.andrei1058.bedwars.arena.Arena;
 import com.andrei1058.bedwars.arena.ArenaManager;
 import com.andrei1058.bedwars.arena.VoidChunkGenerator;
+import com.andrei1058.bedwars.arena.compass.CompassListener;
+import com.andrei1058.bedwars.arena.compass.CompassManager;
 import com.andrei1058.bedwars.arena.despawnables.TargetListener;
 import com.andrei1058.bedwars.arena.feature.SpoilPlayerTNTFeature;
 import com.andrei1058.bedwars.arena.spectator.SpectatorListeners;
@@ -234,7 +236,7 @@ public class BedWars extends JavaPlugin {
                 new EnderPearlLanded(), new QuitAndTeleportListener(), new BreakPlace(), new DamageDeathMove(),
                 new Inventory(), new Interact(), new TeamSelectorListener(), new RefreshGUI(), new HungerWeatherSpawn(), new CmdProcess(),
                 new com.andrei1058.bedwars.shop.quickbuy.LobbyQuickBuyMenu(),
-                new FireballListener(), new EggBridge(), new SpectatorListeners(), new BaseListener(),
+                new FireballListener(), new EggBridge(), new SpectatorListeners(), new BaseListener(), new CompassListener(),
                 new TargetListener(), new LangListener(), new Warnings(this), new ChatAFK(),
                 new GameEndListener(), new DefaultStatsHandler(), new ArenaOpFilterListener(), new CommandHintListener()
         );
@@ -474,6 +476,7 @@ public class BedWars extends JavaPlugin {
                 ex.printStackTrace();
             }
         }
+        CompassManager.clearAll();
         if (SpectatorVisibilityService.getInstance() != null)
             SpectatorVisibilityService.getInstance().shutdown();
 
