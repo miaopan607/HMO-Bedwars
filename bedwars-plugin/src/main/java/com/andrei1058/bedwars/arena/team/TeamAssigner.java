@@ -28,7 +28,6 @@ import com.andrei1058.bedwars.api.events.gameplay.TeamAssignEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import com.andrei1058.bedwars.api.configuration.ConfigPath;
 import com.andrei1058.bedwars.arena.Arena;
 
 import java.util.*;
@@ -50,8 +49,7 @@ public class TeamAssigner implements ITeamAssigner {
         Collections.shuffle(waiting);
         int[] fixed = new int[teams.size()];
         for (int i = 0; i < fixed.length; i++) fixed[i] = teams.get(i).getMembers().size();
-        int[] targets = TeamAllocation.targetSizes(fixed, waiting.size(), arena.getMaxInTeam(),
-                BedWars.config.getBoolean(ConfigPath.GENERAL_CONFIGURATION_TEAM_ASSIGNMENT_PREFER_PAIRS));
+        int[] targets = TeamAllocation.targetSizes(fixed, waiting.size(), arena.getMaxInTeam());
         Map<UUID, Player> available = new HashMap<>();
         for (Player player : waiting) available.put(player.getUniqueId(), player);
         List<List<Player>> groups = new ArrayList<>();
