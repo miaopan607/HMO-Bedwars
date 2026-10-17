@@ -216,9 +216,13 @@ public class ChatFormatting implements Listener {
     }
 
     private static String parsePHolders(String content, Player player, @Nullable ITeam team) {
+        boolean showTeam = team != null && content.contains("{team}");
+        String playerName = showTeam
+                ? team.getColor().chat() + player.getDisplayName()
+                : player.getDisplayName();
         content = content
-                .replace("{playername}", player.getName())
-                .replace("{player}", player.getDisplayName());
+                .replace("{playername}", playerName)
+                .replace("{player}", playerName);
         if (team != null) {
             String teamFormat = getMsg(player, Messages.FORMAT_PAPI_PLAYER_TEAM_TEAM)
                     .replace("{TeamColor}", team.getColor().chat() + "")
