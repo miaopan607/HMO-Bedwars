@@ -232,12 +232,12 @@ public class ChatFormatting implements Listener {
     }
 
     private static boolean isShouting(String msg, Language lang) {
-        return msg.startsWith("!") || msg.startsWith("shout") ||
+        return msg.startsWith("!") || msg.startsWith("！") || msg.startsWith("shout") ||
                 msg.startsWith("SHOUT") || msg.startsWith(lang.m(Messages.MEANING_SHOUT));
     }
 
     private static String clearShout(String msg, Language lang) {
-        if (msg.startsWith("!")) msg = msg.replaceFirst("!", "");
+        if (msg.startsWith("!") || msg.startsWith("！")) msg = msg.substring(1);
         if (msg.startsWith("SHOUT")) msg = msg.replaceFirst("SHOUT", "");
         if (msg.startsWith("shout")) msg = msg.replaceFirst("shout", "");
         if (msg.startsWith(lang.m(Messages.MEANING_SHOUT))) {
