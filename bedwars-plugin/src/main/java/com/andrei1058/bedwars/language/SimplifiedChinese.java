@@ -1146,7 +1146,7 @@ public class SimplifiedChinese extends Language {
         String tabSeparator = "&8&m--------------------------------";
         List<String> tabHeader = List.of(
                 "&a&lHMO BEDWARS",
-                "&7起床战争 &8· &7玩家名单",
+                "&7起床战争",
                 tabSeparator
         );
         yml.addDefault(Messages.FORMATTING_SB_TAB_LOBBY_HEADER, tabHeader);
@@ -1199,7 +1199,7 @@ public class SimplifiedChinese extends Language {
                 tabSeparator,
                 "&7正在观战 &8· &7原{teamColor}{teamName} &8· &7已淘汰"
         ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_PREFIX, List.of("{teamColor}[{teamLetter}] "));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_PREFIX, List.of("&7[观] {teamColor}"));
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_SUFFIX, List.of("&7 · 淘汰"));
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_DEPARTED, "{teamColor}[{teamLetter}] {playerName}&7 · 淘汰·离场");
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SPEC_HEADER, tabHeader);
@@ -1222,14 +1222,14 @@ public class SimplifiedChinese extends Language {
                 tabSeparator,
                 "&7正在观战 &8· {teamColor}{teamName} &7获胜"
         ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN2_PREFIX, List.of("{teamColor}[{teamLetter}] "));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN2_PREFIX, List.of("&7[观] {teamColor}"));
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN2_SUFFIX, List.of("&7 · 淘汰"));
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_ELM_HEADER, tabHeader);
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_ELM_FOOTER, List.of(
                 tabSeparator,
                 "&7比赛结束 &8· &7胜方 {winnerTeamColor}{winnerTeamName}"
         ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_ELM_PREFIX, List.of("{teamColor}[{teamLetter}] "));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_ELM_PREFIX, List.of("&7[观] {teamColor}"));
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_ELM_SUFFIX, List.of("&7 · 淘汰"));
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_SPEC_HEADER, tabHeader);
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_SPEC_FOOTER, List.of(

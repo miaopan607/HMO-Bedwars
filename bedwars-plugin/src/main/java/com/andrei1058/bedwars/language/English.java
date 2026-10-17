@@ -1147,7 +1147,7 @@ public class English extends Language {
         String tabSeparator = "&8&m--------------------------------";
         List<String> tabHeader = List.of(
                 "&a&lHMO BEDWARS",
-                "&7Bed Wars &8· &7Player List",
+                "&7Bed Wars",
                 tabSeparator
         );
         yml.addDefault(Messages.FORMATTING_SB_TAB_LOBBY_HEADER, tabHeader);
@@ -1200,7 +1200,7 @@ public class English extends Language {
                 tabSeparator,
                 "&7Spectating &8· &7Formerly {teamColor}{teamName} &8· &7Eliminated"
         ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_PREFIX, List.of("{teamColor}[{teamLetter}] "));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_PREFIX, List.of("&7[S] {teamColor}"));
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_SUFFIX, List.of("&7 · Eliminated"));
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_ELM_DEPARTED, "{teamColor}[{teamLetter}] {playerName}&7 · Eliminated · Left");
         yml.addDefault(Messages.FORMATTING_SB_TAB_PLAYING_SPEC_HEADER, tabHeader);
@@ -1223,14 +1223,14 @@ public class English extends Language {
                 tabSeparator,
                 "&7Spectating &8· {teamColor}{teamName} &7won"
         ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN2_PREFIX, List.of("{teamColor}[{teamLetter}] "));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN2_PREFIX, List.of("&7[S] {teamColor}"));
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_WIN2_SUFFIX, List.of("&7 · Eliminated"));
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_ELM_HEADER, tabHeader);
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_ELM_FOOTER, List.of(
                 tabSeparator,
                 "&7Game over &8· {winnerTeamColor}{winnerTeamName} &7won"
         ));
-        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_ELM_PREFIX, List.of("{teamColor}[{teamLetter}] "));
+        yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_ELM_PREFIX, List.of("&7[S] {teamColor}"));
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_ELM_SUFFIX, List.of("&7 · Eliminated"));
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_SPEC_HEADER, tabHeader);
         yml.addDefault(Messages.FORMATTING_SB_TAB_RESTARTING_SPEC_FOOTER, List.of(
