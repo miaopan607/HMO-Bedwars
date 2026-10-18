@@ -90,7 +90,6 @@ public class English extends Language {
         yml.addDefault(Messages.PRACTICE_NO_AVAILABLE_AREA, "&cNo {mode} practice area is currently available.");
         yml.addDefault(Messages.PRACTICE_WAITING, "&eSubscribed to {mode} availability; selecting another mode changes the subscription, leaving cancels it.");
         yml.addDefault(Messages.PRACTICE_AVAILABLE, "&a{mode} has a free point. Use /{command} practice to join.");
-        yml.addDefault(Messages.PRACTICE_RECOVERED, "&aRestored your items and state from the previous practice session.");
         yml.addDefault(Messages.PRACTICE_RELOAD_DEFERRED, "&eOccupied definitions retained; reload after they become free: {id}");
         yml.addDefault(Messages.PRACTICE_POINT_STATUS, "&e{id} &7| {mode} &7| {state} &7| Players: {players} &7| Members: {player}");
         yml.addDefault(Messages.PRACTICE_STATUS_DISABLED, "&7Disabled");

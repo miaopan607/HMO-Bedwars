@@ -164,12 +164,6 @@ public final class PracticeListener implements Listener, ReloadableConfiguration
         PracticeSession session = manager.getSession(event.getPlayer());
         if (session != null) session.rememberHeldSlot(event.getNewSlot());
     }
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void join(PlayerJoinEvent event) {
-        Bukkit.getScheduler().runTask(BedWars.plugin, () -> {
-            if (event.getPlayer().isOnline()) manager.recover(event.getPlayer());
-        });
-    }
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void move(PlayerMoveEvent event) {
         if (event instanceof PlayerTeleportEvent) return;

@@ -23,10 +23,10 @@ package com.andrei1058.bedwars.arena;
 import com.andrei1058.bedwars.BedWars;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.util.Vector;
 
 import java.util.*;
 
@@ -35,21 +35,21 @@ import static com.andrei1058.bedwars.BedWars.plugin;
 /**
  * This is where player stuff are stored so he can have them back after a game
  */
-class PlayerGoods {
+public class PlayerGoods {
 
     private UUID uuid;
-    private int level, foodLevel;
+    private int level, foodLevel, heldSlot, fireTicks, totalExperience;
     private double health, healthscale;
-    private float exp;
-    private HashMap<ItemStack, Integer> items = new HashMap<>();
+    private float exp, saturation, exhaustion, fallDistance;
     private List<PotionEffect> potions = new ArrayList<>();
-    private ItemStack[] armor;
-    private HashMap<ItemStack, Integer> enderchest = new HashMap<>();
+    private ItemStack[] items, armor, enderchest;
+    private ItemStack cursor;
+    private Vector velocity;
     private GameMode gamemode;
-    private boolean allowFlight, flying;
+    private boolean allowFlight, flying, healthScaled;
     private String displayName, tabName;
 
-    PlayerGoods(Player p, boolean prepare){
+    public PlayerGoods(Player p, boolean prepare){
         this(p, prepare, false);
     }
 
@@ -65,31 +65,23 @@ class PlayerGoods {
         this.healthscale = p.getHealthScale();
         this.foodLevel = p.getFoodLevel();
         playerGoods.put(p.getUniqueId(), this);
-        int x = 0;
-        for (ItemStack i : p.getInventory()) {
-            if (i != null) {
-                if (i.getType() != Material.AIR) {
-                    items.put(i, x);
-                }
-            }
-            x++;
-        }
+        // 独立复制各槽位，避免相同物品互相覆盖或训练物品修改原背包。
+        items = copy(p.getInventory().getContents());
+        armor = copy(p.getInventory().getArmorContents());
+        enderchest = rejoin ? new ItemStack[27] : copy(p.getEnderChest().getContents());
+        ItemStack heldCursor = p.getItemOnCursor();
+        cursor = heldCursor == null ? null : heldCursor.clone();
+        heldSlot = p.getInventory().getHeldItemSlot();
+        healthScaled = p.isHealthScaled();
+        saturation = p.getSaturation();
+        exhaustion = p.getExhaustion();
+        fallDistance = p.getFallDistance();
+        fireTicks = p.getFireTicks();
+        totalExperience = p.getTotalExperience();
+        velocity = p.getVelocity();
         for (PotionEffect ef : p.getActivePotionEffects()) {
             potions.add(ef);
             if (prepare) p.removePotionEffect(ef.getType());
-        }
-        armor = p.getInventory().getArmorContents();
-
-        if (!rejoin) {
-            int x2 = 0;
-            for (ItemStack i : p.getEnderChest()) {
-                if (i != null) {
-                    if (i.getType() != Material.AIR) {
-                        enderchest.put(i, x2);
-                    }
-                }
-                x2++;
-            }
         }
 
         this.gamemode = p.getGameMode();
@@ -100,6 +92,8 @@ class PlayerGoods {
 
         /* prepare for arena */
         if (prepare) {
+            p.setItemOnCursor(null);
+            p.closeInventory();
             p.setExp(0);
             p.setLevel(0);
             p.setHealthScale(20);
@@ -138,10 +132,12 @@ class PlayerGoods {
     /**
      * restore player
      */
-    void restore() {
+    public void restore() {
         Player player = Bukkit.getPlayer(uuid);
         if (player == null) return;
         playerGoods.remove(player.getUniqueId());
+        player.setItemOnCursor(null);
+        player.closeInventory();
 
 
         for (PotionEffect pf : player.getActivePotionEffects()) {
@@ -149,9 +145,11 @@ class PlayerGoods {
         }
         player.getInventory().clear();
         player.getInventory().setArmorContents(null);
+        player.setTotalExperience(totalExperience);
         player.setLevel(level);
         player.setExp(exp);
         player.setHealthScale(healthscale);
+        player.setHealthScaled(healthScaled);
         try {
             player.setHealth(health);
         } catch (Exception e){
@@ -160,27 +158,18 @@ class PlayerGoods {
         }
         player.setFoodLevel(foodLevel);
 
-        if (!items.isEmpty()) {
-            for (Map.Entry<ItemStack, Integer> entry : items.entrySet()) {
-                player.getInventory().setItem(entry.getValue(), entry.getKey());
-            }
-            player.updateInventory();
-            items.clear();
-        }
-        if (!potions.isEmpty()) {
-            for (PotionEffect pe : potions) {
-                player.addPotionEffect(pe);
-            }
-            potions.clear();
-        }
-        player.getEnderChest().clear();
-        if (!enderchest.isEmpty()) {
-            for (Map.Entry<ItemStack, Integer> entry : enderchest.entrySet()) {
-                player.getEnderChest().setItem(entry.getValue(), entry.getKey());
-            }
-            enderchest.clear();
-        }
+        player.getInventory().setContents(items);
         player.getInventory().setArmorContents(armor);
+        player.getInventory().setHeldItemSlot(heldSlot);
+        for (PotionEffect pe : potions) player.addPotionEffect(pe, true);
+        player.getEnderChest().setContents(enderchest);
+        player.setSaturation(saturation);
+        player.setExhaustion(exhaustion);
+        player.setFireTicks(fireTicks);
+        player.setFallDistance(fallDistance);
+        player.setVelocity(velocity);
+        player.setItemOnCursor(cursor);
+        player.updateInventory();
         player.setGameMode(gamemode);
         player.setAllowFlight(allowFlight);
         player.setFlying(flying);
@@ -197,6 +186,17 @@ class PlayerGoods {
         potions = null;
         armor = null;
         enderchest = null;
+        cursor = null;
+        velocity = null;
+    }
+
+    private static ItemStack[] copy(ItemStack[] contents) {
+        ItemStack[] result = new ItemStack[contents.length];
+        for (int slot = 0; slot < contents.length; slot++) {
+            ItemStack item = contents[slot];
+            result[slot] = item == null ? null : item.clone();
+        }
+        return result;
     }
 
 }

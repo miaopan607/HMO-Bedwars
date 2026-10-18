@@ -38,10 +38,7 @@ public final class PracticeManager {
     public PracticeManager() {
         menu = new PracticeMenu(this); npc = new PracticeNpc(this); listener = new PracticeListener(this);
         BedWars.registerEvents(listener, menu, npc);
-        Bukkit.getScheduler().runTask(BedWars.plugin, () -> {
-            npc.start();
-            for (Player player : Bukkit.getOnlinePlayers()) recover(player);
-        });
+        Bukkit.getScheduler().runTask(BedWars.plugin, npc::start);
     }
     public PracticeConfig getConfig() { return config; }
     public PracticeNpc getNpc() { return npc; }
@@ -147,7 +144,6 @@ public final class PracticeManager {
         if (Arena.isInArena(player) || SetupSession.isInSetupSession(player.getUniqueId()) || BreakPlace.isBuildSession(player)) {
             message(player, Messages.PRACTICE_LEAVE_FIRST); return false;
         }
-        if (current == null && recovery.hasSnapshot(player.getUniqueId()) && !recover(player)) return false;
         if (targetId != null) {
             boolean known = false;
             for (PracticePoint point : getPoints())
@@ -176,9 +172,7 @@ public final class PracticeManager {
         }
         PracticeTarget target = selected.getTarget(targetId);
         if (current != null) return switchSelection(current, selected, target);
-        PracticeSession session;
-        try { session = new PracticeSession(player, selected, target, recovery.capture(player), recovery); }
-        catch (IOException ex) { message(player, Messages.PRACTICE_SAVE_FAILED, null, ex.getMessage()); return false; }
+        PracticeSession session = new PracticeSession(player, selected, target, recovery);
         sessions.put(player.getUniqueId(), session); occupy(selected, player.getUniqueId());
         try {
             session.prepare();
@@ -270,9 +264,8 @@ public final class PracticeManager {
         try {
             session.restore();
             if (quitting) settleCursor(player);
-            recovery.complete(player);
-        } catch (IOException | RuntimeException ex) {
-            BedWars.plugin.getLogger().severe("Practice recovery retained for " + player.getName() + ": " + ex.getMessage());
+        } catch (RuntimeException ex) {
+            BedWars.plugin.getLogger().severe("Practice player state restoration failed for " + player.getName() + ": " + ex.getMessage());
             message(player, Messages.PRACTICE_SAVE_FAILED, null, ex.getMessage());
         } finally {
             sessions.remove(player.getUniqueId()); release(session.getPoint(), player.getUniqueId());
@@ -285,17 +278,6 @@ public final class PracticeManager {
         player.setItemOnCursor(null);
         for (ItemStack remaining : player.getInventory().addItem(cursor).values())
             player.getWorld().dropItem(player.getLocation(), remaining);
-    }
-    public boolean recover(Player player) {
-        if (!recovery.hasSnapshot(player.getUniqueId()) || isPracticing(player)) return true;
-        try {
-            PracticeSnapshot snapshot = recovery.read(player.getUniqueId());
-            if (!teleport(player, returnLocation(snapshot.location()))) { message(player, Messages.PRACTICE_TELEPORT_FAILED); return false; }
-            snapshot.restore(player); settleCursor(player); recovery.complete(player);
-            message(player, Messages.PRACTICE_RECOVERED); return true;
-        } catch (IOException | InvalidConfigurationException | RuntimeException ex) {
-            message(player, Messages.PRACTICE_SAVE_FAILED, null, ex.getMessage()); return false;
-        }
     }
     public void replenish(Player player) {
         PracticeSession session = getSession(player);

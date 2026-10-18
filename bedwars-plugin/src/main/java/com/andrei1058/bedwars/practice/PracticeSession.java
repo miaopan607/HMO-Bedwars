@@ -1,5 +1,6 @@
 package com.andrei1058.bedwars.practice;
 
+import com.andrei1058.bedwars.arena.PlayerGoods;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,7 +18,8 @@ public final class PracticeSession {
     private final Player player;
     private PracticePoint point;
     private PracticeTarget target;
-    private final PracticeSnapshot snapshot;
+    private final PlayerGoods goods;
+    private final Location returnLocation;
     private final PracticeRecovery recovery;
     private final Map<BlockKey, BlockState> blocks = new LinkedHashMap<>();
     private final Map<UUID, Projectile> projectiles = new HashMap<>();
@@ -30,15 +32,17 @@ public final class PracticeSession {
     private boolean resetting, damageEnabled;
     private String status = "";
 
-    PracticeSession(Player player, PracticePoint point, PracticeTarget target, PracticeSnapshot snapshot, PracticeRecovery recovery) {
-        this.player = player; this.point = point; this.target = target; this.snapshot = snapshot; this.recovery = recovery;
+    PracticeSession(Player player, PracticePoint point, PracticeTarget target, PracticeRecovery recovery) {
+        this.player = player; this.point = point; this.target = target; this.recovery = recovery;
+        goods = new PlayerGoods(player, false);
+        returnLocation = player.getLocation();
         sample = point.getSpawn();
     }
     public Player getPlayer() { return player; }
     public PracticePoint getPoint() { return point; }
     public PracticeTarget getTarget() { return target; }
     public Location getSpawn() { return target == null ? point.getSpawn() : target.getSpawn(); }
-    public Location getReturnLocation() { return snapshot.location(); }
+    public Location getReturnLocation() { return returnLocation.clone(); }
     public PracticeAttempt getAttempt() {
         if (attempt == null) attempt = new PracticeAttempt();
         return attempt;
@@ -132,7 +136,7 @@ public final class PracticeSession {
         player.setHealth(player.getMaxHealth()); player.setFoodLevel(20); player.setSaturation(5); player.setExhaustion(0);
         player.setFireTicks(0); player.setFallDistance(0); player.setVelocity(new Vector());
     }
-    public void restore() { snapshot.restore(player); }
+    public void restore() { goods.restore(); }
 
     private static final class BlockKey {
         private final int x, y, z;

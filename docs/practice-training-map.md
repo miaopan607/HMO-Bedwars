@@ -142,4 +142,4 @@ points:
 
 管理员 `/bw practice list` 查看可加入场地数、练习人数、点位成员名单、禁用、世界缺失、出生安全及恢复状态。`/bw practice reload <id>` 单独重载一个空闲点；全量重载保留占用中的定义，错误点单独报告。共享点位最后一人退出后才能修改或重载。大厅入口通过 `/bw practice npc set` 在大厅内设置。
 
-原玩家状态保存在 `practice-recovery/players/`，临时羊毛坐标保存在 `practice-recovery/blocks/`。启动时清理异常退出留下的已记录羊毛，玩家上线后恢复原物品与状态；相关区块落盘后才清除地形日志。恢复异常记录应保留以便排障。
+原玩家状态与竞技场统一保存在内存中的 `PlayerGoods`，退出或断线时直接恢复；临时羊毛坐标保存在 `practice-recovery/blocks/`，供启动时清理异常退出留下的方块。

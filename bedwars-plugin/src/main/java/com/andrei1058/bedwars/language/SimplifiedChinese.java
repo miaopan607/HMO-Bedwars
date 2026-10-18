@@ -90,7 +90,6 @@ public class SimplifiedChinese extends Language {
         yml.addDefault(Messages.PRACTICE_NO_AVAILABLE_AREA, "&c当前没有可用的 {mode} 练习场地。");
         yml.addDefault(Messages.PRACTICE_WAITING, "&e已订阅 {mode} 空位通知；切换模式可更换订阅，退出练习可取消。");
         yml.addDefault(Messages.PRACTICE_AVAILABLE, "&a{mode} 现有空位，可使用 /{command} practice 进入。");
-        yml.addDefault(Messages.PRACTICE_RECOVERED, "&a已恢复上次练习前的物品与玩家状态。");
         yml.addDefault(Messages.PRACTICE_RELOAD_DEFERRED, "&e以下使用中的点位保持原配置，请空闲后重载：{id}");
         yml.addDefault(Messages.PRACTICE_POINT_STATUS, "&e{id} &7| {mode} &7| {state} &7| 人数：{players} &7| 玩家：{player}");
         yml.addDefault(Messages.PRACTICE_STATUS_DISABLED, "&7已禁用");

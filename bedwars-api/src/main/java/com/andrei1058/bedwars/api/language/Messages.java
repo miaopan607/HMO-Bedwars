@@ -74,7 +74,6 @@ public class Messages {
     public static final String PRACTICE_NO_AVAILABLE_AREA = "practice-no-available-area";
     public static final String PRACTICE_WAITING = "practice-waiting";
     public static final String PRACTICE_AVAILABLE = "practice-available";
-    public static final String PRACTICE_RECOVERED = "practice-recovered";
     public static final String PRACTICE_RELOAD_DEFERRED = "practice-reload-deferred";
     public static final String PRACTICE_POINT_STATUS = "practice-point-status";
     public static final String PRACTICE_STATUS_DISABLED = "practice-status-disabled";
