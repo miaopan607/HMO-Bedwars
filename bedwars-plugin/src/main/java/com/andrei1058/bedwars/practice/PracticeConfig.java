@@ -144,7 +144,7 @@ public final class PracticeConfig extends ConfigManager {
         if (!(candidate.get(root + "fail-y") instanceof Integer)) throw new IllegalArgumentException("fail-y must be an integer");
         int failY = candidate.getInt(root + "fail-y");
         PracticePoint point = new PracticePoint(id, name, mode, spawn, first, second, failY, enabled);
-        if (enabled && (spawn == null || !point.containsCoordinates(spawn) || failY < 0 || failY >= spawn.getY()))
+        if (enabled && (spawn == null || !point.containsCoordinates(spawn) || failY < -1 || failY >= spawn.getY()))
             throw new IllegalArgumentException("Invalid bounds, spawn or fail-y");
         if (enabled && world != null && !BedWars.nms.isPracticeSpawnSafe(spawn)) throw new IllegalArgumentException("Unsafe spawn");
         ConfigurationSection targets = mode == PracticeMode.BRIDGE ? candidate.getConfigurationSection(root + "targets") : null;

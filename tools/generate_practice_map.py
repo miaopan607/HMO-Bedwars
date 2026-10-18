@@ -357,7 +357,7 @@ def configuration(world_name):
                       f"    spawn: '{offset + 0.5},80,{spawn_z},0,0'",
                       f"    pos1: '{offset - half},48,-24,0,0'",
                       f"    pos2: '{offset + half},159,144,0,0'",
-                      "    fail-y: 64", "    enabled: true"])
+                      "    fail-y: -1", "    enabled: true"])
         if mode != "bridge":
             continue
         lines.append("    targets:")

@@ -432,7 +432,7 @@ public final class PracticeManager {
         return change(sender, id, false, yaml -> {
             String root = "points." + id + ".";
             yaml.set(root + "mode", mode.getId()); yaml.set(root + "world", location.getWorld().getName());
-            yaml.set(root + "spawn", config.stringLocationArenaFormat(location)); yaml.set(root + "fail-y", 0); yaml.set(root + "enabled", false);
+            yaml.set(root + "spawn", config.stringLocationArenaFormat(location)); yaml.set(root + "fail-y", -1); yaml.set(root + "enabled", false);
         });
     }
     private boolean setLocation(CommandSender sender, String id, String key, Location location) {
