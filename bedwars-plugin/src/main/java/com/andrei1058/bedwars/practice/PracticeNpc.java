@@ -48,7 +48,7 @@ public final class PracticeNpc implements Listener {
             entity = BedWars.nms.spawnPracticeNpc(location, Language.getMsg(null, Messages.PRACTICE_NPC_NAME));
             YamlConfiguration candidate = manager.getConfig().copyConfiguration();
             candidate.set(PracticeConfig.NPC_UUID, entity.getUniqueId().toString());
-            manager.getConfig().commit(candidate);
+            manager.getConfig().commitNpc(candidate);
         } catch (Exception ex) {
             shutdown(); BedWars.plugin.getLogger().warning("Practice NPC unavailable: " + ex.getMessage());
         }
@@ -61,7 +61,7 @@ public final class PracticeNpc implements Listener {
         try {
             YamlConfiguration candidate = manager.getConfig().copyConfiguration();
             candidate.set(PracticeConfig.NPC_LOCATION, manager.getConfig().stringLocationConfigFormat(player.getLocation()));
-            manager.getConfig().commit(candidate); start();
+            manager.getConfig().commitNpc(candidate); start();
             if (entity == null) { PracticeManager.message(player, Messages.PRACTICE_SAVE_FAILED); return false; }
             PracticeManager.message(player, Messages.PRACTICE_ADMIN_SUCCESS); return true;
         } catch (Exception ex) { PracticeManager.message(player, Messages.PRACTICE_SAVE_FAILED, null, ex.getMessage()); return false; }
@@ -70,7 +70,7 @@ public final class PracticeNpc implements Listener {
         try {
             UUID previous = manager.getConfig().getNpcUuid();
             YamlConfiguration candidate = manager.getConfig().copyConfiguration();
-            candidate.set("npc", null); manager.getConfig().commit(candidate);
+            candidate.set("npc", null); manager.getConfig().commitNpc(candidate);
             if (previous != null) retired.add(previous);
             shutdown(); PracticeManager.message(sender, Messages.PRACTICE_ADMIN_SUCCESS); return true;
         } catch (Exception ex) { PracticeManager.message(sender, Messages.PRACTICE_SAVE_FAILED, null, ex.getMessage()); return false; }

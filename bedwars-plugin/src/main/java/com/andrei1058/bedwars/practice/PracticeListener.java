@@ -17,6 +17,7 @@ import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
+import java.io.IOException;
 
 /** Practice owns only its worlds, sessions and current-round projectiles. */
 public final class PracticeListener implements Listener, ReloadableConfiguration {
@@ -24,6 +25,7 @@ public final class PracticeListener implements Listener, ReloadableConfiguration
     private final BukkitTask ticker;
     private double speed, cooldown;
     private float explosion;
+    private int ticks;
 
     public PracticeListener(PracticeManager manager) {
         this.manager = manager;
@@ -43,20 +45,24 @@ public final class PracticeListener implements Listener, ReloadableConfiguration
         });
     }
     private void tick() {
-        for (PracticeSession session : manager.getSessions()) {
-            Player player = session.getPlayer();
-            if (!player.isOnline()) { manager.disconnect(player); continue; }
-            Location location = player.getLocation();
-            if (!session.getPoint().contains(location) || location.getY() < session.getPoint().getFailY()) {
-                manager.reset(player); continue;
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            PracticeSession session = manager.getSession(player);
+            if (session == null) continue;
+            Location location = session.sampleLocation();
+            if (!session.getPoint().containsPlayer(location)) {
+                manager.reset(player, location.getY() < session.getPoint().getFailY()
+                        ? Messages.PRACTICE_FAIL_FALL : Messages.PRACTICE_FAIL_BOUNDS);
+                continue;
             }
-            if (session.pruneProjectiles()) manager.reset(player);
+            manager.sample(session);
+            session.pruneProjectiles();
         }
+        if (++ticks % 10 == 0) manager.refreshUi();
     }
     public static boolean control(ItemStack item) {
         if (item == null || !BedWars.nms.isCustomBedWarsItem(item)) return false;
         String value = BedWars.nms.getCustomData(item);
-        return "PRACTICE_RETRY".equals(value) || "PRACTICE_LEAVE".equals(value);
+        return "PRACTICE_RETRY".equals(value) || "PRACTICE_LEAVE".equals(value) || "PRACTICE_MENU".equals(value);
     }
     @EventHandler(priority = EventPriority.HIGHEST)
     public void interact(PlayerInteractEvent event) {
@@ -71,7 +77,11 @@ public final class PracticeListener implements Listener, ReloadableConfiguration
         if (right && control(item)) {
             event.setCancelled(true);
             String marker = BedWars.nms.getCustomData(item);
-            later(session, () -> { if ("PRACTICE_RETRY".equals(marker)) manager.reset(player); else manager.leave(player); });
+            later(session, () -> {
+                if ("PRACTICE_RETRY".equals(marker)) manager.reset(player);
+                else if ("PRACTICE_MENU".equals(marker)) manager.openMenu(player);
+                else manager.leave(player);
+            });
             return;
         }
         if (right && item != null && item.getType() == Material.FIREBALL && session.getPoint().getMode() == PracticeMode.FIREBALL) {
@@ -102,12 +112,19 @@ public final class PracticeListener implements Listener, ReloadableConfiguration
         if (session == null) { if (!manager.canBuild(event.getPlayer(), event.getBlock().getLocation())) event.setCancelled(true); return; }
         if (event instanceof BlockMultiPlaceEvent || event.getBlock().getType() != Material.WOOL
                 || event.getBlockReplacedState().getType() != Material.AIR || !session.getPoint().contains(event.getBlock().getLocation())) event.setCancelled(true);
+        if (!event.isCancelled()) {
+            try { session.recordBlock(event.getBlockReplacedState()); }
+            catch (IOException ex) {
+                event.setCancelled(true);
+                PracticeManager.message(event.getPlayer(), Messages.PRACTICE_SAVE_FAILED, null, ex.getMessage());
+            }
+        }
     }
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void recordPlacement(BlockPlaceEvent event) {
         PracticeSession session = manager.getSession(event.getPlayer());
         if (session == null) return;
-        session.recordBlock(event.getBlockReplacedState()); later(session, () -> manager.replenish(event.getPlayer()));
+        manager.placed(session); later(session, () -> manager.replenish(event.getPlayer()));
     }
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void breakBlock(BlockBreakEvent event) {
@@ -123,7 +140,8 @@ public final class PracticeListener implements Listener, ReloadableConfiguration
         Player player = (Player) event.getEntity().getShooter();
         PracticeSession session = manager.getSession(player);
         if (session == null) return;
-        session.trackProjectile(event.getEntity()); later(session, () -> manager.replenish(player));
+        session.trackProjectile(event.getEntity());
+        later(session, () -> manager.replenish(player));
     }
     @EventHandler(priority = EventPriority.MONITOR)
     public void hit(ProjectileHitEvent event) {
@@ -134,11 +152,23 @@ public final class PracticeListener implements Listener, ReloadableConfiguration
     public void teleport(PlayerTeleportEvent event) {
         if (manager.isInternalTeleport(event.getPlayer())) return;
         PracticeSession session = manager.getSession(event.getPlayer());
-        if (session != null && (!session.getPoint().contains(event.getTo()) || event.getTo().getY() < session.getPoint().getFailY())) {
+        if (session != null && !session.getPoint().containsPlayer(event.getTo())) {
             event.setCancelled(true);
-            if (event.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL) later(session, () -> manager.reset(event.getPlayer()));
+            if (event.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL)
+                session.status(PracticeManager.text(session.getPlayer(), Messages.PRACTICE_PEARL_OUT_OF_BOUNDS));
             else PracticeManager.message(event.getPlayer(), Messages.PRACTICE_LEAVE_FIRST);
         } else if (session == null && manager.getOccupiedPoint(event.getTo()) != null) event.setCancelled(true);
+    }
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void held(PlayerItemHeldEvent event) {
+        PracticeSession session = manager.getSession(event.getPlayer());
+        if (session != null) session.rememberHeldSlot(event.getNewSlot());
+    }
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void join(PlayerJoinEvent event) {
+        Bukkit.getScheduler().runTask(BedWars.plugin, () -> {
+            if (event.getPlayer().isOnline()) manager.recover(event.getPlayer());
+        });
     }
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void move(PlayerMoveEvent event) {
@@ -146,9 +176,22 @@ public final class PracticeListener implements Listener, ReloadableConfiguration
         PracticeSession session = manager.getSession(event.getPlayer());
         if (session == null) {
             if (manager.getOccupiedPoint(event.getTo()) != null) event.setCancelled(true);
-        } else if (!session.getPoint().contains(event.getTo()) || event.getTo().getY() < session.getPoint().getFailY()) {
-            event.setTo(event.getFrom()); later(session, () -> manager.reset(event.getPlayer()));
+        } else if (!session.getPoint().containsPlayer(event.getTo())) {
+            String reason = event.getTo().getY() < session.getPoint().getFailY()
+                    ? Messages.PRACTICE_FAIL_FALL : Messages.PRACTICE_FAIL_BOUNDS;
+            event.setTo(event.getFrom());
+            later(session, () -> manager.reset(event.getPlayer(), reason));
         }
+    }
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void observeMove(PlayerMoveEvent event) {
+        if (event instanceof PlayerTeleportEvent) return;
+        PracticeSession session = manager.getSession(event.getPlayer());
+        if (session == null || session.isResetting() || !session.getPoint().containsPlayer(event.getTo())) return;
+        Location from = event.getFrom(), to = event.getTo();
+        if (from.getX() == to.getX() && from.getY() == to.getY() && from.getZ() == to.getZ()) return;
+        // 本包移动尚未应用，实际位置可保留上一包的落地瞬间。
+        manager.sample(session);
     }
     @EventHandler(priority = EventPriority.LOWEST) public void quit(PlayerQuitEvent event) { manager.disconnect(event.getPlayer()); }
     @EventHandler public void world(PlayerChangedWorldEvent event) {
@@ -167,8 +210,12 @@ public final class PracticeListener implements Listener, ReloadableConfiguration
                 return;
             }
         }
-        if (event.getCause() == EntityDamageEvent.DamageCause.VOID || event.getFinalDamage() >= session.getPlayer().getHealth()) {
-            event.setCancelled(true); later(session, () -> manager.reset(session.getPlayer()));
+        if (event.getCause() == EntityDamageEvent.DamageCause.VOID) {
+            event.setCancelled(true); later(session, () -> manager.reset(session.getPlayer(), Messages.PRACTICE_FAIL_FALL));
+        } else if (!session.isDamageEnabled()) {
+            event.setCancelled(true); session.getPlayer().setFireTicks(0);
+        } else if (event.getFinalDamage() >= session.getPlayer().getHealth()) {
+            event.setCancelled(true); later(session, () -> manager.reset(session.getPlayer(), Messages.PRACTICE_FAIL_DAMAGE));
         }
     }
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

@@ -259,8 +259,14 @@ public abstract class VersionSupport {
     /** Check player collision and supporting ground before practice teleports. */
     public abstract boolean isPracticeSpawnSafe(Location location);
 
+    /** 检查玩家脚底是否接触方块的实际支撑面。 */
+    public abstract boolean isPracticeGrounded(Location location);
+
     /** Spawn a stationary, protected practice menu NPC. */
     public abstract org.bukkit.entity.Entity spawnPracticeNpc(Location location, String name);
+
+    /** Persist restored practice chunks before removing their recovery journal. */
+    public abstract void savePracticeChunks(java.util.Collection<org.bukkit.Chunk> chunks) throws java.io.IOException;
 
 
     /**

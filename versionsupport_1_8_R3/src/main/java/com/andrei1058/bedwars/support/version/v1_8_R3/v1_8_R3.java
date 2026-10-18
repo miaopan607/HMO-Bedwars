@@ -358,6 +358,37 @@ public class v1_8_R3 extends VersionSupport {
                 && feet.getRelative(0, -1, 0).getType() != org.bukkit.Material.CACTUS
                 && world.a(body).isEmpty() && !world.a(ground).isEmpty();
     }
+
+    @Override
+    public boolean isPracticeGrounded(Location location) {
+        if (location == null || location.getWorld() == null) return false;
+        net.minecraft.server.v1_8_R3.World world = ((CraftWorld) location.getWorld()).getHandle();
+        double x = location.getX(), y = location.getY(), z = location.getZ();
+        double epsilon = 1.0E-5;
+        AxisAlignedBB feet = new AxisAlignedBB(x - 0.3, y - epsilon, z - 0.3, x + 0.3, y + epsilon, z + 0.3);
+        for (AxisAlignedBB support : world.a(feet)) {
+            // 侧墙的碰撞不代表脚底有支撑。
+            if (Math.abs(support.e - y) <= epsilon
+                    && support.d > feet.a && support.a < feet.d
+                    && support.f > feet.c && support.c < feet.f) return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void savePracticeChunks(java.util.Collection<org.bukkit.Chunk> chunks) throws java.io.IOException {
+        for (org.bukkit.Chunk chunk : chunks) {
+            net.minecraft.server.v1_8_R3.Chunk handle = ((org.bukkit.craftbukkit.v1_8_R3.CraftChunk) chunk).getHandle();
+            ((CraftWorld) chunk.getWorld()).getHandle().chunkProviderServer.saveChunk(handle);
+        }
+        try {
+            FileIOThread.a().b();
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new java.io.IOException("Practice chunk save interrupted", ex);
+        }
+    }
+
     @Override
     public boolean isBlockPlacementIntersectingPlayer(Player player, org.bukkit.block.Block block) {
         if (player == null || block == null || !block.getType().isBlock()) {

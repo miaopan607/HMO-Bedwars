@@ -2,130 +2,146 @@ package com.andrei1058.bedwars.practice;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.Vector;
+import java.io.IOException;
 import java.util.*;
 
 public final class PracticeSession {
     private final Player player;
-    private final PracticePoint point;
-    private final Location returnLocation;
-    private final ItemStack[] contents, armor;
-    private final ItemStack cursor;
-    private final int heldSlot, food, fireTicks;
-    private final float saturation, exhaustion, fallDistance;
-    private final double health;
-    private final GameMode gameMode;
-    private final boolean allowFlight, flying;
-    private final Vector velocity;
-    private final Collection<PotionEffect> effects;
+    private PracticePoint point;
+    private PracticeTarget target;
+    private final PracticeSnapshot snapshot;
+    private final PracticeRecovery recovery;
     private final Map<BlockKey, BlockState> blocks = new LinkedHashMap<>();
     private final Map<UUID, Projectile> projectiles = new HashMap<>();
-    private long round, lastFireballTime;
-    private boolean resetting;
+    private final EnumMap<PracticeMode, int[]> layouts = new EnumMap<>(PracticeMode.class);
+    private PracticeAttempt attempt;
+    private final Location sample;
+    private PracticeRecovery.Journal journal;
+    private long round, lastFireballTime, statusUntil;
+    private int heldSlot;
+    private boolean resetting, damageEnabled;
+    private String status = "";
 
-    public PracticeSession(Player player, PracticePoint point) {
-        this.player = player;
-        this.point = point;
-        returnLocation = player.getLocation();
-        contents = copy(player.getInventory().getContents());
-        armor = copy(player.getInventory().getArmorContents());
-        cursor = cloneItem(player.getItemOnCursor());
-        heldSlot = player.getInventory().getHeldItemSlot();
-        food = player.getFoodLevel(); saturation = player.getSaturation(); exhaustion = player.getExhaustion();
-        health = player.getHealth(); gameMode = player.getGameMode();
-        allowFlight = player.getAllowFlight(); flying = player.isFlying();
-        fireTicks = player.getFireTicks(); fallDistance = player.getFallDistance(); velocity = player.getVelocity();
-        effects = new ArrayList<>(player.getActivePotionEffects());
+    PracticeSession(Player player, PracticePoint point, PracticeTarget target, PracticeSnapshot snapshot, PracticeRecovery recovery) {
+        this.player = player; this.point = point; this.target = target; this.snapshot = snapshot; this.recovery = recovery;
+        sample = point.getSpawn();
     }
     public Player getPlayer() { return player; }
     public PracticePoint getPoint() { return point; }
-    public Location getReturnLocation() { return returnLocation.clone(); }
+    public PracticeTarget getTarget() { return target; }
+    public Location getSpawn() { return target == null ? point.getSpawn() : target.getSpawn(); }
+    public Location getReturnLocation() { return snapshot.location(); }
+    public PracticeAttempt getAttempt() {
+        if (attempt == null) attempt = new PracticeAttempt();
+        return attempt;
+    }
+    public boolean hasActiveAttempt() { return attempt != null && attempt.isActive(); }
+    public Location sampleLocation() { return player.getLocation(sample); }
     public long getRound() { return round; }
     public boolean isResetting() { return resetting; }
     public void setResetting(boolean value) { resetting = value; }
+    public boolean isDamageEnabled() { return damageEnabled; }
+    public void toggleDamage() { damageEnabled = !damageEnabled; }
     public long getLastFireballTime() { return lastFireballTime; }
     public void setLastFireballTime(long value) { lastFireballTime = value; }
-    public void nextRound() { round++; lastFireballTime = 0; clearProjectiles(); }
-    public void trackProjectile(Projectile projectile) { projectiles.put(projectile.getUniqueId(), projectile); }
+    public void status(String value) { status = value; statusUntil = System.nanoTime() + 3_000_000_000L; }
+    public String getStatus(long now) { return now < statusUntil ? status : ""; }
+    public void select(PracticePoint point, PracticeTarget target) {
+        this.point = point; this.target = target;
+    }
+    public void nextRound() {
+        round++; lastFireballTime = 0;
+        if (attempt != null) attempt.clear();
+        status = ""; statusUntil = 0;
+        clearProjectiles();
+    }
+    public void trackProjectile(Projectile projectile) {
+        projectiles.put(projectile.getUniqueId(), projectile);
+    }
     public boolean ownsProjectile(Projectile projectile) { return projectiles.get(projectile.getUniqueId()) == projectile; }
-    boolean pruneProjectiles() {
-        if (projectiles.isEmpty()) return false;
+    void pruneProjectiles() {
         Iterator<Projectile> iterator = projectiles.values().iterator();
         while (iterator.hasNext()) {
             Projectile projectile = iterator.next();
-            if (projectile.isDead() || !projectile.isValid()) iterator.remove();
-            else if (!point.contains(projectile.getLocation())) {
-                iterator.remove();
-                projectile.remove();
-                if (projectile instanceof EnderPearl) return true;
+            if (projectile.isDead() || !projectile.isValid() || !point.contains(projectile.getLocation())) {
+                projectile.remove(); iterator.remove();
             }
         }
-        return false;
     }
-    public void removeProjectile(Projectile projectile) { projectiles.remove(projectile.getUniqueId()); }
+    public void removeProjectile(Projectile projectile) {
+        projectiles.remove(projectile.getUniqueId());
+    }
     private void clearProjectiles() {
         for (Projectile projectile : projectiles.values()) projectile.remove();
         projectiles.clear();
     }
-    public void recordBlock(BlockState state) { blocks.putIfAbsent(new BlockKey(state.getBlock()), state); }
+    public void recordBlock(BlockState state) throws IOException {
+        BlockKey key = new BlockKey(state.getBlock());
+        if (blocks.containsKey(key)) return;
+        if (journal == null) journal = recovery.open(player, state.getWorld());
+        journal.record(state.getBlock());
+        blocks.put(key, state);
+    }
     public void restoreBlock(Block block) {
         BlockState state = blocks.remove(new BlockKey(block));
         if (state != null) state.update(true, false);
     }
-    public void clearBlocks() {
+    public void clearBlocks() throws IOException {
         for (BlockState state : blocks.values()) state.update(true, false);
         blocks.clear();
+        if (journal != null) { journal.clear(); journal = null; }
+    }
+    public void rememberHeldSlot(int slot) {
+        ItemStack item = player.getInventory().getItem(slot);
+        if (item != null && !PracticeListener.control(item)) heldSlot = slot;
+    }
+    public void rememberLayout() {
+        int[] slots = layouts.computeIfAbsent(point.getMode(), mode -> new int[]{0, 1});
+        for (int slot = 0; slot < 36; slot++) {
+            ItemStack item = player.getInventory().getItem(slot);
+            if (item == null || PracticeListener.control(item)) continue;
+            if (item.getType() == point.getMode().getMaterial()) slots[0] = slot;
+            if (point.getMode() == PracticeMode.FIREBALL && item.getType() == Material.WOOL) slots[1] = slot;
+        }
+    }
+    public int itemSlot(boolean wool) {
+        int[] slots = layouts.get(point.getMode());
+        return slots == null ? (wool ? 1 : 0) : slots[wool ? 1 : 0];
+    }
+    public int heldSlot() {
+        int slot = heldSlot % 9;
+        ItemStack item = player.getInventory().getItem(slot);
+        if (item != null && !PracticeListener.control(item)) return slot;
+        // 主物品在普通背包中时，保持选中训练槽而非固定控制槽。
+        int primary = itemSlot(false);
+        return primary < 6 ? primary : 0;
     }
     public void prepare() {
-        player.setItemOnCursor(null);
-        player.closeInventory();
-        player.getInventory().clear();
-        player.getInventory().setArmorContents(null);
+        player.setItemOnCursor(null); player.closeInventory();
+        player.getInventory().clear(); player.getInventory().setArmorContents(null);
         for (PotionEffect effect : player.getActivePotionEffects()) player.removePotionEffect(effect.getType());
         player.setFlying(false); player.setAllowFlight(false); player.setGameMode(GameMode.SURVIVAL);
         player.setHealth(player.getMaxHealth()); player.setFoodLevel(20); player.setSaturation(5); player.setExhaustion(0);
         player.setFireTicks(0); player.setFallDistance(0); player.setVelocity(new Vector());
     }
-    public void restore() {
-        player.setItemOnCursor(null);
-        player.closeInventory();
-        for (PotionEffect effect : player.getActivePotionEffects()) player.removePotionEffect(effect.getType());
-        for (PotionEffect effect : effects) player.addPotionEffect(effect, true);
-        player.getInventory().setContents(copy(contents)); player.getInventory().setArmorContents(copy(armor));
-        player.getInventory().setHeldItemSlot(heldSlot);
-        player.setGameMode(gameMode); player.setAllowFlight(allowFlight); player.setFlying(flying);
-        player.setHealth(Math.min(health, player.getMaxHealth())); player.setFoodLevel(food);
-        player.setSaturation(saturation); player.setExhaustion(exhaustion);
-        player.setFireTicks(fireTicks); player.setFallDistance(fallDistance); player.setVelocity(velocity);
-        player.setItemOnCursor(cloneItem(cursor)); player.updateInventory();
-    }
-    private static ItemStack cloneItem(ItemStack item) { return item == null ? null : item.clone(); }
-    private static ItemStack[] copy(ItemStack[] source) {
-        ItemStack[] result = new ItemStack[source.length];
-        for (int i = 0; i < source.length; i++) result[i] = cloneItem(source[i]);
-        return result;
-    }
+    public void restore() { snapshot.restore(player); }
+
     private static final class BlockKey {
-        private final UUID world;
         private final int x, y, z;
-        BlockKey(Block block) { world = block.getWorld().getUID(); x = block.getX(); y = block.getY(); z = block.getZ(); }
+        BlockKey(Block block) { x = block.getX(); y = block.getY(); z = block.getZ(); }
         @Override public boolean equals(Object value) {
             if (!(value instanceof BlockKey)) return false;
             BlockKey other = (BlockKey) value;
-            return x == other.x && y == other.y && z == other.z && world.equals(other.world);
+            return x == other.x && y == other.y && z == other.z;
         }
-        @Override public int hashCode() {
-            int hash = 31 + world.hashCode();
-            hash = 31 * hash + x;
-            hash = 31 * hash + y;
-            return 31 * hash + z;
-        }
+        @Override public int hashCode() { return (x * 31 + y) * 31 + z; }
     }
 }

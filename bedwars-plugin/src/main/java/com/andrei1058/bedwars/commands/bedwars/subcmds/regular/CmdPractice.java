@@ -3,7 +3,6 @@ package com.andrei1058.bedwars.commands.bedwars.subcmds.regular;
 import com.andrei1058.bedwars.BedWars;
 import com.andrei1058.bedwars.api.command.ParentCommand;
 import com.andrei1058.bedwars.api.command.SubCommand;
-import com.andrei1058.bedwars.api.language.Language;
 import com.andrei1058.bedwars.api.language.Messages;
 import com.andrei1058.bedwars.practice.*;
 import org.bukkit.command.CommandSender;
@@ -23,15 +22,12 @@ public final class CmdPractice extends SubCommand {
         try {
             switch (action) {
                 case "join":
-                    require(args, 2); manager.join(player(sender), PracticeMode.parse(args[1])); return true;
+                    if (args.length < 2 || args.length > 3) throw new IllegalArgumentException("Wrong argument count");
+                    manager.join(player(sender), PracticeMode.parse(args[1].toLowerCase(Locale.ROOT)), args.length == 3 ? args[2] : null); return true;
                 case "retry": require(args, 1); manager.reset(player(sender)); return true;
                 case "leave": require(args, 1); manager.leave(player(sender)); return true;
                 case "list":
-                    require(args, 1);
-                    for (PracticeMode mode : PracticeMode.values()) sender.sendMessage(Language.getMsg(sender instanceof Player ? (Player) sender : null, Messages.PRACTICE_LIST_LINE)
-                            .replace("{mode}", Language.getMsg(sender instanceof Player ? (Player) sender : null, mode.getMessagePath()))
-                            .replace("{free}", String.valueOf(manager.getFreeCount(mode))).replace("{total}", String.valueOf(manager.getTotalCount(mode))));
-                    return true;
+                    require(args, 1); manager.list(sender); return true;
                 default: break;
             }
             if (!manager.hasPracticeAdmin(sender)) { PracticeManager.message(sender, Messages.PRACTICE_NO_PERMISSION); return true; }
@@ -42,7 +38,9 @@ public final class CmdPractice extends SubCommand {
                 case "faily": require(args, 3); manager.setFailY(sender, args[1], Integer.parseInt(args[2])); break;
                 case "enable": case "disable": require(args, 2); manager.setEnabled(sender, args[1], action.equals("enable")); break;
                 case "delete": require(args, 2); manager.delete(sender, args[1]); break;
-                case "reload": require(args, 1); manager.reload(sender); break;
+                case "reload":
+                    if (args.length > 2) throw new IllegalArgumentException("Wrong argument count");
+                    manager.reload(sender, args.length == 2 ? args[1] : null); break;
                 case "npc":
                     require(args, 2);
                     if (args[1].equals("set")) manager.getNpc().set(player(sender));
@@ -69,12 +67,18 @@ public final class CmdPractice extends SubCommand {
         } else if ((args.length == 3 && args[1].equalsIgnoreCase("join"))
                 || (args.length == 4 && args[1].equalsIgnoreCase("create") && admin)) {
             for (PracticeMode mode : PracticeMode.values()) values.add(mode.getId());
+        } else if (args.length == 4 && args[1].equalsIgnoreCase("join") && args[2].equalsIgnoreCase("bridge")) {
+            Set<String> targets = new TreeSet<>();
+            for (PracticePoint point : manager.getPoints()) if (point.getMode().getId().equalsIgnoreCase(args[2]))
+                for (PracticeTarget target : point.getTargets()) targets.add(target.getId());
+            values.addAll(targets);
         } else if (args.length == 3 && admin) {
             switch (args[1].toLowerCase(Locale.ROOT)) {
                 case "npc": values.addAll(Arrays.asList("set", "remove")); break;
                 case "setspawn": case "pos1": case "pos2": case "faily":
-                case "enable": case "disable": case "delete":
+                case "enable": case "disable": case "delete": case "reload":
                     for (PracticePoint point : manager.getPoints()) values.add(point.getId());
+                    values.addAll(manager.getConfig().getErrors().keySet());
                     break;
                 default: break;
             }

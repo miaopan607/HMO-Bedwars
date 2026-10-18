@@ -24,6 +24,7 @@ public enum PracticeMode {
     public int getAmount() { return amount; }
     public String getId() { return id; }
     public String getMessagePath() { return messagePath; }
+    public boolean isShared() { return this == FIREBALL || this == PEARL; }
 
     public static PracticeMode parse(String value) {
         for (PracticeMode mode : values()) {

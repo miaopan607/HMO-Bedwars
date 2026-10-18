@@ -139,6 +139,7 @@ public class DamageDeathMove implements Listener, com.andrei1058.bedwars.configu
         if (e.getEntity().getType() != EntityType.PLAYER) return;
         if (!(e.getDamager() instanceof Projectile)) return;
         Projectile projectile = (Projectile) e.getDamager();
+        if (projectile instanceof EnderPearl) return;
         if (projectile.getShooter() == null) return;
         if (!(projectile.getShooter() instanceof Player)) return;
 
@@ -247,7 +248,8 @@ public class DamageDeathMove implements Listener, com.andrei1058.bedwars.configu
                     }
 
                     if (a.getTeam(p).equals(a.getTeam(damager))) {
-                        if (!(rawDamager instanceof TNTPrimed)) {
+                        if (!(rawDamager instanceof TNTPrimed)
+                                && !(rawDamager instanceof EnderPearl && damager.equals(p))) {
                             e.setCancelled(true);
                         }
                         return;

@@ -115,11 +115,12 @@ public class FireballListener implements Listener, com.andrei1058.bedwars.config
                     || Math.abs(playerLoc.getY() - explosionLoc.getY()) > fireballExplosionSize
                     || Math.abs(playerLoc.getZ() - explosionLoc.getZ()) > fireballExplosionSize) return;
             source.setFallDistance(0);
+            BedWars.getPracticeManager().beginFireball(practice, playerLoc);
             source.setVelocity(calculateKnockback(playerLoc, explosionLoc));
             // 1.8 GENERIC plugin damage can bypass Bukkit's damage event.
-            if (damageSelf >= source.getHealth()) {
-                BedWars.getPracticeManager().reset(source);
-            } else if (damageSelf > 0) {
+            if (practice.isDamageEnabled() && damageSelf >= source.getHealth()) {
+                BedWars.getPracticeManager().reset(source, com.andrei1058.bedwars.api.language.Messages.PRACTICE_FAIL_DAMAGE);
+            } else if (practice.isDamageEnabled() && damageSelf > 0) {
                 source.damage(damageSelf);
             }
             return;
