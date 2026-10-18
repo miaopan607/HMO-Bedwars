@@ -1998,6 +1998,7 @@ public class Arena implements IArena {
             // 在同一次主线程任务中更新并同步大厅物品，保留当前菜单。
             p.getInventory().clear();
             for (String item : config.getYml().getConfigurationSection(ConfigPath.GENERAL_CONFIGURATION_LOBBY_ITEMS_PATH).getKeys(false)) {
+                if (item.equals("practice") && BedWars.getPracticeManager() == null) continue;
 
                 if (config.getYml().get(ConfigPath.GENERAL_CONFIGURATION_LOBBY_ITEMS_MATERIAL.replace("%path%", item)) == null) {
                     BedWars.plugin.getLogger().severe(ConfigPath.GENERAL_CONFIGURATION_LOBBY_ITEMS_MATERIAL.replace("%path%", item) + " is not set!");

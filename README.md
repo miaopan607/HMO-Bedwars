@@ -36,7 +36,7 @@ mvn -o clean install -DskipTests
 
 MULTIARENA/SHARED 模式支持火球跳、搭路和珍珠练习，不计入正式战绩。
 
-- `/bw practice` 打开菜单；火球和珍珠支持多人共享，搭路提供近远、平高、直斜八种组合。
+- 大厅快捷栏第 7 格默认提供练习入口，右键打开菜单；也可使用 `/bw practice`。火球和珍珠支持多人共享，搭路提供近远、平高、直斜八种组合。
 - 指南针切换练习，箭头重试，床退出；也可使用 `/bw practice retry|leave`。
 - 配置文件为 `practice.yml`，使用 `/bw practice reload [点位ID]` 重载。
 

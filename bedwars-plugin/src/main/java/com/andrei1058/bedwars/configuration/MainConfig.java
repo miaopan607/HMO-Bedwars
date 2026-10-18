@@ -174,6 +174,12 @@ public class MainConfig extends ConfigManager {
         saveLobbyCommandItem("stats", "bw stats", false, "SKULL_ITEM", 3, 0);
         saveLobbyCommandItem("arena-selector", "bw gui", true, "CHEST", 5, 4);
         saveLobbyCommandItem("leave", "bw leave", false, "BED", 0, 8);
+        // 练习入口同时补入已有大厅配置，保留自定义属性。
+        yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_LOBBY_ITEMS_COMMAND.replace("%path%", "practice"), "bw practice");
+        yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_LOBBY_ITEMS_MATERIAL.replace("%path%", "practice"), "FIREBALL");
+        yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_LOBBY_ITEMS_DATA.replace("%path%", "practice"), 0);
+        yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_LOBBY_ITEMS_ENCHANTED.replace("%path%", "practice"), false);
+        yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_LOBBY_ITEMS_SLOT.replace("%path%", "practice"), 6);
 
         /* Pre Game Command Items */
         savePreGameCommandItem("stats", "bw stats", false, "SKULL_ITEM", 3, 0);
