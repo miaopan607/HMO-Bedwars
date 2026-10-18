@@ -107,6 +107,11 @@ public class BedWars extends JavaPlugin {
     public static StatsManager statsManager;
     public static BedWars plugin;
     public static VersionSupport nms;
+    private static com.andrei1058.bedwars.practice.PracticeManager practiceManager;
+
+    public static com.andrei1058.bedwars.practice.PracticeManager getPracticeManager() {
+        return practiceManager;
+    }
 
     public static boolean isPaper = false;
 
@@ -186,6 +191,10 @@ public class BedWars extends JavaPlugin {
         if (!this.handleWorldAdapter()) {
             api.setRestoreAdapter(new InternalAdapter(this));
             getLogger().info("Using internal world restore system.");
+        }
+
+        if (serverType != ServerType.BUNGEE && "v1_8_R3".equals(getServerVersion())) {
+            practiceManager = new com.andrei1058.bedwars.practice.PracticeManager();
         }
 
         /* Register commands */
@@ -466,6 +475,7 @@ public class BedWars extends JavaPlugin {
     public void onDisable() {
         shuttingDown = true;
         if (!serverSoftwareSupport) return;
+        if (practiceManager != null) practiceManager.shutdown();
         if (getServerType() == ServerType.BUNGEE) {
             ArenaSocket.disable();
         }

@@ -256,6 +256,12 @@ public abstract class VersionSupport {
      */
     public abstract boolean isBlockPlacementIntersectingPlayer(Player player, Block block);
 
+    /** Check player collision and supporting ground before practice teleports. */
+    public abstract boolean isPracticeSpawnSafe(Location location);
+
+    /** Spawn a stationary, protected practice menu NPC. */
+    public abstract org.bukkit.entity.Entity spawnPracticeNpc(Location location, String name);
+
 
     /**
      * Add custom data to an ItemStack

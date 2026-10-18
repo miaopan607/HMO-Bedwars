@@ -344,6 +344,20 @@ public class v1_8_R3 extends VersionSupport {
     public void setCollide(Player p, IArena a, boolean value) {
         p.spigot().setCollidesWithEntities(value);
     }
+
+    @Override
+    public boolean isPracticeSpawnSafe(Location location) {
+        if (location == null || location.getWorld() == null) return false;
+        net.minecraft.server.v1_8_R3.World world = ((CraftWorld) location.getWorld()).getHandle();
+        double x = location.getX(), y = location.getY(), z = location.getZ();
+        AxisAlignedBB body = new AxisAlignedBB(x - 0.3, y + 0.001, z - 0.3, x + 0.3, y + 1.8, z + 0.3);
+        AxisAlignedBB ground = new AxisAlignedBB(x - 0.3, y - 0.05, z - 0.3, x + 0.3, y, z + 0.3);
+        org.bukkit.block.Block feet = location.getBlock();
+        return !feet.isLiquid() && !feet.getRelative(0, 1, 0).isLiquid()
+                && feet.getType() != org.bukkit.Material.FIRE
+                && feet.getRelative(0, -1, 0).getType() != org.bukkit.Material.CACTUS
+                && world.a(body).isEmpty() && !world.a(ground).isEmpty();
+    }
     @Override
     public boolean isBlockPlacementIntersectingPlayer(Player player, org.bukkit.block.Block block) {
         if (player == null || block == null || !block.getType().isBlock()) {
@@ -442,7 +456,7 @@ public class v1_8_R3 extends VersionSupport {
         }
     }
 
-    private void spawnVillager(Location loc) {
+    private org.bukkit.entity.Entity spawnVillager(Location loc) {
         VillagerShop nmsEntity = new VillagerShop(loc);
         NBTTagCompound tag = nmsEntity.getNBTTag();
         if (tag == null) {
@@ -452,6 +466,15 @@ public class v1_8_R3 extends VersionSupport {
         tag.setInt("NoAI", 1);
         nmsEntity.f(tag);
         ((CraftLivingEntity) nmsEntity.getBukkitEntity()).setRemoveWhenFarAway(false);
+        return nmsEntity.getBukkitEntity();
+    }
+
+    @Override
+    public org.bukkit.entity.Entity spawnPracticeNpc(Location location, String name) {
+        org.bukkit.entity.Entity entity = spawnVillager(location);
+        entity.setCustomName(name);
+        entity.setCustomNameVisible(true);
+        return entity;
     }
 
     @Override

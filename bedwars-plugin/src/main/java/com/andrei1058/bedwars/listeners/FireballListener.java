@@ -1,5 +1,8 @@
 package com.andrei1058.bedwars.listeners;
 
+import com.andrei1058.bedwars.BedWars;
+import com.andrei1058.bedwars.practice.PracticeManager;
+import com.andrei1058.bedwars.practice.PracticeSession;
 import com.andrei1058.bedwars.api.arena.IArena;
 import com.andrei1058.bedwars.api.configuration.ConfigPath;
 import com.andrei1058.bedwars.arena.Arena;
@@ -15,6 +18,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.projectiles.ProjectileSource;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -53,6 +57,38 @@ public class FireballListener implements Listener, com.andrei1058.bedwars.config
         this.damageTeammates = config.getYml().getDouble(ConfigPath.GENERAL_FIREBALL_DAMAGE_TEAMMATES);
     }
 
+    public static Fireball launch(Player player, double speedMultiplier, float explosionSize) {
+        Fireball fireball = player.launchProjectile(Fireball.class);
+        fireball = BedWars.nms.setFireballDirection(fireball, player.getEyeLocation().getDirection());
+        fireball.setVelocity(fireball.getDirection().multiply(speedMultiplier));
+        fireball.setYield(explosionSize);
+        fireball.setMetadata("bw1058", new FixedMetadataValue(BedWars.plugin, "ceva"));
+        return fireball;
+    }
+
+    private static PracticeSession practiceSession(Fireball fireball) {
+        PracticeManager manager = BedWars.getPracticeManager();
+        return manager == null ? null : manager.getSession(fireball);
+    }
+
+    private Vector calculateKnockback(Location playerLoc, Location explosionLoc) {
+        Vector knockbackDir = new Vector(playerLoc.getX() - explosionLoc.getX(),
+                playerLoc.getY() + 0.9 - explosionLoc.getY(), playerLoc.getZ() - explosionLoc.getZ());
+        double distance = explosionLoc.distance(playerLoc);
+        double multiplier = 1.0;
+        if (distance < fireballExplosionSize) {
+            double x = distance / fireballExplosionSize;
+            multiplier = Math.sqrt(1 - x * x);
+        }
+        if (multiplier < 0.1) multiplier = 0.1;
+        knockbackDir.normalize();
+        double verticalFactor = knockbackDir.getY();
+        verticalFactor = 4 * verticalFactor * verticalFactor * verticalFactor - 6 * verticalFactor * verticalFactor + 3 * verticalFactor;
+        if (verticalFactor < 0.25) verticalFactor = 0.25;
+        return knockbackDir.multiply(fireballHorizontal * multiplier)
+                .setY(fireballVertical * multiplier * verticalFactor);
+    }
+
     @EventHandler
     public void fireballHit(ProjectileHitEvent e) {
         // validate important info
@@ -63,12 +99,31 @@ public class FireballListener implements Listener, com.andrei1058.bedwars.config
         Player source = (Player) projectileSource;
 
         IArena arena = Arena.getArenaByPlayer(source);
-        if (arena == null) return;
+        PracticeSession practice = arena == null ? practiceSession(fireball) : null;
+        if (arena == null && practice == null) return;
 
         // calc explosion loc
         Vector velocity = fireball.getVelocity();
         Location startLoc = fireball.getLocation();
         Location explosionLoc = calculateExactExplosionLoc(startLoc, velocity, 0);
+
+        if (practice != null) {
+            if (!practice.getPoint().contains(explosionLoc)) return;
+            Location playerLoc = source.getLocation();
+            if (playerLoc.getWorld() != explosionLoc.getWorld()
+                    || Math.abs(playerLoc.getX() - explosionLoc.getX()) > fireballExplosionSize
+                    || Math.abs(playerLoc.getY() - explosionLoc.getY()) > fireballExplosionSize
+                    || Math.abs(playerLoc.getZ() - explosionLoc.getZ()) > fireballExplosionSize) return;
+            source.setFallDistance(0);
+            source.setVelocity(calculateKnockback(playerLoc, explosionLoc));
+            // 1.8 GENERIC plugin damage can bypass Bukkit's damage event.
+            if (damageSelf >= source.getHealth()) {
+                BedWars.getPracticeManager().reset(source);
+            } else if (damageSelf > 0) {
+                source.damage(damageSelf);
+            }
+            return;
+        }
 
         // apply player kb
         World world = explosionLoc.getWorld();
@@ -80,23 +135,7 @@ public class FireballListener implements Listener, com.andrei1058.bedwars.config
             if (!getAPI().getArenaUtil().isPlaying(player)) continue;
 
             // calc & apply player kb
-            Vector playerTarget = player.getLocation().toVector().add(new Vector(0, 0.9, 0));
-            Vector knockbackDir = playerTarget.subtract(explosionLoc.toVector());
-            double distance = explosionLoc.distance(player.getLocation());
-            double multiplier = 1.0;
-            if (distance < fireballExplosionSize) {
-                double x = distance / fireballExplosionSize;
-                multiplier = Math.sqrt(1 - x * x);
-            }
-            if (multiplier < 0.1) multiplier = 0.1;
-
-            knockbackDir.normalize();
-            double verticalFactor = knockbackDir.getY();
-            verticalFactor = 4 * verticalFactor * verticalFactor * verticalFactor - 6 * verticalFactor * verticalFactor + 3 * verticalFactor;
-            if (verticalFactor < 0.25) verticalFactor = 0.25;
-
-            Vector finalVelocity = knockbackDir.multiply(fireballHorizontal * multiplier);
-            finalVelocity.setY(fireballVertical * multiplier * verticalFactor);
+            Vector finalVelocity = calculateKnockback(player.getLocation(), explosionLoc);
 
             // Reset fall distance
             player.setFallDistance(0);
@@ -273,6 +312,11 @@ public class FireballListener implements Listener, com.andrei1058.bedwars.config
         if (!(e.getDamager() instanceof Fireball)) return;
         if (!(e.getEntity() instanceof Player)) return;
 
+        if (practiceSession((Fireball) e.getDamager()) != null) {
+            e.setCancelled(true);
+            return;
+        }
+
         if (Arena.getArenaByPlayer((Player) e.getEntity()) == null) return;
 
         e.setCancelled(true);
@@ -281,6 +325,10 @@ public class FireballListener implements Listener, com.andrei1058.bedwars.config
     @EventHandler
     public void fireballPrime(ExplosionPrimeEvent e) {
         if (!(e.getEntity() instanceof Fireball)) return;
+        if (practiceSession((Fireball) e.getEntity()) != null) {
+            e.setFire(false);
+            return;
+        }
         ProjectileSource shooter = ((Fireball) e.getEntity()).getShooter();
         if (!(shooter instanceof Player)) return;
         Player player = (Player) shooter;

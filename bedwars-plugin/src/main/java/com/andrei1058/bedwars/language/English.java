@@ -42,6 +42,37 @@ public class English extends Language {
         yml.options().copyDefaults(true);
         yml.addDefault(Messages.PREFIX, "");
         yml.addDefault("name", "English");
+        yml.addDefault(Messages.PRACTICE_MENU_TITLE, "&8Practice");
+        yml.addDefault(Messages.PRACTICE_MODE_FIREBALL, "&eFireball jump");
+        yml.addDefault(Messages.PRACTICE_MODE_BRIDGE, "&eBridging");
+        yml.addDefault(Messages.PRACTICE_MODE_PEARL, "&eEnder pearl");
+        yml.addDefault(Messages.PRACTICE_MENU_LORE, Arrays.asList("&7Free points: {free}/{total}", "&aClick to practice"));
+        yml.addDefault(Messages.PRACTICE_RETRY_ITEM, "&aRetry");
+        yml.addDefault(Messages.PRACTICE_LEAVE_ITEM, "&cLeave practice");
+        yml.addDefault(Messages.PRACTICE_NPC_NAME, "&ePractice &7(Right-click)");
+        yml.addDefault(Messages.PRACTICE_COMMAND_HELP, "&e/{command} practice [join <fireball|bridge|pearl>|retry|leave|list]");
+        yml.addDefault(Messages.PRACTICE_ADMIN_HELP, "&e/{command} practice create <id> <mode>; setspawn|pos1|pos2|enable|disable|delete <id>; faily <id> <integer>; reload; npc set|remove");
+        yml.addDefault(Messages.PRACTICE_LIST_LINE, "&e{mode}&7: {free}/{total}");
+        yml.addDefault(Messages.PRACTICE_JOINED, "&aJoined practice point {id}.");
+        yml.addDefault(Messages.PRACTICE_RESET, "&aPractice reset.");
+        yml.addDefault(Messages.PRACTICE_LEFT, "&aLeft practice.");
+        yml.addDefault(Messages.PRACTICE_NOT_IN_SESSION, "&cYou are not practicing.");
+        yml.addDefault(Messages.PRACTICE_ALREADY_IN_SESSION, "&cYou are already practicing.");
+        yml.addDefault(Messages.PRACTICE_NO_FREE_POINT, "&cNo safe, free practice point is available.");
+        yml.addDefault(Messages.PRACTICE_LEAVE_FIRST, "&cLeave your current game, practice or setup first.");
+        yml.addDefault(Messages.PRACTICE_NO_PERMISSION, "&cYou cannot manage practice.");
+        yml.addDefault(Messages.PRACTICE_PLAYER_ONLY, "&cThis action requires a player.");
+        yml.addDefault(Messages.PRACTICE_INVALID_ARGUMENTS, "&cInvalid arguments: {reason}");
+        yml.addDefault(Messages.PRACTICE_POINT_EXISTS, "&cPractice point {id} already exists.");
+        yml.addDefault(Messages.PRACTICE_POINT_NOT_FOUND, "&cPractice point {id} does not exist.");
+        yml.addDefault(Messages.PRACTICE_POINT_BUSY, "&cPractice is occupied. Leave before changing its configuration.");
+        yml.addDefault(Messages.PRACTICE_INVALID_POINT, "&cInvalid practice point {id}: {reason}");
+        yml.addDefault(Messages.PRACTICE_SAVE_FAILED, "&cCould not save practice: {reason}");
+        yml.addDefault(Messages.PRACTICE_TELEPORT_FAILED, "&cTeleport failed. Your session was not discarded. {reason}");
+        yml.addDefault(Messages.PRACTICE_ADMIN_SUCCESS, "&aPractice configuration saved. {id}");
+        yml.addDefault(Messages.PRACTICE_RELOAD_SUCCESS, "&aPractice configuration reloaded.");
+        yml.addDefault(Messages.PRACTICE_COMMAND_DISPLAY, "&e/{command} practice &7- Practice menu");
+        yml.addDefault(Messages.PRACTICE_COMMAND_DISPLAY_HOVER, "&fFireball jump, bridging and ender pearls.");
 
         // this must stay here
         // move message to new path

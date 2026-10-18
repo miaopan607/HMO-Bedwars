@@ -76,6 +76,11 @@ public class SetupArena extends SubCommand {
             p.sendMessage(Language.getMsg(p, Messages.COMMAND_SETUP_ALREADY_IN_SESSION));
             return true;
         }
+        if (BedWars.getPracticeManager() != null && (BedWars.getPracticeManager().isPracticing(p)
+                || BedWars.getPracticeManager().isPracticeWorld(args[0]))) {
+            com.andrei1058.bedwars.practice.PracticeManager.message(p, Messages.PRACTICE_LEAVE_FIRST);
+            return true;
+        }
         new SetupSession(p, args[0]);
         return true;
     }

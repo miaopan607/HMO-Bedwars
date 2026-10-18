@@ -36,7 +36,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Fireball;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -49,8 +48,6 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Openable;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.util.Vector;
 
 import static com.andrei1058.bedwars.BedWars.*;
 import static com.andrei1058.bedwars.api.language.Language.getMsg;
@@ -258,13 +255,7 @@ public class Interact implements Listener, com.andrei1058.bedwars.configuration.
 
                         if(System.currentTimeMillis() - a.getFireballCooldowns().getOrDefault(p.getUniqueId(), 0L) > (fireballCooldown*1000)) {
                             a.getFireballCooldowns().put(p.getUniqueId(), System.currentTimeMillis());
-                            Fireball fb = p.launchProjectile(Fireball.class);
-                            Vector direction = p.getEyeLocation().getDirection();
-                            fb = nms.setFireballDirection(fb, direction);
-                            fb.setVelocity(fb.getDirection().multiply(fireballSpeedMultiplier));
-                            //fb.setIsIncendiary(false); // apparently this on <12 makes the fireball not explode on hit. wtf bukkit?
-                            fb.setYield(fireballExplosionSize);
-                            fb.setMetadata("bw1058", new FixedMetadataValue(plugin, "ceva"));
+                            FireballListener.launch(p, fireballSpeedMultiplier, fireballExplosionSize);
                             nms.minusAmount(p, inHand, 1);
                         }
 

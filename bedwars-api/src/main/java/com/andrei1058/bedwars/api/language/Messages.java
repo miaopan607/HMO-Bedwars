@@ -26,6 +26,37 @@ import com.andrei1058.bedwars.api.configuration.ConfigPath;
 public class Messages {
 
     public static String PREFIX = "prefix";
+    public static final String PRACTICE_MENU_TITLE = "practice-menu-title";
+    public static final String PRACTICE_MODE_FIREBALL = "practice-mode-fireball";
+    public static final String PRACTICE_MODE_BRIDGE = "practice-mode-bridge";
+    public static final String PRACTICE_MODE_PEARL = "practice-mode-pearl";
+    public static final String PRACTICE_MENU_LORE = "practice-menu-lore";
+    public static final String PRACTICE_RETRY_ITEM = "practice-retry-item";
+    public static final String PRACTICE_LEAVE_ITEM = "practice-leave-item";
+    public static final String PRACTICE_NPC_NAME = "practice-npc-name";
+    public static final String PRACTICE_COMMAND_HELP = "practice-command-help";
+    public static final String PRACTICE_ADMIN_HELP = "practice-admin-help";
+    public static final String PRACTICE_LIST_LINE = "practice-list-line";
+    public static final String PRACTICE_JOINED = "practice-joined";
+    public static final String PRACTICE_RESET = "practice-reset";
+    public static final String PRACTICE_LEFT = "practice-left";
+    public static final String PRACTICE_NOT_IN_SESSION = "practice-not-in-session";
+    public static final String PRACTICE_ALREADY_IN_SESSION = "practice-already-in-session";
+    public static final String PRACTICE_NO_FREE_POINT = "practice-no-free-point";
+    public static final String PRACTICE_LEAVE_FIRST = "practice-leave-first";
+    public static final String PRACTICE_NO_PERMISSION = "practice-no-permission";
+    public static final String PRACTICE_PLAYER_ONLY = "practice-player-only";
+    public static final String PRACTICE_INVALID_ARGUMENTS = "practice-invalid-arguments";
+    public static final String PRACTICE_POINT_EXISTS = "practice-point-exists";
+    public static final String PRACTICE_POINT_NOT_FOUND = "practice-point-not-found";
+    public static final String PRACTICE_POINT_BUSY = "practice-point-busy";
+    public static final String PRACTICE_INVALID_POINT = "practice-invalid-point";
+    public static final String PRACTICE_SAVE_FAILED = "practice-save-failed";
+    public static final String PRACTICE_TELEPORT_FAILED = "practice-teleport-failed";
+    public static final String PRACTICE_ADMIN_SUCCESS = "practice-admin-success";
+    public static final String PRACTICE_RELOAD_SUCCESS = "practice-reload-success";
+    public static final String PRACTICE_COMMAND_DISPLAY = "practice-command-display";
+    public static final String PRACTICE_COMMAND_DISPLAY_HOVER = "practice-command-display-hover";
 
     public static String LOBBY_MENU_TITLE = "lobby-menu.title";
     public static String LOBBY_MENU_ITEM_NAME = "lobby-menu.item-name";

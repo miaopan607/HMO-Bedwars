@@ -66,6 +66,11 @@ public class SetupSession implements ISetupSession {
     private List<Location> skipAutoCreateGen = new ArrayList<>();
 
     public SetupSession(Player player, String worldName) {
+        if (com.andrei1058.bedwars.BedWars.getPracticeManager() != null
+                && (com.andrei1058.bedwars.BedWars.getPracticeManager().isPracticing(player)
+                || com.andrei1058.bedwars.BedWars.getPracticeManager().isPracticeWorld(worldName))) {
+            throw new IllegalArgumentException("Practice players and worlds cannot enter arena setup");
+        }
         this.player = player;
         this.worldName = worldName;
         getSetupSessions().add(this);

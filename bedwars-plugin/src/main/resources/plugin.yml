@@ -9,6 +9,9 @@ permissions:
   bw.rejoin:
     description: Allows rejoining the previous game
     default: true
+  bw.practice.admin:
+    description: Allows configuring practice points and the lobby NPC
+    default: op
   bw.shout:
     description: Allows sending arena-wide shout messages
     default: true

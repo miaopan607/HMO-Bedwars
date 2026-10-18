@@ -525,6 +525,10 @@ public class Arena implements IArena {
      */
     public boolean addPlayer(Player p, boolean skipOwnerCheck) {
         if (p == null) return false;
+        if (BedWars.getPracticeManager() != null && BedWars.getPracticeManager().isPracticing(p)) {
+            com.andrei1058.bedwars.practice.PracticeManager.message(p, Messages.PRACTICE_LEAVE_FIRST);
+            return false;
+        }
         debug("Player added: " + p.getName() + " arena: " + getArenaName());
         /* used for base enter/leave event */
         isOnABase.remove(p);
@@ -720,6 +724,10 @@ public class Arena implements IArena {
      * @param playerBefore True if the player has played in this arena before and he died so now should be a spectator.
      */
     public boolean addSpectator(@NotNull Player p, boolean playerBefore, Location staffTeleport) {
+        if (BedWars.getPracticeManager() != null && BedWars.getPracticeManager().isPracticing(p)) {
+            com.andrei1058.bedwars.practice.PracticeManager.message(p, Messages.PRACTICE_LEAVE_FIRST);
+            return false;
+        }
         if (allowSpectate || playerBefore || staffTeleport != null) {
             debug("Spectator added: " + p.getName() + " arena: " + getArenaName());
 
