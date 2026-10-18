@@ -128,7 +128,7 @@ points:
     spawn: '512.5,80,-11.5,0,0'
     pos1: '352,48,-24,0,0'
     pos2: '672,159,144,0,0'
-    fail-y: -1
+    fail-y: 64
     enabled: true
     targets:
       target-1:
