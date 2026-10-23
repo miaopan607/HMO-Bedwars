@@ -430,30 +430,6 @@ public class UpgradesManager {
         return i;
     }
 
-    /**
-     * Get currency msg.
-     */
-    public static String getCurrencyMsg(Player p, UpgradeTier ut) {
-        String c = "";
-
-        switch (ut.getCurrency()) {
-            case IRON_INGOT:
-                c = ut.getCost() == 1 ? Messages.MEANING_IRON_SINGULAR : Messages.MEANING_IRON_PLURAL;
-                break;
-            case GOLD_INGOT:
-                c = ut.getCost() == 1 ? Messages.MEANING_GOLD_SINGULAR : Messages.MEANING_GOLD_PLURAL;
-                break;
-            case EMERALD:
-                c = ut.getCost() == 1 ? Messages.MEANING_EMERALD_SINGULAR : Messages.MEANING_EMERALD_PLURAL;
-                break;
-            case DIAMOND:
-                c = ut.getCost() == 1 ? Messages.MEANING_DIAMOND_SINGULAR : Messages.MEANING_DIAMOND_PLURAL;
-                break;
-        }
-
-        return Language.getMsg(p, c);
-    }
-
     public static String getCurrencyMsg(Player p, int money, String currency) {
         String c;
         if (currency == null) throw new IllegalArgumentException("Currency is required");

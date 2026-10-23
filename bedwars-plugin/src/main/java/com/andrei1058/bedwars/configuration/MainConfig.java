@@ -37,10 +37,13 @@ import java.util.*;
 
 public class MainConfig extends ConfigManager {
 
+    private static final String HYPIXEL_RULES_VERSION = "hypixel-rules-version";
+
     public MainConfig(Plugin plugin, String name) {
         super(plugin, name, BedWars.plugin.getDataFolder().getPath());
 
         YamlConfiguration yml = getYml();
+        migrateHypixelRules(yml);
 
         yml.options().header(plugin.getDescription().getName() + " by andrei1058. https://www.spigotmc.org/members/39904/\n" +
                 "Documentation here: https://gitlab.com/andrei1058/BedWars1058/wikis/home\n");
@@ -103,7 +106,7 @@ public class MainConfig extends ConfigManager {
         yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_RE_SPAWN_COUNTDOWN, 5);
         yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_BEDS_DESTROY_COUNTDOWN, 360);
         yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_DRAGON_SPAWN_COUNTDOWN, 600);
-        yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_GAME_END_COUNTDOWN, 120);
+        yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_GAME_END_COUNTDOWN, 600);
         yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_SHOUT_COOLDOWN, 30);
         yml.addDefault(ConfigPath.GENERAL_CONFIG_PLACEHOLDERS_REPLACEMENTS_SERVER_IP, "yourServer.Com");
         yml.addDefault(ConfigPath.GENERAL_CONFIG_PLACEHOLDERS_REPLACEMENTS_POWERED_BY, "HMO-Bedwars");
@@ -232,7 +235,7 @@ public class MainConfig extends ConfigManager {
         yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS, true);
         yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS_END_STONE, true);
         yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS_OBSIDIAN, true);
-        yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS_MAP, false);
+        yml.addDefault(ConfigPath.GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS_MAP, true);
 
         yml.addDefault(ConfigPath.LOBBY_VOID_TELEPORT_ENABLED, true);
         yml.addDefault(ConfigPath.LOBBY_VOID_TELEPORT_HEIGHT, 0);
@@ -247,7 +250,11 @@ public class MainConfig extends ConfigManager {
         yml.addDefault(ConfigPath.GENERAL_IRON_GOLEM_DAMAGE, 9.0D);
         yml.options().copyDefaults(true);
         yml.set("use-experimental-team-assigner", null);
-        save();
+        try {
+            saveConfiguration(yml);
+        } catch (IOException ex) {
+            throw new IllegalStateException("Could not migrate " + new java.io.File(BedWars.plugin.getDataFolder(), name + ".yml") + "; existing configuration is unchanged", ex);
+        }
 
         //remove old config
         //Convert old configuration
@@ -418,6 +425,20 @@ public class MainConfig extends ConfigManager {
         }
 
         BedWars.setLobbyWorld(getLobbyWorldName());
+    }
+
+    static boolean migrateHypixelRules(YamlConfiguration yml) {
+        if (yml.getInt(HYPIXEL_RULES_VERSION) >= 1) return false;
+        if (yml.isSet(ConfigPath.GENERAL_CONFIGURATION_GAME_END_COUNTDOWN)
+                && yml.getInt(ConfigPath.GENERAL_CONFIGURATION_GAME_END_COUNTDOWN) == 120) {
+            yml.set(ConfigPath.GENERAL_CONFIGURATION_GAME_END_COUNTDOWN, 600);
+        }
+        if (yml.isSet(ConfigPath.GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS_MAP)
+                && !yml.getBoolean(ConfigPath.GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS_MAP)) {
+            yml.set(ConfigPath.GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS_MAP, true);
+        }
+        yml.set(HYPIXEL_RULES_VERSION, 1);
+        return true;
     }
 
     @Override

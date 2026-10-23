@@ -232,7 +232,7 @@ public class BuyItem implements IBuyItem {
             }
             if (im != null) {
                 for (TeamEnchant e : arena.getTeam(player).getArmorsEnchantments()) {
-                    im.addEnchant(e.getEnchantment(), e.getAmplifier(), true);
+                    if (e.appliesTo(i)) im.addEnchant(e.getEnchantment(), e.getAmplifier(), true);
                 }
                 if (permanent) nms.setUnbreakable(im);
                 i.setItemMeta(im);

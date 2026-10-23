@@ -34,6 +34,7 @@ import com.andrei1058.bedwars.arena.Arena;
 import com.andrei1058.bedwars.arena.compass.CompassManager;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -51,6 +52,7 @@ public class GamePlayingTask implements Runnable, PlayingTask {
     private Arena arena;
     private BukkitTask task;
     private int beds_destroy_countdown, dragon_spawn_countdown, game_end_countdown;
+    private int suddenDeathElapsedSeconds = 0;
 
     public GamePlayingTask(Arena arena) {
         this.arena = arena;
@@ -151,20 +153,18 @@ public class GamePlayingTask implements Runnable, PlayingTask {
                             }
                         }
                     }
-                    for (ITeam t : getArena().getTeams()) {
-                        if (t.getMembers().isEmpty()) continue;
-                        for (int x = 0; x < t.getDragons(); x++) {
-                            nms.spawnDragon(getArena().getConfig().getArenaLoc("waiting.Loc").add(0, 10, 0), t);
-                        }
-                    }
+                    spawnSuddenDeathDragons();
                 }
                 break;
             case GAME_END:
+                suddenDeathElapsedSeconds++;
                 game_end_countdown--;
                 if (getGameEndCountdown() == 0) {
                     getArena().checkWinner();
                     getArena().changeStatus(GameState.restarting);
+                    return;
                 }
+                if (suddenDeathElapsedSeconds == 300) spawnSuddenDeathDragons();
                 break;
         }
         CompassManager.updateArena(getArena());
@@ -240,11 +240,27 @@ public class GamePlayingTask implements Runnable, PlayingTask {
         }
     }
 
+    private boolean hasLivingMembers(ITeam team) {
+        for (Player player : team.getMembers()) {
+            if (player.isOnline() && !player.isDead() && player.getHealth() > 0
+                    && player.getWorld().equals(arena.getWorld()) && arena.isPlayer(player)
+                    && !arena.isSpectator(player) && player.getGameMode() != GameMode.SPECTATOR
+                    && !arena.isReSpawning(player)) return true;
+        }
+        return false;
+    }
+
+    private void spawnSuddenDeathDragons() {
+        for (ITeam team : arena.getTeams()) {
+            if (hasLivingMembers(team)) nms.spawnDragon(arena.getWaitingLocation().clone().add(0, 10, 0), team);
+        }
+    }
+
     private void announceSuddenDeath(Player p) {
         nms.sendTitle(p, getMsg(p, Messages.NEXT_EVENT_TITLE_ANNOUNCE_SUDDEN_DEATH), getMsg(p, Messages.NEXT_EVENT_SUBTITLE_ANNOUNCE_SUDDEN_DEATH), 0, 40, 10);
         for (ITeam t : getArena().getTeams()) {
-            if (t.getMembers().isEmpty()) continue;
-            p.sendMessage(getMsg(p, Messages.NEXT_EVENT_CHAT_ANNOUNCE_SUDDEN_DEATH).replace("{TeamDragons}", String.valueOf(t.getDragons()))
+            if (!hasLivingMembers(t)) continue;
+            p.sendMessage(getMsg(p, Messages.NEXT_EVENT_CHAT_ANNOUNCE_SUDDEN_DEATH).replace("{TeamDragons}", "1")
                     .replace("{TeamColor}", t.getColor().chat().toString()).replace("{TeamName}", t.getDisplayName(Language.getPlayerLanguage(p))));
         }
     }

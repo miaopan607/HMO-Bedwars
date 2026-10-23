@@ -21,10 +21,15 @@
 package com.andrei1058.bedwars.api.arena.team;
 
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
 
 public interface TeamEnchant {
 
     Enchantment getEnchantment();
 
     int getAmplifier();
+
+    default boolean appliesTo(ItemStack item) {
+        return !Enchantment.PROTECTION_FALL.equals(getEnchantment()) || getEnchantment().canEnchantItem(item);
+    }
 }

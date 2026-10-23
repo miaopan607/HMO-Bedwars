@@ -21,11 +21,13 @@
 package com.andrei1058.bedwars.upgrades.menu;
 
 import com.andrei1058.bedwars.BedWars;
+import com.andrei1058.bedwars.api.arena.team.ITeam;
 import com.andrei1058.bedwars.api.language.Language;
 import com.andrei1058.bedwars.api.language.Messages;
 import com.andrei1058.bedwars.api.upgrades.UpgradeAction;
 import com.andrei1058.bedwars.upgrades.UpgradesManager;
 import com.andrei1058.bedwars.upgrades.upgradeaction.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -42,7 +44,10 @@ public class UpgradeTier {
     private final ItemStack displayItem;
     private final String name;
     private final List<UpgradeAction> upgradeActions = new ArrayList<>();
+    @Getter(AccessLevel.NONE)
     private final int cost;
+    @Getter(AccessLevel.NONE)
+    private final int largeTeamCost;
     private final Material currency;
 
     /**
@@ -60,6 +65,8 @@ public class UpgradeTier {
         }
 
         this.cost = cost;
+        this.largeTeamCost = UpgradesManager.getConfiguration().getYml()
+                .getInt(parentName + "." + name + ".cost-large-team", cost);
         this.currency = currency;
         for (String action : UpgradesManager.getConfiguration().getYml().getStringList(parentName + "." + name + ".receive")) {
             String[] type = action.trim().split(":");
@@ -170,20 +177,6 @@ public class UpgradeTier {
                     }
                     ua = new GeneratorEditAction(genType, amount, interval, limit);
                     break;
-                case "dragon":
-                    if (data.length < 1) {
-                        BedWars.plugin.getLogger().warning("Invalid " + type[0] + " at upgrades2: " + parentName + "." + name);
-                        continue;
-                    }
-                    int dragons;
-                    try {
-                        dragons = Integer.parseInt(data[0]);
-                    } catch (Exception exc) {
-                        BedWars.plugin.getLogger().warning("Invalid dragon amount at upgrades2: " + parentName + "." + name);
-                        continue;
-                    }
-                    ua = new DragonAction(dragons);
-                    break;
                 case "command":
                     // once-as-console,command
                     if (data.length < 2) {
@@ -205,6 +198,10 @@ public class UpgradeTier {
             }
             if (ua != null) upgradeActions.add(ua);
         }
+    }
+
+    public int getCost(ITeam team) {
+        return team.getArena().getMaxInTeam() >= 3 ? largeTeamCost : cost;
     }
 
 }

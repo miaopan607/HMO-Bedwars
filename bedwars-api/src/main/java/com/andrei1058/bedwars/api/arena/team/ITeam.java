@@ -303,16 +303,6 @@ public interface ITeam {
      */
     List<IGenerator> getGenerators();
 
-    /**
-     * Get team dragons amount for the sudden death phase.
-     */
-    int getDragons();
-
-    /**
-     * Set a team dragons amount for the sudden death phase.
-     */
-    void setDragons(int amount);
-
     @Deprecated
     List<Player> getMembersCache();
 

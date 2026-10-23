@@ -63,17 +63,14 @@ public class MenuUpgrade implements MenuContent, TeamUpgrade {
     public ItemStack getDisplayItem(Player player, ITeam team) {
         if (tiers.isEmpty()) return new ItemStack(Material.BEDROCK);
 
-        int tier = -1;
-        if (team.getTeamUpgradeTiers().containsKey(getName())) {
-            tier = team.getTeamUpgradeTiers().get(getName());
-        }
-
-        boolean highest = getTiers().size() == tier + 1 && team.getTeamUpgradeTiers().containsKey(getName());
+        int tier = team.getTeamUpgradeTiers().getOrDefault(getName(), -1);
+        boolean highest = tiers.size() == tier + 1;
         if (!highest) tier += 1;
-        UpgradeTier ut = getTiers().get(tier);
-        boolean afford = UpgradesManager.getMoney(player, ut.getCurrency()) >= ut.getCost();
+        UpgradeTier ut = tiers.get(tier);
+        int cost = ut.getCost(team);
+        boolean afford = UpgradesManager.getMoney(player, ut.getCurrency()) >= cost;
 
-        ItemStack i = new ItemStack(tiers.get(tier).getDisplayItem());
+        ItemStack i = ut.getDisplayItem().clone();
         ItemMeta im = i.getItemMeta();
         if (im == null) return i;
         String color;
@@ -90,22 +87,24 @@ public class MenuUpgrade implements MenuContent, TeamUpgrade {
         im.setDisplayName(Language.getMsg(player, Messages.UPGRADES_UPGRADE_TIER_ITEM_NAME.replace("{name}", this.getName().replace("upgrade-", "")).replace("{tier}", ut.getName())).replace("{color}", color));
 
         List<String> lore = new ArrayList<>();
-        String currencyMsg = UpgradesManager.getCurrencyMsg(player, ut);
+        String currencyMsg = UpgradesManager.getCurrencyMsg(player, cost, ut.getCurrency());
         for (String s : Language.getList(player, Messages.UPGRADES_UPGRADE_TIER_ITEM_LORE.replace("{name}", this.getName().replace("upgrade-", "")))){
             if (s.contains("{tier_")){
                 // Get tier number from placeholder
                 String result = s.replaceAll(".*_([0-9]+)_.*", "$1");
+                int tierIndex = Integer.parseInt(result) - 1;
 
                 String tierColor = Messages.FORMAT_UPGRADE_TIER_LOCKED;
-                if (Integer.valueOf(result)-1 <= team.getTeamUpgradeTiers().getOrDefault(getName(), -1)) {
+                if (tierIndex <= team.getTeamUpgradeTiers().getOrDefault(getName(), -1)) {
                     tierColor = Messages.FORMAT_UPGRADE_TIER_UNLOCKED;
                 }
 
                 //get current tier. Note: placeholder number doesnt match array index.
-                UpgradeTier upgradeTier = tiers.get(Integer.valueOf(result)-1);
+                UpgradeTier upgradeTier = tiers.get(tierIndex);
 
-                lore.add(s.replace("{tier_" + result + "_cost}", String.valueOf(upgradeTier.getCost()))
-                        .replace("{tier_" + result + "_currency}", currencyMsg)
+                int tierCost = upgradeTier.getCost(team);
+                lore.add(s.replace("{tier_" + result + "_cost}", String.valueOf(tierCost))
+                        .replace("{tier_" + result + "_currency}", UpgradesManager.getCurrencyMsg(player, tierCost, upgradeTier.getCurrency()))
                         .replace("{tier_" + result + "_color}", Language.getMsg(player, tierColor)));
 
             } else {
@@ -128,20 +127,17 @@ public class MenuUpgrade implements MenuContent, TeamUpgrade {
 
     @Override
     public void onClick(Player player, ClickType clickType, ITeam team) {
-        int tier = -1;
-        if (team.getTeamUpgradeTiers().containsKey(getName())) {
-            tier = team.getTeamUpgradeTiers().get(getName());
-        }
-        UpgradeTier ut;
-        if (getTiers().size() - 1 > tier) {
-            ut = getTiers().get(tier + 1);
+        int tier = team.getTeamUpgradeTiers().getOrDefault(getName(), -1);
+        if (tiers.size() - 1 > tier) {
+            UpgradeTier ut = tiers.get(tier + 1);
 
             int money = UpgradesManager.getMoney(player, ut.getCurrency());
-            if (money < ut.getCost()) {
+            int cost = ut.getCost(team);
+            if (money < cost) {
                 Sounds.playSound(ConfigPath.SOUNDS_INSUFF_MONEY, player);
                 player.sendMessage(Language.getMsg(player, Messages.SHOP_INSUFFICIENT_MONEY)
-                        .replace("{currency}", UpgradesManager.getCurrencyMsg(player, ut))
-                        .replace("{amount}", String.valueOf(ut.getCost() - money)));
+                        .replace("{currency}", UpgradesManager.getCurrencyMsg(player, cost, ut.getCurrency()))
+                        .replace("{amount}", String.valueOf(cost - money)));
                 player.closeInventory();
                 return;
             }
@@ -150,13 +146,9 @@ public class MenuUpgrade implements MenuContent, TeamUpgrade {
             Bukkit.getPluginManager().callEvent(event = new UpgradeBuyEvent(this, player, team));
             if(event.isCancelled()) return;
             
-            BedWars.getAPI().getShopUtil().takeMoney(player, ut.getCurrency(), ut.getCost());
+            BedWars.getAPI().getShopUtil().takeMoney(player, ut.getCurrency(), cost);
 
-            if (team.getTeamUpgradeTiers().containsKey(getName())) {
-                team.getTeamUpgradeTiers().replace(getName(), team.getTeamUpgradeTiers().get(getName()) + 1);
-            } else {
-                team.getTeamUpgradeTiers().put(getName(), 0);
-            }
+            team.getTeamUpgradeTiers().put(getName(), team.getTeamUpgradeTiers().getOrDefault(getName(), -1) + 1);
             Sounds.playSound(ConfigPath.SOUNDS_BOUGHT, player);
             for (UpgradeAction a : ut.getUpgradeActions()) {
                 a.onBuy(player, team);

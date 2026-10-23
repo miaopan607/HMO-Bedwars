@@ -91,9 +91,6 @@ public class BedWarsTeam implements ITeam {
     private HashMap<UUID, BedHolo> beds = new HashMap<>();
     // Queued traps
     private LinkedList<EnemyBaseEnterTrap> enemyBaseEnterTraps = new LinkedList<>();
-    // Amount of dragons for Sudden Death phase
-    @Getter
-    private int dragons = 1;
     // Player cache, used for losers stats and rejoin
     private List<Player> membersCache = new ArrayList<>();
     // Invulnerability at re-spawn
@@ -413,19 +410,6 @@ public class BedWarsTeam implements ITeam {
                 p.updateInventory();
             }
         }
-        if (!getArmorsEnchantments().isEmpty()) {
-            for (ItemStack i : p.getInventory().getArmorContents()) {
-                if (i == null) continue;
-                if (nms.isArmor(i)) {
-                    ItemMeta im = i.getItemMeta();
-                    for (TeamEnchant e : getArmorsEnchantments()) {
-                        im.addEnchant(e.getEnchantment(), e.getAmplifier(), true);
-                    }
-                    i.setItemMeta(im);
-                }
-                p.updateInventory();
-            }
-        }
         Bukkit.getPluginManager().callEvent(new PlayerReSpawnEvent(p, getArena(), this));
         nms.sendPlayerSpawnPackets(p, getArena());
 
@@ -485,7 +469,10 @@ public class BedWarsTeam implements ITeam {
             p.getInventory().setChestplate(createArmor(Material.LEATHER_CHESTPLATE));
         if (p.getInventory().getLeggings() == null)
             p.getInventory().setLeggings(createArmor(Material.LEATHER_LEGGINGS));
-        if (p.getInventory().getBoots() == null) p.getInventory().setBoots(createArmor(Material.LEATHER_BOOTS));
+        ItemStack boots = p.getInventory().getBoots();
+        if (boots == null || boots.getType() == Material.AIR)
+            p.getInventory().setBoots(createArmor(Material.LEATHER_BOOTS));
+        applyArmorEnchantments(p);
     }
 
     @Override
@@ -624,21 +611,34 @@ public class BedWarsTeam implements ITeam {
         }
     }
 
+    // 每件护甲只写回一次；摔落保护由附魔契约限制为靴子。
+    private void applyArmorEnchantments(Player player) {
+        if (getArmorsEnchantments().isEmpty()) return;
+        boolean changed = false;
+        for (ItemStack item : player.getInventory().getArmorContents()) {
+            if (item == null || item.getType() == Material.AIR || !nms.isArmor(item)) continue;
+            ItemMeta meta = null;
+            for (TeamEnchant enchant : getArmorsEnchantments()) {
+                if (!enchant.appliesTo(item)) continue;
+                if (meta == null) meta = item.getItemMeta();
+                meta.addEnchant(enchant.getEnchantment(), enchant.getAmplifier(), true);
+            }
+            if (meta != null) {
+                item.setItemMeta(meta);
+                changed = true;
+            }
+        }
+        if (changed) player.updateInventory();
+    }
+
     /**
      * Used when someone buys a new enchantment with apply == armor
      */
     public void addArmorEnchantment(Enchantment e, int a) {
+        getArmorsEnchantments().removeIf(enchant -> enchant.getEnchantment().equals(e));
         getArmorsEnchantments().add(new Enchant(e, a));
         for (Player p : getMembers()) {
-            for (ItemStack i : p.getInventory().getArmorContents()) {
-                if (i == null) continue;
-                if (nms.isArmor(i)) {
-                    ItemMeta im = i.getItemMeta();
-                    im.addEnchant(e, a, true);
-                    i.setItemMeta(im);
-                }
-            }
-            p.updateInventory();
+            applyArmorEnchantments(p);
         }
 
         // #274
@@ -815,11 +815,6 @@ public class BedWarsTeam implements ITeam {
 
     public Arena getArena() {
         return arena;
-    }
-
-    @Override
-    public void setDragons(int amount) {
-        this.dragons = amount;
     }
 
     public List<Player> getMembersCache() {

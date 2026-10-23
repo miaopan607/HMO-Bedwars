@@ -1462,9 +1462,12 @@ public class SimplifiedChinese extends Language {
         yml.addDefault(Messages.UPGRADES_UPGRADE_TIER_ITEM_NAME.replace("{name}", "heal-pool").replace("{tier}", "tier-1"), "{color}治愈池");
         yml.addDefault(Messages.UPGRADES_UPGRADE_TIER_ITEM_LORE.replace("{name}", "heal-pool"),
                 Arrays.asList("&7在你的基地周围", "&7生成治愈池！", "", "{tier_1_color}花费：&b{tier_1_cost} {tier_1_currency}", ""));
-        yml.addDefault(Messages.UPGRADES_UPGRADE_TIER_ITEM_NAME.replace("{name}", "dragon").replace("{tier}", "tier-1"), "{color}末影龙升级");
-        yml.addDefault(Messages.UPGRADES_UPGRADE_TIER_ITEM_LORE.replace("{name}", "dragon"),
-                Arrays.asList("&7绝杀模式期间，你方将拥有", "&72 条龙，而不是 1 条。", "", "{tier_1_color}花费：&b{tier_1_cost} {tier_1_currency}", ""));
+        yml.addDefault(Messages.UPGRADES_UPGRADE_TIER_ITEM_NAME.replace("{name}", "cushioned-boots").replace("{tier}", "tier-1"), "{color}摔落缓冲 I");
+        yml.addDefault(Messages.UPGRADES_UPGRADE_TIER_ITEM_NAME.replace("{name}", "cushioned-boots").replace("{tier}", "tier-2"), "{color}摔落缓冲 II");
+        yml.addDefault(Messages.UPGRADES_UPGRADE_TIER_ITEM_LORE.replace("{name}", "cushioned-boots"),
+                Arrays.asList("&7为全队靴子永久提供", "&7摔落保护附魔。", "",
+                        "{tier_1_color}等级 I：摔落保护 I，&b{tier_1_cost} {tier_1_currency}",
+                        "{tier_2_color}等级 II：摔落保护 II，&b{tier_2_cost} {tier_2_currency}", ""));
         yml.addDefault(Messages.UPGRADES_SEPARATOR_ITEM_NAME_PATH + "glass", "&8⬆&7可购买");
         yml.addDefault(Messages.UPGRADES_SEPARATOR_ITEM_LORE_PATH + "glass", Collections.singletonList("&8⬇&7陷阱队列"));
         yml.addDefault(Messages.UPGRADES_TRAP_SLOT_ITEM_NAME_PATH + "first", "{color}陷阱 #1：{name}");

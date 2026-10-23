@@ -620,7 +620,7 @@ public class v1_8_R3 extends VersionSupport {
     @Override
     public void spawnDragon(Location l, ITeam bwt) {
         CraftWorld world = (CraftWorld) l.getWorld();
-        BedWarsDragon dragon = new BedWarsDragon(world.getHandle());
+        BedWarsDragon dragon = new BedWarsDragon(world.getHandle(), bwt);
         dragon.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
         world.getHandle().addEntity(dragon, CreatureSpawnEvent.SpawnReason.CUSTOM);
     }
@@ -963,6 +963,7 @@ public class v1_8_R3 extends VersionSupport {
     public void registerVersionListeners() {
         new VersionCommon(this);
         getPlugin().getServer().getPluginManager().registerEvents(new SpongeProtection(VersionCommon.api), getPlugin());
+        getPlugin().getServer().getPluginManager().registerEvents(new DragonTargetListener(), getPlugin());
         GeneratorDropMigration migration = new GeneratorDropMigration();
         getPlugin().getServer().getPluginManager().registerEvents(migration, getPlugin());
         migration.migrateLoadedData();

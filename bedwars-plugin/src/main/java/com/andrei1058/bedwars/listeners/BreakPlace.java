@@ -628,20 +628,22 @@ public class BreakPlace implements Listener, com.andrei1058.bedwars.configuratio
             return;
         }
         if (e.getEntity().getType() == EntityType.ENDER_DRAGON) {
-            boolean canDragonBreak = config.getBoolean(ConfigPath.GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS);
-            boolean canDragonBreakEndStone = canDragonBreak && config.getBoolean(ConfigPath.GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS_END_STONE);
-            boolean canDragonBreakObsidian = canDragonBreak && config.getBoolean(ConfigPath.GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS_OBSIDIAN);
+            if (!config.getBoolean(ConfigPath.GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS)) {
+                e.blockList().clear();
+                return;
+            }
+            boolean canDragonBreakEndStone = config.getBoolean(ConfigPath.GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS_END_STONE);
+            boolean canDragonBreakObsidian = config.getBoolean(ConfigPath.GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS_OBSIDIAN);
             e.blockList().removeIf(b -> {
                 Material type = b.getType();
                 return (type == Material.ENDER_STONE && !canDragonBreakEndStone)
-                        || (type == Material.OBSIDIAN && !canDragonBreakObsidian);
+                        || (type == Material.OBSIDIAN && !canDragonBreakObsidian)
+                        || type == Material.BEDROCK || type == Material.BARRIER || type == Material.COMMAND;
             });
-            if (canDragonBreak) {
-                if (!config.getBoolean(ConfigPath.GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS_MAP)) {
-                    e.blockList().removeIf(b -> a.isProtected(b.getLocation()) || !a.isBlockPlaced(b));
-                }
-                return;
+            if (!config.getBoolean(ConfigPath.GENERAL_CONFIGURATION_ENDER_DRAGON_BREAKS_MAP)) {
+                e.blockList().removeIf(b -> a.isProtected(b.getLocation()) || !a.isBlockPlaced(b));
             }
+            return;
         }
         blastProtection.filterBlocks(a, e.getLocation(), e.blockList(), 0.3);
     }
@@ -660,8 +662,6 @@ public class BreakPlace implements Listener, com.andrei1058.bedwars.configuratio
     @EventHandler(priority = EventPriority.MONITOR)
     public void onEntityExplodeMonitor(EntityExplodeEvent event) {
         if (event.isCancelled() || event.blockList().isEmpty()) return;
-        // Custom dragon explosions do not destroy every material in their event list.
-        if (event.getEntity().getType() == EntityType.ENDER_DRAGON) return;
         IArena arena = Arena.getArenaByIdentifier(event.getLocation().getWorld().getName());
         if (arena == null) return;
         event.blockList().forEach(arena::removePlacedBlock);

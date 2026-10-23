@@ -21,18 +21,21 @@
 package com.andrei1058.bedwars.configuration;
 
 import com.andrei1058.bedwars.api.configuration.ConfigManager;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,14 +49,23 @@ public class UpgradesConfig extends ConfigManager {
     public UpgradesConfig(String name, String dir) {
         super(plugin, name, dir);
         YamlConfiguration yml = this.getYml();
+        migrateDragonUpgrade(yml);
         List<String> elements = Arrays.asList("upgrade-swords,10", "upgrade-armor,11", "upgrade-miner,12", "upgrade-forge,13",
-                "upgrade-heal-pool,14", "upgrade-dragon,15", "category-traps,16", "separator-glass,18,19,20,21,22,23,24,25,26",
+                "upgrade-heal-pool,14", "upgrade-cushioned-boots,15", "category-traps,16", "separator-glass,18,19,20,21,22,23,24,25,26",
                 "trap-slot-first,30", "trap-slot-second,31", "trap-slot-third,32");
         yml.addDefault("default-upgrades-settings.menu-content", elements);
         yml.addDefault("default-upgrades-settings.trap-start-price", 1);
         yml.addDefault("default-upgrades-settings.trap-increment-price", 1);
         yml.addDefault("default-upgrades-settings.trap-currency", "diamond");
         yml.addDefault("default-upgrades-settings.trap-queue-limit", 3);
+        for (int tier = 1; tier <= 2; tier++) {
+            String path = "upgrade-cushioned-boots.tier-" + tier;
+            yml.addDefault(path + ".cost", tier);
+            yml.addDefault(path + ".cost-large-team", tier * 2);
+            yml.addDefault(path + ".currency", "diamond");
+            addDefaultDisplayItem(path, "LEATHER_BOOTS", 0, 1, false);
+            yml.addDefault(path + ".receive", Collections.singletonList("enchant-item: PROTECTION_FALL," + tier + ",armor"));
+        }
 
         if (isFirstTime()) {
             yml.addDefault("upgrade-swords.tier-1.cost", 4);
@@ -118,11 +130,6 @@ public class UpgradesConfig extends ConfigManager {
             addDefaultDisplayItem("upgrade-heal-pool.tier-1", "BEACON", 0, 1, false);
             yml.addDefault("upgrade-heal-pool.tier-1.receive", Collections.singletonList("player-effect: REGENERATION,1,0,base"));
 
-            yml.addDefault("upgrade-dragon.tier-1.currency", "diamond");
-            yml.addDefault("upgrade-dragon.tier-1.cost", 5);
-            addDefaultDisplayItem("upgrade-dragon.tier-1", "DRAGON_EGG", 0, 1, false);
-            yml.addDefault("upgrade-dragon.tier-1.receive", Collections.singletonList("dragon: 2"));
-
             addDefaultDisplayItem("category-traps", "LEATHER", 0, 1, false);
             yml.addDefault("category-traps.category-content", Arrays.asList("base-trap-1,10", "base-trap-2,11",
                     "base-trap-3,12", "base-trap-4,13", "separator-back,31"));
@@ -157,28 +164,89 @@ public class UpgradesConfig extends ConfigManager {
             addDefaultDisplayItem("separator-back", "ARROW", 0, 1, false);
         }
         yml.options().copyDefaults(true);
-        if (isFirstTime()) {
-            yml.set(INTERVAL_VERSION, 1);
-            save();
-        } else if (migrateIntervals(yml)) {
-            Path file = new File(dir, name + ".yml").toPath();
-            Path backup = file.resolveSibling(file.getFileName() + ".pre-interval.bak");
-            try {
+        Path file = new File(dir, name + ".yml").toPath();
+        try {
+            if (isFirstTime()) {
+                yml.set(INTERVAL_VERSION, 1);
+            } else if (migrateIntervals(yml)) {
+                Path backup = file.resolveSibling(file.getFileName() + ".pre-interval.bak");
                 if (!Files.exists(backup)) Files.copy(file, backup);
-                Path temporary = Files.createTempFile(file.getParent(), name + "-interval-", ".tmp");
-                try {
-                    Files.write(temporary, yml.saveToString().getBytes(StandardCharsets.UTF_8));
-                    Files.move(temporary, file, StandardCopyOption.REPLACE_EXISTING);
-                } finally {
-                    Files.deleteIfExists(temporary);
-                }
                 plugin.getLogger().info("Migrated generator-edit delays to intervals; backup: " + backup);
-            } catch (IOException ex) {
-                throw new IllegalStateException("Could not migrate " + file + "; existing configuration is unchanged", ex);
             }
-        } else {
-            save();
+            saveConfiguration(yml);
+        } catch (IOException ex) {
+            throw new IllegalStateException("Could not migrate " + file + "; existing configuration is unchanged", ex);
         }
+    }
+
+    static boolean migrateDragonUpgrade(YamlConfiguration yml) {
+        boolean changed = false;
+        String replacement = "upgrade-cushioned-boots";
+        Set<String> obsolete = new LinkedHashSet<>();
+        obsolete.add("upgrade-dragon");
+        for (String key : yml.getKeys(false)) {
+            if (!key.startsWith("upgrade-") || key.equals(replacement)) continue;
+            ConfigurationSection section = yml.getConfigurationSection(key);
+            if (section == null) continue;
+            for (String tier : section.getKeys(false)) {
+                if (!tier.startsWith("tier-")) continue;
+                for (String action : section.getStringList(tier + ".receive")) {
+                    String[] parts = action.trim().split(":");
+                    if (parts.length >= 2 && parts[0].trim().equalsIgnoreCase("dragon")) obsolete.add(key);
+                }
+            }
+        }
+        for (String key : obsolete) {
+            changed |= yml.isSet(key);
+            yml.set(key, null);
+        }
+        for (String key : yml.getKeys(true)) {
+            if (!(key.endsWith("-upgrades-settings.menu-content") || key.endsWith(".category-content")) || !yml.isList(key)) continue;
+            List<String> content = yml.getStringList(key);
+            boolean hasReplacement = content.stream().anyMatch(item -> item.split(",", 2)[0].trim().equals(replacement));
+            List<String> result = new ArrayList<>(content.size());
+            for (String item : content) {
+                String id = item.split(",", 2)[0].trim();
+                if (!obsolete.contains(id)) {
+                    result.add(item);
+                } else if (!hasReplacement) {
+                    int slots = item.indexOf(',');
+                    result.add(replacement + (slots < 0 ? "" : item.substring(slots)));
+                    hasReplacement = true;
+                }
+            }
+            if (!content.equals(result)) {
+                yml.set(key, result);
+                changed = true;
+            }
+        }
+        ConfigurationSection current = yml.getConfigurationSection(replacement);
+        if (current != null) {
+            Map<String, Object> values = new LinkedHashMap<>();
+            for (int tier = 1; tier <= 2; tier++) {
+                String path = "tier-" + tier;
+                ConfigurationSection existing = current.getConfigurationSection(path);
+                if (existing != null) {
+                    ConfigurationValues.leaves(existing).forEach((key, value) -> values.put(path + "." + key, value));
+                }
+                values.putIfAbsent(path + ".cost", tier);
+                values.putIfAbsent(path + ".cost-large-team", tier * 2);
+                values.putIfAbsent(path + ".display-item.material", "LEATHER_BOOTS");
+                values.putIfAbsent(path + ".display-item.data", 0);
+                values.putIfAbsent(path + ".display-item.amount", 1);
+                values.putIfAbsent(path + ".display-item.enchanted", false);
+                values.put(path + ".currency", "diamond");
+                values.put(path + ".receive", Collections.singletonList("enchant-item: PROTECTION_FALL," + tier + ",armor"));
+            }
+            if (!new ArrayList<>(current.getKeys(false)).equals(Arrays.asList("tier-1", "tier-2"))
+                    || !ConfigurationValues.leaves(current).equals(values)) {
+                yml.set(replacement, null);
+                ConfigurationSection section = yml.createSection(replacement);
+                values.forEach(section::set);
+                changed = true;
+            }
+        }
+        return changed;
     }
 
     static boolean migrateIntervals(YamlConfiguration yml) {
