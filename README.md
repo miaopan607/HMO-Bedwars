@@ -10,7 +10,9 @@ mvn -o clean install -DskipTests
 
 缺少本地依赖时去掉 `-o`。将 `bedwars-plugin/target/HMO-Bedwars-<版本>.jar` 放入服务器 `plugins/` 后启动。
 
-设置 `BED_WARS_SERVER_DIR` 时，构建会自动复制 JAR 到该服务器的 `plugins/`，不会自动重启。配置位于 `plugins/HMO-Bedwars/`。
+设置 `BED_WARS_SERVER_DIR` 时，构建会自动将 JAR 暂存到该服务器的 `plugins/update/`，不会覆盖正在使用的 JAR，也不会自动重启。服务器需在 `bukkit.yml` 中配置 `settings.update-folder: update`，下次完整启动时应用更新。
+
+更新文件名必须与 `plugins/` 中已安装的 JAR 完全一致；首次安装或 JAR 文件名变化时，需停服后手动部署到 `plugins/`。插件配置位于 `plugins/HMO-Bedwars/`。
 
 ## 常用命令
 

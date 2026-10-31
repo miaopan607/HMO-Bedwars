@@ -221,8 +221,9 @@
                         <configuration>
                             <target xmlns:if="ant:if">
                                 <property environment="env"/>
+                                <!-- 暂存更新，服务器下次启动时应用同名 JAR。 -->
                                 <copy file="${project.build.directory}/${project.build.finalName}.jar"
-                                      todir="${env.BED_WARS_SERVER_DIR}/plugins"
+                                      todir="${env.BED_WARS_SERVER_DIR}/plugins/update"
                                       if:set="env.BED_WARS_SERVER_DIR"/>
                             </target>
                         </configuration>
