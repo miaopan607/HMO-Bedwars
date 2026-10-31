@@ -96,6 +96,7 @@ public class SQLite implements Database {
             }
             try (Statement st = connection.createStatement()) {
                 st.executeUpdate("CREATE TABLE IF NOT EXISTS spectator_preferences (uuid VARCHAR(36) PRIMARY KEY, show_spectators BOOLEAN NOT NULL DEFAULT TRUE)");
+                st.executeUpdate("CREATE TABLE IF NOT EXISTS shop_preferences (uuid VARCHAR(36) PRIMARY KEY, shift_bulk_buy BOOLEAN NOT NULL DEFAULT FALSE)");
             }
         }catch (SQLException e) {
             e.printStackTrace();
@@ -346,6 +347,27 @@ public class SQLite implements Database {
         try (PreparedStatement statement = connection.prepareStatement("INSERT OR REPLACE INTO spectator_preferences (uuid, show_spectators) VALUES (?, ?)")) {
             statement.setString(1, player.toString());
             statement.setBoolean(2, visible);
+            statement.executeUpdate();
+        }
+    }
+
+    @Override
+    public boolean getShiftBulkBuy(UUID player) throws SQLException {
+        checkConnection();
+        try (PreparedStatement statement = connection.prepareStatement("SELECT shift_bulk_buy FROM shop_preferences WHERE uuid = ?")) {
+            statement.setString(1, player.toString());
+            try (ResultSet result = statement.executeQuery()) {
+                return result.next() && result.getBoolean(1);
+            }
+        }
+    }
+
+    @Override
+    public void setShiftBulkBuy(UUID player, boolean enabled) throws SQLException {
+        checkConnection();
+        try (PreparedStatement statement = connection.prepareStatement("INSERT OR REPLACE INTO shop_preferences (uuid, shift_bulk_buy) VALUES (?, ?)")) {
+            statement.setString(1, player.toString());
+            statement.setBoolean(2, enabled);
             statement.executeUpdate();
         }
     }

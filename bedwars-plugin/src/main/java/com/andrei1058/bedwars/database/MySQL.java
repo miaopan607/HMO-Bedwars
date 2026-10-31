@@ -155,6 +155,7 @@ public class MySQL implements Database {
             }
             try (Statement statement = connection.createStatement()) {
                 statement.executeUpdate("CREATE TABLE IF NOT EXISTS spectator_preferences (uuid VARCHAR(36) PRIMARY KEY, show_spectators BOOLEAN NOT NULL DEFAULT TRUE)");
+                statement.executeUpdate("CREATE TABLE IF NOT EXISTS shop_preferences (uuid VARCHAR(36) PRIMARY KEY, shift_bulk_buy BOOLEAN NOT NULL DEFAULT FALSE)");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -408,6 +409,27 @@ public class MySQL implements Database {
              PreparedStatement statement = connection.prepareStatement("INSERT INTO spectator_preferences (uuid, show_spectators) VALUES (?, ?) ON DUPLICATE KEY UPDATE show_spectators = VALUES(show_spectators)")) {
             statement.setString(1, player.toString());
             statement.setBoolean(2, visible);
+            statement.executeUpdate();
+        }
+    }
+
+    @Override
+    public boolean getShiftBulkBuy(UUID player) throws SQLException {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT shift_bulk_buy FROM shop_preferences WHERE uuid = ?")) {
+            statement.setString(1, player.toString());
+            try (ResultSet result = statement.executeQuery()) {
+                return result.next() && result.getBoolean(1);
+            }
+        }
+    }
+
+    @Override
+    public void setShiftBulkBuy(UUID player, boolean enabled) throws SQLException {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement("INSERT INTO shop_preferences (uuid, shift_bulk_buy) VALUES (?, ?) ON DUPLICATE KEY UPDATE shift_bulk_buy = VALUES(shift_bulk_buy)")) {
+            statement.setString(1, player.toString());
+            statement.setBoolean(2, enabled);
             statement.executeUpdate();
         }
     }

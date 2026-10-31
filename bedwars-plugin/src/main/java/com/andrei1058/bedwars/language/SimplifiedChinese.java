@@ -780,9 +780,21 @@ public class SimplifiedChinese extends Language {
         /* Lobby Command Items */
         yml.addDefault(Messages.LOBBY_MENU_TITLE, "&8主城菜单");
         yml.addDefault(Messages.LOBBY_MENU_ITEM_NAME, "&e玩家菜单");
-        yml.addDefault(Messages.LOBBY_MENU_ITEM_LORE, Collections.singletonList("&f右键查看战绩或编辑快速购买！"));
+        yml.addDefault(Messages.LOBBY_MENU_ITEM_LORE, Collections.singletonList("&f右键查看战绩、编辑快速购买或调整商店设置！"));
         yml.addDefault(Messages.LOBBY_MENU_STATS, "&e查看战绩");
         yml.addDefault(Messages.LOBBY_MENU_QUICK_BUY, "&e编辑快速购买");
+        yml.addDefault(Messages.SHOP_MODE_DEFAULT, "&e商店模式：默认");
+        yml.addDefault(Messages.SHOP_MODE_BULK, "&e商店模式：Shift 批量购买");
+        yml.addDefault(Messages.SHOP_MODE_DEFAULT_LORE, Arrays.asList("&7点击：购买一次", "&7Shift 点击：编辑快速购买", "&e点击启用 Shift 批量购买。"));
+        yml.addDefault(Messages.SHOP_MODE_BULK_LORE, Arrays.asList("&7左键：购买一份", "&7Shift 点击：购买尽可能多的物品", "&7升级装备只购买当前一档", "&7右键：编辑快速购买", "&e点击恢复默认模式。"));
+        yml.addDefault(Messages.SHOP_MODE_SAVE_FAILED, "{prefix}&c商店模式已在本次在线生效，但保存失败，重连后可能恢复。");
+        yml.addDefault(Messages.SHOP_BULK_QUICK_ADD, "&b右键添加到快速购买");
+        yml.addDefault(Messages.SHOP_BULK_QUICK_REMOVE, "&b右键从快速购买中移除");
+        yml.addDefault(Messages.SHOP_BULK_EMPTY_LORE, Arrays.asList("&7这是快速购买槽位！", "&b右键&7商店中的物品来添加。"));
+        yml.addDefault(Messages.SHOP_BULK_HINT, "&eShift 点击购买尽可能多的物品。");
+        yml.addDefault(Messages.SHOP_BULK_PURCHASE, "{prefix}&a已购买 &6{item} &a× {amount} 份");
+        yml.addDefault(Messages.SHOP_BULK_CAN_BUY, "&e左键购买一份！");
+        yml.addDefault(Messages.SHOP_BULK_SINGLE_HINT, "&eShift 点击购买当前一份。");
         yml.addDefault(Messages.QUICK_BUY_EDITOR_TITLE, "&8快速购买编辑");
         yml.addDefault(Messages.QUICK_BUY_EDITOR_SELECT_SLOT_TITLE, "&8选择快捷槽位");
         yml.addDefault(Messages.QUICK_BUY_EDITOR_LOADING, "&e正在加载……");

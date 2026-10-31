@@ -23,7 +23,9 @@ package com.andrei1058.bedwars.shop.listeners;
 import com.andrei1058.bedwars.api.arena.IArena;
 import com.andrei1058.bedwars.arena.Arena;
 import com.andrei1058.bedwars.shop.ShopCache;
+import com.andrei1058.bedwars.shop.ShopClickMode;
 import com.andrei1058.bedwars.shop.ShopManager;
+import com.andrei1058.bedwars.database.PlayerPreferenceService;
 import com.andrei1058.bedwars.shop.main.CategoryContent;
 import com.andrei1058.bedwars.shop.main.ShopCategory;
 import com.andrei1058.bedwars.shop.main.ShopIndex;
@@ -59,6 +61,8 @@ public class InventoryListener implements Listener {
 
         if (cache == null || !cache.isLoaded()) return;
         if (shopCache == null) return;
+        ShopClickMode mode = ShopClickMode.from(PlayerPreferenceService.getInstance().isShiftBulkBuy(p.getUniqueId()));
+        ShopClickMode.Action action = mode.resolve(e.getClick(), e.getAction());
 
         if(ShopIndex.getIndexViewers().contains(p.getUniqueId()) || ShopCategory.getCategoryViewers().contains(p.getUniqueId())) {
             if (e.getClickedInventory() != null && e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
@@ -78,12 +82,13 @@ public class InventoryListener implements Listener {
             }
             for (QuickBuyElement element : cache.getElements()) {
                 if (element.getSlot() == e.getSlot()) {
-                    if (e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+                    if (action == ShopClickMode.Action.EDIT_QUICK) {
                         cache.setElement(element.getSlot(), null);
                         ShopManager.getShop().open(p, cache, false);
                         return;
                     }
-                    element.getCategoryContent().execute(p, shopCache, element.getSlot());
+                    if (action == ShopClickMode.Action.BUY_BULK) element.getCategoryContent().executeBulk(p, shopCache, element.getSlot());
+                    else element.getCategoryContent().execute(p, shopCache, element.getSlot());
                     return;
                 }
             }
@@ -101,12 +106,13 @@ public class InventoryListener implements Listener {
                 if (sc.getSlot() != shopCache.getSelectedCategory()) continue;
                 for (CategoryContent cc : sc.getCategoryContentList()) {
                     if (cc.getSlot() == e.getSlot()) {
-                        if (e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+                        if (action == ShopClickMode.Action.EDIT_QUICK) {
                             if (cache.hasCategoryContent(cc)) return;
                             new QuickBuyAdd(p, cc);
                             return;
                         }
-                        cc.execute(p, shopCache, cc.getSlot());
+                        if (action == ShopClickMode.Action.BUY_BULK) cc.executeBulk(p, shopCache, cc.getSlot());
+                        else cc.execute(p, shopCache, cc.getSlot());
                         return;
                     }
                 }

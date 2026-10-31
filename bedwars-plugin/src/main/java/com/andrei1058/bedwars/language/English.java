@@ -780,9 +780,21 @@ public class English extends Language {
         /* Lobby Command Items */
         yml.addDefault(Messages.LOBBY_MENU_TITLE, "&8Lobby Menu");
         yml.addDefault(Messages.LOBBY_MENU_ITEM_NAME, "&ePlayer Menu");
-        yml.addDefault(Messages.LOBBY_MENU_ITEM_LORE, Collections.singletonList("&fRight-click for stats and Quick Buy settings!"));
+        yml.addDefault(Messages.LOBBY_MENU_ITEM_LORE, Collections.singletonList("&fRight-click for stats, Quick Buy and shop settings!"));
         yml.addDefault(Messages.LOBBY_MENU_STATS, "&eView Stats");
         yml.addDefault(Messages.LOBBY_MENU_QUICK_BUY, "&eEdit Quick Buy");
+        yml.addDefault(Messages.SHOP_MODE_DEFAULT, "&eShop mode: Default");
+        yml.addDefault(Messages.SHOP_MODE_BULK, "&eShop mode: Shift Bulk Buy");
+        yml.addDefault(Messages.SHOP_MODE_DEFAULT_LORE, Arrays.asList("&7Click: buy once", "&7Shift-click: edit Quick Buy", "&eClick to enable Shift Bulk Buy."));
+        yml.addDefault(Messages.SHOP_MODE_BULK_LORE, Arrays.asList("&7Left-click: buy one purchase", "&7Shift-click: buy as many as possible", "&7Equipment upgrades buy only the current tier", "&7Right-click: edit Quick Buy", "&eClick to restore default mode."));
+        yml.addDefault(Messages.SHOP_MODE_SAVE_FAILED, "{prefix}&cShop mode is active for this session, but could not be saved.");
+        yml.addDefault(Messages.SHOP_BULK_QUICK_ADD, "&bRight-click to add to Quick Buy");
+        yml.addDefault(Messages.SHOP_BULK_QUICK_REMOVE, "&bRight-click to remove from Quick Buy");
+        yml.addDefault(Messages.SHOP_BULK_EMPTY_LORE, Arrays.asList("&7This is a Quick Buy Slot!", "&bRight-click &7an item in the shop to add it here."));
+        yml.addDefault(Messages.SHOP_BULK_HINT, "&eShift-click to buy as many as possible.");
+        yml.addDefault(Messages.SHOP_BULK_PURCHASE, "{prefix}&aPurchased &6{item} &a× {amount} purchases");
+        yml.addDefault(Messages.SHOP_BULK_CAN_BUY, "&eLeft-click to buy one purchase!");
+        yml.addDefault(Messages.SHOP_BULK_SINGLE_HINT, "&eShift-click to buy the current purchase once.");
         yml.addDefault(Messages.QUICK_BUY_EDITOR_TITLE, "&8Edit Quick Buy");
         yml.addDefault(Messages.QUICK_BUY_EDITOR_SELECT_SLOT_TITLE, "&8Select Quick Buy Slot");
         yml.addDefault(Messages.QUICK_BUY_EDITOR_LOADING, "&eLoading...");

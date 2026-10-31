@@ -26,6 +26,8 @@ import com.andrei1058.bedwars.api.language.Language;
 import com.andrei1058.bedwars.api.language.Messages;
 import com.andrei1058.bedwars.shop.ShopCache;
 import com.andrei1058.bedwars.shop.ShopManager;
+import com.andrei1058.bedwars.shop.ShopClickMode;
+import com.andrei1058.bedwars.database.PlayerPreferenceService;
 import com.andrei1058.bedwars.shop.main.CategoryContent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -44,7 +46,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PlayerQuickBuyCache {
 
     private final List<QuickBuyElement> elements = new ArrayList<>();
-    private String emptyItemNamePath, emptyItemLorePath;
     private ItemStack emptyItem;
     private UUID player;
     private QuickBuyTask task;
@@ -64,8 +65,6 @@ public class PlayerQuickBuyCache {
         if (BedWars.shop.getYml().getBoolean(ConfigPath.SHOP_SETTINGS_QUICK_BUY_EMPTY_ENCHANTED)) {
             this.emptyItem = ShopManager.enchantItem(emptyItem);
         }
-        this.emptyItemNamePath = Messages.SHOP_QUICK_EMPTY_NAME;
-        this.emptyItemLorePath = Messages.SHOP_QUICK_EMPTY_LORE;
         quickBuyCaches.put(this.player, this);
         task = new QuickBuyTask(player.getUniqueId());
     }
@@ -119,8 +118,9 @@ public class PlayerQuickBuyCache {
         ItemStack i = emptyItem.clone();
         ItemMeta im = i.getItemMeta();
         if (im != null) {
-            im.setDisplayName(Language.getMsg(player, emptyItemNamePath));
-            im.setLore(Language.getList(player, emptyItemLorePath));
+            im.setDisplayName(Language.getMsg(player, Messages.SHOP_QUICK_EMPTY_NAME));
+            ShopClickMode mode = ShopClickMode.from(PlayerPreferenceService.getInstance().isShiftBulkBuy(player.getUniqueId()));
+            im.setLore(Language.getList(player, mode.emptyLoreMessage()));
             i.setItemMeta(im);
         }
         return i;

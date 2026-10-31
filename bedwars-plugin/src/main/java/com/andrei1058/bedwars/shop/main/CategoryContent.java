@@ -26,13 +26,14 @@ import com.andrei1058.bedwars.api.arena.shop.IBuyItem;
 import com.andrei1058.bedwars.api.arena.shop.ICategoryContent;
 import com.andrei1058.bedwars.api.arena.shop.IContentTier;
 import com.andrei1058.bedwars.api.configuration.ConfigPath;
-import com.andrei1058.bedwars.api.arena.team.TeamEnchant;
 import com.andrei1058.bedwars.api.events.shop.ShopBuyEvent;
 import com.andrei1058.bedwars.api.language.Language;
 import com.andrei1058.bedwars.api.language.Messages;
 import com.andrei1058.bedwars.arena.Arena;
 import com.andrei1058.bedwars.configuration.Sounds;
 import com.andrei1058.bedwars.shop.ShopCache;
+import com.andrei1058.bedwars.shop.ShopClickMode;
+import com.andrei1058.bedwars.database.PlayerPreferenceService;
 import com.andrei1058.bedwars.shop.quickbuy.PlayerQuickBuyCache;
 import com.andrei1058.bedwars.shop.quickbuy.QuickBuyElement;
 import org.bukkit.Bukkit;
@@ -135,222 +136,175 @@ public class CategoryContent implements ICategoryContent {
 
     }
 
-    /**
-     * Check if player has enough inventory space
-     * 检查玩家是否有足够的背包空间
-     *
-     * @param player   The player buying the item / 购买物品的玩家
-     * @param items    List of items to be bought / 要购买的物品列表
-     * @param currency The currency used for payment / 支付使用的货币类型
-     * @param price    The total price / 总价格
-     * @return true if there is enough space, false otherwise / 如果空间足够返回 true，否则返回 false
-     */
-    private boolean hasInventorySpace(Player player, List<IBuyItem> items, Material currency, int price) {
-        // Use an array to simulate inventory instead of creating a full Inventory object to save memory
-        // 使用数组来模拟背包，代替创建完整的 Inventory 对象以节省内存
-        ItemStack[] simulatedInv = new ItemStack[36];
-        
-        // Copy player storage contents to the simulated array
-        // 将玩家当前的背包内容复制到模拟数组中
-        for (int i = 0; i < 36; i++) {
-            ItemStack item = player.getInventory().getItem(i);
-            // Clone item to avoid modifying original inventory during simulation
-            // 克隆物品以避免在模拟过程中修改原始背包
-            simulatedInv[i] = (item != null && item.getType() != Material.AIR) ? item.clone() : null;
-        }
-
-        // Simulate taking money
-        // 模拟扣除货币的过程
-        int cost = price;
-        for (int i = 0; i < 36; i++) {
-            ItemStack item = simulatedInv[i];
-            if (item == null || item.getType() != currency) continue;
-
-            if (item.getAmount() <= cost) {
-                cost -= item.getAmount();
-                simulatedInv[i] = null;
-            } else {
-                item.setAmount(item.getAmount() - cost);
-                cost = 0;
-            }
-            if (cost <= 0) break;
-        }
-
-        // Check space for each item to be bought
-        // 检查每一个要购买的物品是否有空间放下
+    private List<ItemStack> prepareItems(Player player, List<IBuyItem> items) {
+        List<ItemStack> prepared = new ArrayList<>(items.size());
         IArena arena = Arena.getArenaByPlayer(player);
-        for (IBuyItem buyItem : items) {
-            ItemStack itemToAdd = buyItem.getItemStack().clone();
+        for (IBuyItem item : items) {
+            ItemStack stack = item.getItemStack();
+            if (stack == null || (item.isAutoEquip() && nms.isArmor(stack))) continue;
+            prepared.add(item instanceof BuyItem ? ((BuyItem) item).prepareItem(player, arena) : stack);
+        }
+        return prepared;
+    }
 
-            // Skip auto-equip armor
-            // 跳过自动装备的护甲
-            if (buyItem.isAutoEquip() && BedWars.nms.isArmor(itemToAdd)) {
-                continue;
-            }
-
-            // Simulate item modifications (Team color, enchants, etc.) to match actual given item
-            // 模拟物品修改（队伍颜色、附魔等），以匹配实际给予的物品
-            if (arena != null && arena.getTeam(player) != null) {
-                itemToAdd = BedWars.nms.colourItem(itemToAdd, arena.getTeam(player));
-                ItemMeta im = itemToAdd.getItemMeta();
-                if (im != null) {
-                    if (buyItem.isPermanent()) BedWars.nms.setUnbreakable(im);
-                    if (buyItem.isUnbreakable()) BedWars.nms.setUnbreakable(im);
-
-                    if (itemToAdd.getType() == Material.BOW) {
-                        for (TeamEnchant e : arena.getTeam(player).getBowsEnchantments()) {
-                            im.addEnchant(e.getEnchantment(), e.getAmplifier(), true);
-                        }
-                    } else if (BedWars.nms.isSword(itemToAdd) || BedWars.nms.isAxe(itemToAdd)) {
-                        for (TeamEnchant e : arena.getTeam(player).getSwordsEnchantments()) {
-                            im.addEnchant(e.getEnchantment(), e.getAmplifier(), true);
-                        }
-                    }
-                    itemToAdd.setItemMeta(im);
+    private ItemStack[] purchaseContents(Player player, List<ItemStack> items) {
+        ItemStack[] contents = new ItemStack[36];
+        for (int slot = 0; slot < contents.length; slot++) {
+            ItemStack stack = player.getInventory().getItem(slot);
+            contents[slot] = stack == null || stack.getType() == Material.AIR ? null : stack;
+        }
+        for (ItemStack item : items) {
+            if (!nms.isSword(item)) continue;
+            for (int slot = 0; slot < contents.length; slot++) {
+                ItemStack stack = contents[slot];
+                if (stack != null && nms.isSword(stack) && nms.isCustomBedWarsItem(stack)
+                        && nms.getCustomData(stack).equals("DEFAULT_ITEM") && nms.getDamage(stack) <= nms.getDamage(item)) {
+                    contents[slot] = null;
                 }
-
-                if (buyItem.isPermanent()) {
-                    itemToAdd = BedWars.nms.setShopUpgradeIdentifier(itemToAdd, buyItem.getUpgradeIdentifier());
-                }
-            }
-
-            // Handle sword upgrades
-            // 处理剑类升级逻辑
-            if (BedWars.nms.isSword(itemToAdd)) {
-                for (int i = 0; i < 36; i++) {
-                    ItemStack itm = simulatedInv[i];
-                    if (itm == null || !BedWars.nms.isSword(itm)) continue;
-
-                    if (BedWars.nms.isCustomBedWarsItem(itm) && BedWars.nms.getCustomData(itm).equals("DEFAULT_ITEM")) {
-                        if (BedWars.nms.getDamage(itm) <= BedWars.nms.getDamage(itemToAdd)) {
-                            simulatedInv[i] = null; // Remove old sword / 移除旧剑
-                        }
-                    }
-                }
-            }
-
-            int amountNeeded = itemToAdd.getAmount();
-            int maxStack = itemToAdd.getMaxStackSize();
-
-            // Pass 1: Try to stack into existing items
-            // 第一步：尝试堆叠到现有的同类物品中
-            for (int i = 0; i < 36; i++) {
-                if (amountNeeded <= 0) break;
-                ItemStack current = simulatedInv[i];
-                
-                // Check if item is similar and has space in stack
-                // 检查物品是否相似且堆叠未满
-                if (current != null && current.isSimilar(itemToAdd) && current.getAmount() < maxStack) {
-                    int space = maxStack - current.getAmount();
-                    int toAdd = Math.min(space, amountNeeded);
-                    
-                    current.setAmount(current.getAmount() + toAdd);
-                    amountNeeded -= toAdd;
-                }
-            }
-
-            // Pass 2: Place remaining items into empty slots
-            // 第二步：将剩余物品放入空位
-            if (amountNeeded > 0) {
-                for (int i = 0; i < 36; i++) {
-                    if (amountNeeded <= 0) break;
-                    
-                    if (simulatedInv[i] == null) {
-                        ItemStack newItem = itemToAdd.clone();
-                        newItem.setAmount(Math.min(amountNeeded, maxStack));
-                        simulatedInv[i] = newItem;
-                        amountNeeded -= newItem.getAmount();
-                    }
-                }
-            }
-
-            // If there are still items left, it means no space
-            // 如果仍有剩余物品，说明空间不足
-            if (amountNeeded > 0) {
-                return false;
             }
         }
-        
-        return true;
+        return contents;
+    }
+
+    /** 只计算数量，不修改真实物品；付款腾出的空位也参与整批容量计算。 */
+    private static int maxPurchases(ItemStack[] contents, List<ItemStack> items, Material currency, int price, int limit) {
+        for (ItemStack item : items) {
+            if (item.getAmount() > 0) limit = Math.min(limit, contents.length * item.getMaxStackSize() / item.getAmount());
+        }
+        ItemStack[] stacks = new ItemStack[contents.length];
+        int[] amounts = new int[contents.length];
+        // 付款清空货币槽时容量会跃升，不能按单份容量或单调二分推算。
+        for (int purchases = limit; purchases > 0; purchases--) {
+            System.arraycopy(contents, 0, stacks, 0, contents.length);
+            for (int slot = 0; slot < stacks.length; slot++) {
+                amounts[slot] = stacks[slot] == null ? 0 : stacks[slot].getAmount();
+            }
+            int cost = price * purchases;
+            for (int slot = 0; slot < stacks.length && cost > 0; slot++) {
+                if (stacks[slot] == null || stacks[slot].getType() != currency) continue;
+                int paid = Math.min(cost, amounts[slot]);
+                cost -= paid;
+                amounts[slot] -= paid;
+                if (amounts[slot] == 0) stacks[slot] = null;
+            }
+            if (cost > 0) continue;
+            boolean fits = true;
+            for (ItemStack item : items) {
+                int remaining = item.getAmount() * purchases;
+                int maxStack = item.getMaxStackSize();
+                for (int slot = 0; slot < stacks.length && remaining > 0; slot++) {
+                    if (stacks[slot] == null || !stacks[slot].isSimilar(item)) continue;
+                    int added = Math.min(remaining, Math.max(0, maxStack - amounts[slot]));
+                    amounts[slot] += added;
+                    remaining -= added;
+                }
+                for (int slot = 0; slot < stacks.length && remaining > 0; slot++) {
+                    if (stacks[slot] != null) continue;
+                    stacks[slot] = item;
+                    amounts[slot] = Math.min(remaining, maxStack);
+                    remaining -= amounts[slot];
+                }
+                if (remaining > 0) {
+                    fits = false;
+                    break;
+                }
+            }
+            if (fits) return purchases;
+        }
+        return 0;
     }
 
     public void execute(Player player, ShopCache shopCache, int slot) {
+        execute(player, shopCache, slot, false);
+    }
 
-        IContentTier ct;
+    public void executeBulk(Player player, ShopCache shopCache, int slot) {
+        execute(player, shopCache, slot, true);
+    }
 
-        //check weight
-        if (shopCache.getCategoryWeight(father) > weight) return;
-
-        if (shopCache.getContentTier(getIdentifier()) > contentTiers.size()) {
-            Bukkit.getLogger().severe("Wrong tier order at: " + getIdentifier());
-            return;
-        }
-
-        //check if can re-buy
-        if (shopCache.getContentTier(getIdentifier()) == contentTiers.size()) {
-            if (isPermanent() && shopCache.hasCachedItem(this)) {
-                player.sendMessage(getMsg(player, Messages.SHOP_ALREADY_BOUGHT));
-                Sounds.playSound(ConfigPath.SOUNDS_INSUFF_MONEY, player);
-                return;
-            }
-            //current tier
-            ct = contentTiers.get(shopCache.getContentTier(getIdentifier()) - 1);
-        } else {
-            if (!shopCache.hasCachedItem(this)) {
-                ct = contentTiers.get(0);
-            } else {
-                ct = contentTiers.get(shopCache.getContentTier(getIdentifier()));
-            }
-        }
-
-        //check money
-        int money = calculateMoney(player, ct.getCurrency());
-        if (money < ct.getPrice()) {
-            player.sendMessage(getMsg(player, Messages.SHOP_INSUFFICIENT_MONEY).replace("{currency}", getMsg(player, getCurrencyMsgPath(ct))).
-                    replace("{amount}", String.valueOf(ct.getPrice() - money)));
+    /** 单买和整批购买共用校验与结算，只有购买上限和成功提示不同。 */
+    private void execute(Player player, ShopCache shopCache, int slot, boolean bulk) {
+        IContentTier tier = resolveTier(shopCache);
+        if (tier == null || shopCache.getCategoryWeight(father) > weight) return;
+        if (isPermanent() && shopCache.hasCachedItem(this)
+                && shopCache.getContentTier(getIdentifier()) == contentTiers.size()) {
+            player.sendMessage(getMsg(player, Messages.SHOP_ALREADY_BOUGHT));
             Sounds.playSound(ConfigPath.SOUNDS_INSUFF_MONEY, player);
             return;
         }
-
-        if (!hasInventorySpace(player, ct.getBuyItemsList(), ct.getCurrency(), ct.getPrice())) {
+        int price = tier.getPrice();
+        Material currency = tier.getCurrency();
+        int money = calculateMoney(player, currency);
+        if (money < price) {
+            player.sendMessage(getMsg(player, Messages.SHOP_INSUFFICIENT_MONEY)
+                    .replace("{currency}", getMsg(player, getCurrencyMsgPath(tier)))
+                    .replace("{amount}", String.valueOf(price - money)));
+            Sounds.playSound(ConfigPath.SOUNDS_INSUFF_MONEY, player);
+            return;
+        }
+        boolean batchItems = supportsBulkPurchase(tier);
+        int limit = bulk && batchItems && price > 0 ? money / price : 1;
+        List<ItemStack> items = prepareItems(player, tier.getBuyItemsList());
+        int amount = maxPurchases(purchaseContents(player, items), items, currency, price, limit);
+        if (amount == 0) {
             player.sendMessage(getMsg(player, Messages.SHOP_INSUFFICIENT_INVENTORY_SPACE));
             Sounds.playSound(ConfigPath.SOUNDS_INSUFF_INVENTORY, player);
             return;
         }
+        IArena arena = Arena.getArenaByPlayer(player);
+        ShopBuyEvent event = new ShopBuyEvent(player, arena, this);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) return;
 
-        ShopBuyEvent event;
-        //call shop buy event
-        Bukkit.getPluginManager().callEvent(event = new ShopBuyEvent(player, Arena.getArenaByPlayer(player), this));
-
-        if (event.isCancelled()){
-            return;
-        }
-
-        //take money
-        takeMoney(player, ct.getCurrency(), ct.getPrice());
-
-        //upgrade if possible
+        takeMoney(player, currency, price * amount);
         shopCache.upgradeCachedItem(this, slot);
-
-
-        //give items
-        giveItems(player, shopCache, Arena.getArenaByPlayer(player));
-
-        //play sound
-        Sounds.playSound(ConfigPath.SOUNDS_BOUGHT, player);
-
-        //send purchase msg
-        if (itemNamePath == null || Language.getPlayerLanguage(player).getYml().get(itemNamePath) == null) {
-            ItemStack displayItem = ct.getItemStack();
-            if (displayItem.getItemMeta() != null && displayItem.getItemMeta().hasDisplayName()) {
-                player.sendMessage(getMsg(player, Messages.SHOP_NEW_PURCHASE).replace("{item}", displayItem.getItemMeta().getDisplayName()));
+        if (batchItems) {
+            for (int index = 0; index < tier.getBuyItemsList().size(); index++) {
+                ((BuyItem) tier.getBuyItemsList().get(index)).give(player, arena, items.get(index), amount);
             }
+            player.updateInventory();
         } else {
-            player.sendMessage(getMsg(player, Messages.SHOP_NEW_PURCHASE).replace("{item}", ChatColor.stripColor(replacePotionPlaceholders(getMsg(player, itemNamePath), ct))).replace("{color}", "").replace("{tier}", ""));
+            giveItems(player, shopCache, arena);
         }
-
-
         shopCache.setCategoryWeight(father, weight);
+        sendPurchase(player, tier, bulk ? Messages.SHOP_BULK_PURCHASE : Messages.SHOP_NEW_PURCHASE, amount);
+    }
+
+    private IContentTier resolveTier(ShopCache shopCache) {
+        int current = shopCache.getContentTier(getIdentifier());
+        if (current < 1 || current > contentTiers.size()) {
+            Bukkit.getLogger().severe("Wrong tier order at: " + getIdentifier());
+            return null;
+        }
+        if (current == contentTiers.size()) return contentTiers.get(current - 1);
+        return contentTiers.get(shopCache.hasCachedItem(this) ? current : 0);
+    }
+
+    private boolean supportsBulkPurchase(IContentTier tier) {
+        if (contentTiers.size() != 1 || isPermanent() || isDowngradable() || tier.getBuyItemsList().isEmpty()) return false;
+        for (IBuyItem item : tier.getBuyItemsList()) {
+            ItemStack stack = item.getItemStack();
+            if (!(item instanceof BuyItem) || stack == null || stack.getType() == Material.AIR || stack.getAmount() <= 0
+                    || item.isPermanent() || (item.isAutoEquip() && nms.isArmor(stack))) return false;
+        }
+        return true;
+    }
+
+    private String getPurchaseName(Player player, IContentTier tier) {
+        if (itemNamePath == null || Language.getPlayerLanguage(player).getYml().get(itemNamePath) == null) {
+            ItemMeta meta = tier.getItemStack().getItemMeta();
+            return meta != null && meta.hasDisplayName() ? meta.getDisplayName() : null;
+        }
+        return ChatColor.stripColor(replacePotionPlaceholders(getMsg(player, itemNamePath), tier))
+                .replace("{color}", "").replace("{tier}", "");
+    }
+
+    private void sendPurchase(Player player, IContentTier tier, String message, int amount) {
+        Sounds.playSound(ConfigPath.SOUNDS_BOUGHT, player);
+        String name = getPurchaseName(player, tier);
+        if (name != null) {
+            player.sendMessage(getMsg(player, message).replace("{item}", name).replace("{amount}", String.valueOf(amount)));
+        }
     }
 
     /**
@@ -408,16 +362,8 @@ public class CategoryContent implements ICategoryContent {
     }
 
     public ItemStack getItemStack(Player player, ShopCache shopCache) {
-        IContentTier ct;
-        if (shopCache.getContentTier(identifier) == contentTiers.size()) {
-            ct = contentTiers.get(contentTiers.size() - 1);
-        } else {
-            if (shopCache.hasCachedItem(this)) {
-                ct = contentTiers.get(shopCache.getContentTier(identifier));
-            } else {
-                ct = contentTiers.get(shopCache.getContentTier(identifier) - 1);
-            }
-        }
+        IContentTier ct = resolveTier(shopCache);
+        if (ct == null) return null;
 
         ItemStack i = ct.getItemStack();
         ItemMeta im = i.getItemMeta();
@@ -427,6 +373,7 @@ public class CategoryContent implements ICategoryContent {
             boolean canAfford = calculateMoney(player, ct.getCurrency()) >= ct.getPrice();
             PlayerQuickBuyCache qbc = PlayerQuickBuyCache.getQuickBuyCache(player.getUniqueId());
             boolean hasQuick = qbc != null && hasQuick(qbc);
+            ShopClickMode mode = ShopClickMode.from(PlayerPreferenceService.getInstance().isShiftBulkBuy(player.getUniqueId()));
 
             String color = getMsg(player, canAfford ? Messages.SHOP_CAN_BUY_COLOR : Messages.SHOP_CANT_BUY_COLOR);
             String translatedCurrency = getMsg(player, getCurrencyMsgPath(ct));
@@ -445,7 +392,7 @@ public class CategoryContent implements ICategoryContent {
             } else if (!canAfford) {
                 buyStatus = getMsg(player, Messages.SHOP_LORE_STATUS_CANT_AFFORD).replace("{currency}", translatedCurrency);
             } else {
-                buyStatus = getMsg(player, Messages.SHOP_LORE_STATUS_CAN_BUY);
+                buyStatus = getMsg(player, mode.canBuyMessage());
             }
 
             im.setDisplayName(replacePotionPlaceholders(getMsg(player, itemNamePath), ct)
@@ -456,12 +403,12 @@ public class CategoryContent implements ICategoryContent {
                 if (s.contains("{quick_buy}")) {
                     if (hasQuick) {
                         if (ShopIndex.getIndexViewers().contains(player.getUniqueId())) {
-                            s = getMsg(player, Messages.SHOP_LORE_QUICK_REMOVE);
+                            s = getMsg(player, mode.quickRemoveMessage());
                         } else {
                             continue;
                         }
                     } else {
-                        s = getMsg(player, Messages.SHOP_LORE_QUICK_ADD);
+                        s = getMsg(player, mode.quickAddMessage());
                     }
                 }
                 s = replacePotionPlaceholders(s, ct).replace("{tier}", tier).replace("{color}", color)
@@ -470,6 +417,9 @@ public class CategoryContent implements ICategoryContent {
                 lore.add(s);
             }
 
+            if (mode == ShopClickMode.SHIFT_BULK) {
+                lore.add(getMsg(player, supportsBulkPurchase(ct) ? Messages.SHOP_BULK_HINT : Messages.SHOP_BULK_SINGLE_HINT));
+            }
             im.setLore(lore);
             i.setItemMeta(im);
         }

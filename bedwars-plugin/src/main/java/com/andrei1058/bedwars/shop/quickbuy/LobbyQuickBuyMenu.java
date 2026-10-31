@@ -6,6 +6,7 @@ import com.andrei1058.bedwars.api.language.Language;
 import com.andrei1058.bedwars.api.language.Messages;
 import com.andrei1058.bedwars.arena.Arena;
 import com.andrei1058.bedwars.shop.ShopManager;
+import com.andrei1058.bedwars.database.PlayerPreferenceService;
 import com.andrei1058.bedwars.shop.main.CategoryContent;
 import com.andrei1058.bedwars.shop.main.ShopCategory;
 import org.bukkit.Bukkit;
@@ -48,6 +49,7 @@ public class LobbyQuickBuyMenu implements Listener {
         if (page == Page.MENU) {
             menu.inventory.setItem(11, item(Material.PAPER, Language.getMsg(player, Messages.LOBBY_MENU_STATS)));
             menu.inventory.setItem(15, item(Material.CHEST, Language.getMsg(player, Messages.LOBBY_MENU_QUICK_BUY)));
+            renderShopMode(player, menu);
         } else {
             PlayerQuickBuyCache cache = PlayerQuickBuyCache.getQuickBuyCache(player.getUniqueId());
             if (cache == null || cache.isLoadFailed()) {
@@ -136,6 +138,10 @@ public class LobbyQuickBuyMenu implements Listener {
                 Bukkit.dispatchCommand(player, "bw stats");
             });
             if (slot == 15) navigate(player, menu, Page.QUICK, null, null);
+            if (slot == 13) {
+                PlayerPreferenceService.getInstance().toggleShiftBulkBuy(player);
+                renderShopMode(player, menu);
+            }
             return;
         }
         if (slot == 49 && normal) {
@@ -225,6 +231,16 @@ public class LobbyQuickBuyMenu implements Listener {
     @EventHandler
     public void onWorldChange(PlayerChangedWorldEvent event) {
         if (!inLobby(event.getPlayer())) close(event.getPlayer());
+    }
+
+    private static void renderShopMode(Player player, Menu menu) {
+        boolean bulk = PlayerPreferenceService.getInstance().isShiftBulkBuy(player.getUniqueId());
+        ItemStack icon = item(Material.GOLD_INGOT, Language.getMsg(player,
+                bulk ? Messages.SHOP_MODE_BULK : Messages.SHOP_MODE_DEFAULT));
+        ItemMeta meta = icon.getItemMeta();
+        meta.setLore(Language.getList(player, bulk ? Messages.SHOP_MODE_BULK_LORE : Messages.SHOP_MODE_DEFAULT_LORE));
+        icon.setItemMeta(meta);
+        menu.inventory.setItem(13, icon);
     }
 
     private static ItemStack item(Material material, String name) {

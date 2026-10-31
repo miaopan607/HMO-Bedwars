@@ -90,6 +90,10 @@ public interface Database {
 
     void setSpectatorVisibility(UUID player, boolean visible) throws SQLException;
 
+    boolean getShiftBulkBuy(UUID player) throws SQLException;
+
+    void setShiftBulkBuy(UUID player, boolean enabled) throws SQLException;
+
     /**
      * @param updateSlots key is slot id and value is the element.
      */

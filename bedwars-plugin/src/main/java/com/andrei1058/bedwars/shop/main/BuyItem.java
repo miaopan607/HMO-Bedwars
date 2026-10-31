@@ -212,20 +212,44 @@ public class BuyItem implements IBuyItem {
         return number >= 0 && number < values.length ? values[number] : String.valueOf(number);
     }
 
+    /** 容量计算与实际发放使用相同的本地化、队伍颜色和附魔。 */
+    ItemStack prepareItem(Player player, IArena arena) {
+        ItemStack item = itemStack.clone();
+        localizePotionName(player, item);
+        if (autoEquip && nms.isArmor(item)) return item;
+        ItemMeta meta = item.getItemMeta();
+        item = nms.colourItem(item, arena.getTeam(player));
+        if (meta != null) {
+            if (permanent || unbreakable) nms.setUnbreakable(meta);
+            if (item.getType() == Material.BOW) {
+                for (TeamEnchant enchant : arena.getTeam(player).getBowsEnchantments()) {
+                    meta.addEnchant(enchant.getEnchantment(), enchant.getAmplifier(), true);
+                }
+            } else if (nms.isSword(item) || nms.isAxe(item)) {
+                for (TeamEnchant enchant : arena.getTeam(player).getSwordsEnchantments()) {
+                    meta.addEnchant(enchant.getEnchantment(), enchant.getAmplifier(), true);
+                }
+            }
+            item.setItemMeta(meta);
+        }
+        return permanent ? nms.setShopUpgradeIdentifier(item, upgradeIdentifier) : item;
+    }
+
     /**
      * Give to a player
      */
     public void give(Player player, IArena arena) {
+        give(player, arena, prepareItem(player, arena), 1);
+        player.updateInventory();
+    }
 
-        ItemStack i = itemStack.clone();
-        localizePotionName(player, i);
+    void give(Player player, IArena arena, ItemStack i, int purchases) {
         BedWars.debug("Giving BuyItem: " + getUpgradeIdentifier() + " to: " + player.getName());
 
         if (autoEquip && nms.isArmor(itemStack)) {
             Material m = i.getType();
 
             ItemMeta im = i.getItemMeta();
-            // idk dadea erori
             if (arena.getTeam(player) == null) {
                 BedWars.debug("Could not give BuyItem to " + player.getName() + " - TEAM IS NULL");
                 return;
@@ -251,42 +275,16 @@ public class BuyItem implements IBuyItem {
                 if (permanent) i = nms.setShopUpgradeIdentifier(i, upgradeIdentifier);
                 player.getInventory().setBoots(i);
             }
-            player.updateInventory();
             Sounds.playSound("shop-auto-equip", player);
 
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                // #274
                 if (player.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
                     for (Player p : arena.getPlayers()) {
                         BedWars.nms.hideArmor(player, p);
                     }
                 }
-                //
             }, 20L);
             return;
-        } else {
-
-            ItemMeta im = i.getItemMeta();
-            i = nms.colourItem(i, arena.getTeam(player));
-            if (im != null) {
-                if (permanent) nms.setUnbreakable(im);
-                if (unbreakable) nms.setUnbreakable(im);
-                if (i.getType() == Material.BOW) {
-                    if (permanent) nms.setUnbreakable(im);
-                    for (TeamEnchant e : arena.getTeam(player).getBowsEnchantments()) {
-                        im.addEnchant(e.getEnchantment(), e.getAmplifier(), true);
-                    }
-                } else if (nms.isSword(i) || nms.isAxe(i)) {
-                    for (TeamEnchant e : arena.getTeam(player).getSwordsEnchantments()) {
-                        im.addEnchant(e.getEnchantment(), e.getAmplifier(), true);
-                    }
-                }
-                i.setItemMeta(im);
-            }
-
-            if (permanent) {
-                i = nms.setShopUpgradeIdentifier(i, upgradeIdentifier);
-            }
         }
 
         boolean itemGiven = false;
@@ -311,17 +309,16 @@ public class BuyItem implements IBuyItem {
                 if (!BedWars.nms.isSword(itm)) continue;
                 if (itm == i) continue;
                 if (nms.isCustomBedWarsItem(itm) && nms.getCustomData(itm).equals("DEFAULT_ITEM")) {
-                    // if (getItemDamage(itm) <= getItemDamage(i)) {
-                        player.getInventory().remove(itm);
-                    // }
+                    player.getInventory().remove(itm);
                 }
             }
         }
-        //
-        if (!itemGiven) {
-            player.getInventory().addItem(i);
+        int remaining = i.getAmount() * (purchases - (itemGiven ? 1 : 0));
+        if (remaining > 0) {
+            ItemStack rest = itemGiven ? i.clone() : i;
+            rest.setAmount(remaining);
+            player.getInventory().addItem(rest);
         }
-        player.updateInventory();
     }
 
 
