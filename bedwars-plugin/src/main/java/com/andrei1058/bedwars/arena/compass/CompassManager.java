@@ -46,7 +46,6 @@ public final class CompassManager {
     }
 
     private static final class CompassState {
-        private ITeam teamTarget;
         private ITeam enemyTrackerTarget;
         private boolean enemyTrackerPurchased;
     }
@@ -121,7 +120,6 @@ public final class CompassManager {
     public static void resetState(Player player) {
         if (player == null) return;
         CompassState state = state(player);
-        state.teamTarget = null;
         state.enemyTrackerTarget = null;
         state.enemyTrackerPurchased = false;
         clearActionBar(player);
@@ -300,8 +298,6 @@ public final class CompassManager {
             player.closeInventory();
             return;
         }
-        CompassState state = state(player);
-        state.teamTarget = selected;
         sendTeamTargetMessage(player, arena, selected);
         player.closeInventory();
     }
@@ -419,10 +415,6 @@ public final class CompassManager {
             state.enemyTrackerPurchased = false;
             state.enemyTrackerTarget = null;
         }
-        if (isArenaTeam(arena, state.teamTarget) && !state.teamTarget.getMembers().isEmpty()) {
-            return state.teamTarget;
-        }
-        state.teamTarget = null;
         ITeam ownTeam = arena.getTeam(player);
         if (!arena.getGroup().equalsIgnoreCase("Solo") && ownTeam != null) {
             return ownTeam;
