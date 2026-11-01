@@ -316,8 +316,14 @@ public class BuyItem implements IBuyItem {
         int remaining = i.getAmount() * (purchases - (itemGiven ? 1 : 0));
         if (remaining > 0) {
             ItemStack rest = itemGiven ? i.clone() : i;
-            rest.setAmount(remaining);
-            player.getInventory().addItem(rest);
+            int maxStack = rest.getMaxStackSize();
+            // 按物品原生堆叠上限发放，避免背包空槽接收超量堆叠。
+            while (remaining > 0) {
+                int amount = Math.min(remaining, maxStack);
+                rest.setAmount(amount);
+                player.getInventory().addItem(rest);
+                remaining -= amount;
+            }
         }
     }
 
