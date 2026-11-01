@@ -99,8 +99,8 @@ public final class CompassManager {
         player.updateInventory();
     }
 
-    static void restoreCompass(IArena arena, Player player) {
-        if (!isActiveSupportedPlayer(arena, player)) return;
+    public static void restoreCompass(IArena arena, Player player) {
+        if (!isSupportedArena(arena) || !isActivePlayer(arena, player)) return;
         resetState(player);
         giveCompass(player);
     }

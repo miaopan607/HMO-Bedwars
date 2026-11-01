@@ -35,6 +35,7 @@ import com.andrei1058.bedwars.api.region.Cuboid;
 import com.andrei1058.bedwars.api.upgrades.EnemyBaseEnterTrap;
 import com.andrei1058.bedwars.arena.Arena;
 import com.andrei1058.bedwars.arena.OreGenerator;
+import com.andrei1058.bedwars.arena.compass.CompassManager;
 import com.andrei1058.bedwars.configuration.Sounds;
 import com.andrei1058.bedwars.shop.ShopCache;
 import com.andrei1058.bedwars.support.paper.TeleportManager;
@@ -265,6 +266,7 @@ public class BedWarsTeam implements ITeam {
             }
         }
         sendArmor(p);
+        CompassManager.restoreCompass(arena, p);
     }
 
     public void defaultSword(Player p, boolean sword) {
