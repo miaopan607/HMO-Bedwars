@@ -7,6 +7,7 @@ import com.andrei1058.bedwars.api.language.Language;
 import com.andrei1058.bedwars.api.language.Messages;
 import com.andrei1058.bedwars.arena.Arena;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -139,8 +140,13 @@ public final class CompassManager {
             if (state == null || !isActivePlayer(arena, player)) continue;
             ITeam targetTeam = resolveTargetTeam(arena, player, state);
             Player target = findNearestTarget(arena, player, targetTeam);
+            if (target == null && state.enemyTrackerPurchased) {
+                targetTeam = arena.getTeam(player);
+                target = findNearestTarget(arena, player, targetTeam);
+            }
             if (target == null) {
-                player.setCompassTarget(player.getLocation());
+                // 没有可追踪玩家时，指向当前世界的地图原点。
+                player.setCompassTarget(new Location(player.getWorld(), 0, 0, 0));
                 clearActionBar(player);
                 continue;
             }
@@ -415,11 +421,7 @@ public final class CompassManager {
             state.enemyTrackerPurchased = false;
             state.enemyTrackerTarget = null;
         }
-        ITeam ownTeam = arena.getTeam(player);
-        if (!arena.getGroup().equalsIgnoreCase("Solo") && ownTeam != null) {
-            return ownTeam;
-        }
-        return null;
+        return arena.getTeam(player);
     }
 
     private static Player findNearestTarget(IArena arena, Player player, ITeam team) {
