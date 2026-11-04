@@ -298,19 +298,21 @@ public class BedWarsTeam implements ITeam {
                         }
                         i.setAmount(Integer.parseInt(parm[2]));
                     }
+                    if (!nms.isSword(i)) continue;
                     ItemMeta im = i.getItemMeta();
                     if (parm.length > 3) {
                         im.setDisplayName(ChatColor.translateAlternateColorCodes('&', parm[3]));
                     }
                     nms.setUnbreakable(im);
+                    for (TeamEnchant enchant : getSwordsEnchantments()) {
+                        im.addEnchant(enchant.getEnchantment(), enchant.getAmplifier(), true);
+                    }
                     i.setItemMeta(im);
 
                     i = nms.addCustomData(i, "DEFAULT_ITEM");
 
-                    if (BedWars.nms.isSword(i)) {
-                        p.getInventory().addItem(i);
-                        break;
-                    }
+                    p.getInventory().addItem(i);
+                    break;
                 } catch (Exception ignored) {
                 }
             }
