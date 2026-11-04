@@ -21,6 +21,7 @@
 package com.andrei1058.bedwars.api.server;
 
 import com.andrei1058.bedwars.api.arena.IArena;
+import com.andrei1058.bedwars.api.arena.generator.GeneratorDrop;
 import com.andrei1058.bedwars.api.configuration.ConfigPath;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -154,7 +155,8 @@ public abstract class RestoreAdapter {
 
     public void clearItems(@NotNull World world) {
         world.getEntities().forEach(e -> {
-            if (e instanceof Item) e.remove();
+            // 大厅延迟清理保留开局已生成的资源。
+            if (e instanceof Item && !GeneratorDrop.isGeneratorDrop((Item) e)) e.remove();
         });
     }
 }
