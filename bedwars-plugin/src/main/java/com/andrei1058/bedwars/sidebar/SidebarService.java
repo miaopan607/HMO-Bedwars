@@ -87,7 +87,8 @@ public class SidebarService implements ISidebarService {
                     log.warning("Scoreboard title refresh interval is set to: " + titleRefreshInterval);
                     log.warning("If you expect performance issues please increase its timer.");
                 }
-                Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new RefreshTitleTask(), 1L, titleRefreshInterval);
+                // Title refresh shares the animation cursor with sidebar content updates.
+                Bukkit.getScheduler().runTaskTimer(plugin, new RefreshTitleTask(), 1L, titleRefreshInterval);
             }
 
             int healthAnimationInterval = config.getInt(ConfigPath.SB_CONFIG_SIDEBAR_HEALTH_REFRESH);
