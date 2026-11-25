@@ -377,6 +377,7 @@ public class BedWarsTeam implements ITeam {
         if (sc != null) {
             sc.managePermanentsAndDowngradables(getArena());
         }
+        com.andrei1058.bedwars.shop.InventorySyncAudit.logRespawn(p);
         p.setHealth(20);
         if (!getBaseEffects().isEmpty()) {
             for (PotionEffect ef : getBaseEffects()) {

@@ -228,6 +228,7 @@ public class CategoryContent implements ICategoryContent {
         if (tier == null || shopCache.getCategoryWeight(father) > weight) return;
         if (isPermanent() && shopCache.hasCachedItem(this)
                 && shopCache.getContentTier(getIdentifier()) == contentTiers.size()) {
+            com.andrei1058.bedwars.shop.InventorySyncAudit.logShopBuyRejected(player, getIdentifier(), "ALREADY_BOUGHT", 0, tier.getPrice());
             player.sendMessage(getMsg(player, Messages.SHOP_ALREADY_BOUGHT));
             Sounds.playSound(ConfigPath.SOUNDS_INSUFF_MONEY, player);
             return;
@@ -236,6 +237,7 @@ public class CategoryContent implements ICategoryContent {
         Material currency = tier.getCurrency();
         int money = calculateMoney(player, currency);
         if (money < price) {
+            com.andrei1058.bedwars.shop.InventorySyncAudit.logShopBuyRejected(player, getIdentifier(), "INSUFFICIENT_MONEY", money, price);
             player.sendMessage(getMsg(player, Messages.SHOP_INSUFFICIENT_MONEY)
                     .replace("{currency}", getMsg(player, getCurrencyMsgPath(tier)))
                     .replace("{amount}", String.valueOf(price - money)));
@@ -247,6 +249,7 @@ public class CategoryContent implements ICategoryContent {
         List<ItemStack> items = prepareItems(player, tier.getBuyItemsList());
         int amount = maxPurchases(purchaseContents(player, items), items, currency, price, limit);
         if (amount == 0) {
+            com.andrei1058.bedwars.shop.InventorySyncAudit.logShopBuyRejected(player, getIdentifier(), "INSUFFICIENT_SPACE", money, price);
             player.sendMessage(getMsg(player, Messages.SHOP_INSUFFICIENT_INVENTORY_SPACE));
             Sounds.playSound(ConfigPath.SOUNDS_INSUFF_INVENTORY, player);
             return;
@@ -254,8 +257,12 @@ public class CategoryContent implements ICategoryContent {
         IArena arena = Arena.getArenaByPlayer(player);
         ShopBuyEvent event = new ShopBuyEvent(player, arena, this);
         Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) return;
+        if (event.isCancelled()) {
+            com.andrei1058.bedwars.shop.InventorySyncAudit.logShopBuyRejected(player, getIdentifier(), "EVENT_CANCELLED", money, price);
+            return;
+        }
 
+        com.andrei1058.bedwars.shop.InventorySyncAudit.logShopBuyStart(player, getIdentifier(), bulk, price, currency, money, limit, amount, batchItems);
         takeMoney(player, currency, price * amount);
         shopCache.upgradeCachedItem(this, slot);
         if (batchItems) {
@@ -267,6 +274,7 @@ public class CategoryContent implements ICategoryContent {
             giveItems(player, shopCache, arena);
         }
         shopCache.setCategoryWeight(father, weight);
+        com.andrei1058.bedwars.shop.InventorySyncAudit.logShopBuyEnd(player, getIdentifier(), amount);
         sendPurchase(player, tier, bulk ? Messages.SHOP_BULK_PURCHASE : Messages.SHOP_NEW_PURCHASE, amount);
     }
 

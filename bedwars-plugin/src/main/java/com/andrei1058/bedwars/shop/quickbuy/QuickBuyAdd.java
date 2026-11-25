@@ -54,8 +54,12 @@ public class QuickBuyAdd {
 
         Objects.requireNonNull(cache).addInInventory(inv, sc);
 
+        int prevWin = com.andrei1058.bedwars.shop.InventorySyncAudit.getActiveWindowId(player);
+        boolean wasIndex = com.andrei1058.bedwars.shop.main.ShopIndex.indexViewers.contains(player.getUniqueId());
+        boolean wasCategory = ShopCategory.categoryViewers.contains(player.getUniqueId());
         player.openInventory(inv);
         quickBuyAdds.put(player.getUniqueId(), cc);
+        com.andrei1058.bedwars.shop.InventorySyncAudit.logShopOpen(player, "QUICK_ADD", false, prevWin, wasIndex, wasCategory);
     }
 
     public static HashMap<UUID, CategoryContent> getQuickBuyAdds() {

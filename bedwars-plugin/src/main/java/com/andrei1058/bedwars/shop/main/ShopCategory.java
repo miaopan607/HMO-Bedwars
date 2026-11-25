@@ -140,10 +140,14 @@ public class ShopCategory {
             inv.setItem(cc.getSlot(), cc.getItemStack(player, shopCache));
         }
 
+        int prevWin = com.andrei1058.bedwars.shop.InventorySyncAudit.getActiveWindowId(player);
+        boolean wasIndex = ShopIndex.indexViewers.contains(player.getUniqueId());
+        boolean wasCategory = categoryViewers.contains(player.getUniqueId());
         player.openInventory(inv);
         if (!categoryViewers.contains(player.getUniqueId())){
             categoryViewers.add(player.getUniqueId());
         }
+        com.andrei1058.bedwars.shop.InventorySyncAudit.logShopOpen(player, "CATEGORY:" + name, false, prevWin, wasIndex, wasCategory);
     }
 
     /**

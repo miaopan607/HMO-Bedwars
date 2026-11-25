@@ -64,6 +64,12 @@ public class InventoryListener implements Listener {
         ShopClickMode mode = ShopClickMode.from(PlayerPreferenceService.getInstance().isShiftBulkBuy(p.getUniqueId()));
         ShopClickMode.Action action = mode.resolve(e.getClick(), e.getAction());
 
+        if (ShopIndex.getIndexViewers().contains(p.getUniqueId())
+                || ShopCategory.getCategoryViewers().contains(p.getUniqueId())
+                || QuickBuyAdd.getQuickBuyAdds().containsKey(p.getUniqueId())) {
+            com.andrei1058.bedwars.shop.InventorySyncAudit.logShopClick(p, e, mode, action);
+        }
+
         if(ShopIndex.getIndexViewers().contains(p.getUniqueId()) || ShopCategory.getCategoryViewers().contains(p.getUniqueId())) {
             if (e.getClickedInventory() != null && e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
                 e.setCancelled(true);
@@ -160,11 +166,13 @@ public class InventoryListener implements Listener {
             if (e.getCursor().getType() != Material.AIR) {
                 if (e.getClickedInventory() == null) {
                     if (shouldCancelMovement(e.getCursor(), sc)) {
+                        com.andrei1058.bedwars.shop.InventorySyncAudit.logUpgradableAction(p, "CLOSE_CURSOR_OUTSIDE", e);
                         e.getWhoClicked().closeInventory();
                         e.setCancelled(true);
                     }
                 } else if (e.getClickedInventory().getType() != e.getWhoClicked().getInventory().getType()) {
                     if (shouldCancelMovement(e.getCursor(), sc)) {
+                        com.andrei1058.bedwars.shop.InventorySyncAudit.logUpgradableAction(p, "CLOSE_CURSOR_OTHER", e);
                         e.getWhoClicked().closeInventory();
                         e.setCancelled(true);
                     }
@@ -177,11 +185,13 @@ public class InventoryListener implements Listener {
             if (e.getCurrentItem().getType() != Material.AIR) {
                 if (e.getClickedInventory() == null) {
                     if (shouldCancelMovement(e.getCursor(), sc)) {
+                        com.andrei1058.bedwars.shop.InventorySyncAudit.logUpgradableAction(p, "CLOSE_CURRENT_OUTSIDE", e);
                         e.getWhoClicked().closeInventory();
                         e.setCancelled(true);
                     }
                 } else if (e.getClickedInventory().getType() != e.getWhoClicked().getInventory().getType()) {
                     if (shouldCancelMovement(e.getCurrentItem(), sc)) {
+                        com.andrei1058.bedwars.shop.InventorySyncAudit.logUpgradableAction(p, "CLOSE_CURRENT_OTHER", e);
                         e.getWhoClicked().closeInventory();
                         e.setCancelled(true);
                     }

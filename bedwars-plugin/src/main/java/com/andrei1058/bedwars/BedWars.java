@@ -381,6 +381,7 @@ public class BedWars extends JavaPlugin {
 
         /* Initialize shop */
         shop = new ShopManager();
+        com.andrei1058.bedwars.shop.InventorySyncAudit.init();
 
         //Leave this code at the end of the enable method
         for (Language l : Language.getLanguages()) {
@@ -493,6 +494,7 @@ public class BedWars extends JavaPlugin {
             SpectatorVisibilityService.getInstance().shutdown();
         if (PlayerPreferenceService.getInstance() != null)
             PlayerPreferenceService.getInstance().shutdown();
+        com.andrei1058.bedwars.shop.InventorySyncAudit.shutdown();
 
     }
 

@@ -1,6 +1,7 @@
 package com.andrei1058.bedwars.listeners;
 
 import com.andrei1058.bedwars.BedWars;
+import com.andrei1058.bedwars.shop.InventorySyncAudit;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -88,10 +89,17 @@ public class PacketInterceptor {
             Channel channel = (Channel) FIELD_CHANNEL.get(networkManager);
 
             if (channel.pipeline().get("BedWars_AdminFilter") != null) {
+                InventorySyncAudit.recordPipeline(player, channel.pipeline().names());
                 return; // Already injected
             }
 
             channel.pipeline().addBefore("packet_handler", "BedWars_AdminFilter", new ChannelDuplexHandler() {
+                @Override
+                public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+                    InventorySyncAudit.onPacketInbound(player, msg);
+                    super.channelRead(ctx, msg);
+                }
+
                 @Override
                 public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
                     if (msg.getClass().getSimpleName().equals("PacketPlayOutChat")) {
@@ -117,9 +125,11 @@ public class PacketInterceptor {
                              // Ignore
                          }
                     }
+                    InventorySyncAudit.onPacketOutbound(player, msg);
                     super.write(ctx, msg, promise);
                 }
             });
+            InventorySyncAudit.recordPipeline(player, channel.pipeline().names());
 
         } catch (Exception e) {
             BedWars.plugin.getLogger().log(Level.FINE, "Failed to inject packet filter for " + player.getName(), e);

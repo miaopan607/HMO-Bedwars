@@ -100,10 +100,14 @@ public class ShopIndex {
 
         quickBuyCache.addInInventory(inv, ShopCache.getShopCache(player.getUniqueId()));
 
+        int prevWin = com.andrei1058.bedwars.shop.InventorySyncAudit.getActiveWindowId(player);
+        boolean wasIndex = indexViewers.contains(player.getUniqueId());
+        boolean wasCategory = ShopCategory.categoryViewers.contains(player.getUniqueId());
         player.openInventory(inv);
         if (!indexViewers.contains(player.getUniqueId())) {
             indexViewers.add(player.getUniqueId());
         }
+        com.andrei1058.bedwars.shop.InventorySyncAudit.logShopOpen(player, "INDEX", callEvent, prevWin, wasIndex, wasCategory);
     }
 
 
