@@ -23,6 +23,7 @@ package com.andrei1058.bedwars.arena.tasks;
 import com.andrei1058.bedwars.BedWars;
 import com.andrei1058.bedwars.api.arena.GameState;
 import com.andrei1058.bedwars.api.arena.IArena;
+import com.andrei1058.bedwars.api.arena.NextEvent;
 import com.andrei1058.bedwars.api.arena.generator.IGenerator;
 import com.andrei1058.bedwars.api.arena.team.ITeam;
 import com.andrei1058.bedwars.api.configuration.ConfigPath;
@@ -32,6 +33,7 @@ import com.andrei1058.bedwars.api.language.Messages;
 import com.andrei1058.bedwars.api.tasks.PlayingTask;
 import com.andrei1058.bedwars.arena.Arena;
 import com.andrei1058.bedwars.arena.compass.CompassManager;
+import com.andrei1058.bedwars.configuration.Sounds;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -135,12 +137,7 @@ public class GamePlayingTask implements Runnable, PlayingTask {
             case ENDER_DRAGON:
                 dragon_spawn_countdown--;
                 if (getDragonSpawnCountdown() == 0) {
-                    for (Player p : getArena().getPlayers()) {
-                        announceSuddenDeath(p);
-                    }
-                    for (Player p : getArena().getSpectators()) {
-                        announceSuddenDeath(p);
-                    }
+                    announceSuddenDeathToArena();
                     getArena().updateNextEvent();
                     //Configurable resources generator removal
                     if (getArena().isSuddenDeathRemoveResourceGenerator()){
@@ -164,7 +161,13 @@ public class GamePlayingTask implements Runnable, PlayingTask {
                     getArena().changeStatus(GameState.restarting);
                     return;
                 }
-                if (suddenDeathElapsedSeconds == 300) spawnSuddenDeathDragons();
+                if (suddenDeathElapsedSeconds == 300) {
+                    // 第二波末影龙刷新时补发公告与音效
+                    announceSuddenDeathToArena();
+                    Sounds.playSound(NextEvent.ENDER_DRAGON.getSoundPath(), getArena().getPlayers());
+                    Sounds.playSound(NextEvent.ENDER_DRAGON.getSoundPath(), getArena().getSpectators());
+                    spawnSuddenDeathDragons();
+                }
                 break;
         }
         CompassManager.updateArena(getArena());
@@ -253,6 +256,15 @@ public class GamePlayingTask implements Runnable, PlayingTask {
     private void spawnSuddenDeathDragons() {
         for (ITeam team : arena.getTeams()) {
             if (hasLivingMembers(team)) nms.spawnDragon(arena.getWaitingLocation().clone().add(0, 10, 0), team);
+        }
+    }
+
+    private void announceSuddenDeathToArena() {
+        for (Player p : getArena().getPlayers()) {
+            announceSuddenDeath(p);
+        }
+        for (Player p : getArena().getSpectators()) {
+            announceSuddenDeath(p);
         }
     }
 
