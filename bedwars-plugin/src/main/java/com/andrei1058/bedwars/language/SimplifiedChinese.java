@@ -788,6 +788,12 @@ public class SimplifiedChinese extends Language {
         yml.addDefault(Messages.SHOP_MODE_DEFAULT_LORE, Arrays.asList("&7点击：购买一次", "&7Shift 点击：编辑快速购买", "&e点击启用 Shift 批量购买。"));
         yml.addDefault(Messages.SHOP_MODE_BULK_LORE, Arrays.asList("&7左键：购买一份", "&7Shift 点击：购买尽可能多的物品", "&7升级装备只购买当前一档", "&7右键：编辑快速购买", "&e点击恢复默认模式。"));
         yml.addDefault(Messages.SHOP_MODE_SAVE_FAILED, "{prefix}&c商店模式已在本次在线生效，但保存失败，重连后可能恢复。");
+        yml.addDefault(Messages.CHEST_QUICK_DEPOSIT_DISABLED, "&e箱子快速存入：&c关");
+        yml.addDefault(Messages.CHEST_QUICK_DEPOSIT_ENABLED, "&e箱子快速存入：&a开");
+        yml.addDefault(Messages.CHEST_QUICK_DEPOSIT_DISABLED_LORE, Arrays.asList("&7开启后，对局中手持物品左键箱子或末影箱", "&7可直接将整组物品存入，无需打开界面。", "&e点击开启箱子快速存入。"));
+        yml.addDefault(Messages.CHEST_QUICK_DEPOSIT_ENABLED_LORE, Arrays.asList("&7对局中手持物品左键箱子或末影箱", "&7可直接将整组物品存入，无需打开界面。", "&e点击关闭箱子快速存入。"));
+        yml.addDefault(Messages.CHEST_QUICK_DEPOSIT_SAVE_FAILED, "{prefix}&c箱子快速存入已在本次在线生效，但保存失败，重连后可能恢复。");
+        yml.addDefault(Messages.CHEST_QUICK_DEPOSIT_FULL, "{prefix}&c箱子已满，无法存入更多物品！");
         yml.addDefault(Messages.SHOP_BULK_QUICK_ADD, "&b右键添加到快速购买");
         yml.addDefault(Messages.SHOP_BULK_QUICK_REMOVE, "&b右键从快速购买中移除");
         yml.addDefault(Messages.SHOP_BULK_EMPTY_LORE, Arrays.asList("&7这是快速购买槽位！", "&b右键&7商店中的物品来添加。"));

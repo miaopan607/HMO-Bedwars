@@ -12,11 +12,12 @@ import java.util.UUID;
 import java.util.concurrent.*;
 import java.util.logging.Level;
 
-/** 两项个人偏好共用读写队列，重连加载排在此前的保存之后。 */
+/** 个人偏好共用读写队列，重连加载排在此前的保存之后。 */
 public final class PlayerPreferenceService {
     private static PlayerPreferenceService instance;
     private final Map<UUID, Boolean> shopModes = new ConcurrentHashMap<>();
     private final Map<UUID, Boolean> spectatorVisibility = new ConcurrentHashMap<>();
+    private final Map<UUID, Boolean> quickDeposit = new ConcurrentHashMap<>();
     private final ExecutorService database = Executors.newSingleThreadExecutor(task -> new Thread(task, "HMO-PlayerPreferences"));
 
     public static void init() { instance = new PlayerPreferenceService(); }
@@ -28,6 +29,7 @@ public final class PlayerPreferenceService {
             database.submit(() -> {
                 boolean bulk = false;
                 boolean visible = true;
+                boolean deposit = false;
                 try {
                     bulk = BedWars.getRemoteDatabase().getShiftBulkBuy(player);
                 } catch (SQLException e) {
@@ -38,8 +40,14 @@ public final class PlayerPreferenceService {
                 } catch (SQLException e) {
                     BedWars.plugin.getLogger().log(Level.WARNING, "Cannot load spectator preference for " + player, e);
                 }
+                try {
+                    deposit = BedWars.getRemoteDatabase().getQuickDeposit(player);
+                } catch (SQLException e) {
+                    BedWars.plugin.getLogger().log(Level.WARNING, "Cannot load chest quick deposit preference for " + player, e);
+                }
                 shopModes.put(player, bulk);
                 spectatorVisibility.put(player, visible);
+                quickDeposit.put(player, deposit);
             }).get();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -51,6 +59,7 @@ public final class PlayerPreferenceService {
 
     public boolean isShiftBulkBuy(UUID player) { return shopModes.getOrDefault(player, false); }
     public boolean isShowingSpectators(UUID player) { return spectatorVisibility.getOrDefault(player, true); }
+    public boolean isQuickDeposit(UUID player) { return quickDeposit.getOrDefault(player, false); }
 
     public void toggleShiftBulkBuy(Player player) {
         UUID uuid = player.getUniqueId();
@@ -61,6 +70,19 @@ public final class PlayerPreferenceService {
                 BedWars.getRemoteDatabase().setShiftBulkBuy(uuid, enabled);
             } catch (SQLException e) {
                 saveFailed(player, Messages.SHOP_MODE_SAVE_FAILED, e);
+            }
+        });
+    }
+
+    public void toggleQuickDeposit(Player player) {
+        UUID uuid = player.getUniqueId();
+        boolean enabled = !isQuickDeposit(uuid);
+        quickDeposit.put(uuid, enabled);
+        database.execute(() -> {
+            try {
+                BedWars.getRemoteDatabase().setQuickDeposit(uuid, enabled);
+            } catch (SQLException e) {
+                saveFailed(player, Messages.CHEST_QUICK_DEPOSIT_SAVE_FAILED, e);
             }
         });
     }
@@ -91,6 +113,7 @@ public final class PlayerPreferenceService {
     public void forget(UUID player) {
         shopModes.remove(player);
         spectatorVisibility.remove(player);
+        quickDeposit.remove(player);
     }
 
     public void shutdown() {

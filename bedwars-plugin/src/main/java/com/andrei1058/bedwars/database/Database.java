@@ -94,6 +94,10 @@ public interface Database {
 
     void setShiftBulkBuy(UUID player, boolean enabled) throws SQLException;
 
+    boolean getQuickDeposit(UUID player) throws SQLException;
+
+    void setQuickDeposit(UUID player, boolean enabled) throws SQLException;
+
     /**
      * @param updateSlots key is slot id and value is the element.
      */

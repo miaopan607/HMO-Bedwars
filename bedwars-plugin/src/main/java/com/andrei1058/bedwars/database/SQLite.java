@@ -97,6 +97,7 @@ public class SQLite implements Database {
             try (Statement st = connection.createStatement()) {
                 st.executeUpdate("CREATE TABLE IF NOT EXISTS spectator_preferences (uuid VARCHAR(36) PRIMARY KEY, show_spectators BOOLEAN NOT NULL DEFAULT TRUE)");
                 st.executeUpdate("CREATE TABLE IF NOT EXISTS shop_preferences (uuid VARCHAR(36) PRIMARY KEY, shift_bulk_buy BOOLEAN NOT NULL DEFAULT FALSE)");
+                st.executeUpdate("CREATE TABLE IF NOT EXISTS chest_preferences (uuid VARCHAR(36) PRIMARY KEY, quick_deposit BOOLEAN NOT NULL DEFAULT FALSE)");
             }
         }catch (SQLException e) {
             e.printStackTrace();
@@ -366,6 +367,27 @@ public class SQLite implements Database {
     public void setShiftBulkBuy(UUID player, boolean enabled) throws SQLException {
         checkConnection();
         try (PreparedStatement statement = connection.prepareStatement("INSERT OR REPLACE INTO shop_preferences (uuid, shift_bulk_buy) VALUES (?, ?)")) {
+            statement.setString(1, player.toString());
+            statement.setBoolean(2, enabled);
+            statement.executeUpdate();
+        }
+    }
+
+    @Override
+    public boolean getQuickDeposit(UUID player) throws SQLException {
+        checkConnection();
+        try (PreparedStatement statement = connection.prepareStatement("SELECT quick_deposit FROM chest_preferences WHERE uuid = ?")) {
+            statement.setString(1, player.toString());
+            try (ResultSet result = statement.executeQuery()) {
+                return result.next() && result.getBoolean(1);
+            }
+        }
+    }
+
+    @Override
+    public void setQuickDeposit(UUID player, boolean enabled) throws SQLException {
+        checkConnection();
+        try (PreparedStatement statement = connection.prepareStatement("INSERT OR REPLACE INTO chest_preferences (uuid, quick_deposit) VALUES (?, ?)")) {
             statement.setString(1, player.toString());
             statement.setBoolean(2, enabled);
             statement.executeUpdate();

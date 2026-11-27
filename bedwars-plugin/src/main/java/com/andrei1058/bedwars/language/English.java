@@ -788,6 +788,12 @@ public class English extends Language {
         yml.addDefault(Messages.SHOP_MODE_DEFAULT_LORE, Arrays.asList("&7Click: buy once", "&7Shift-click: edit Quick Buy", "&eClick to enable Shift Bulk Buy."));
         yml.addDefault(Messages.SHOP_MODE_BULK_LORE, Arrays.asList("&7Left-click: buy one purchase", "&7Shift-click: buy as many as possible", "&7Equipment upgrades buy only the current tier", "&7Right-click: edit Quick Buy", "&eClick to restore default mode."));
         yml.addDefault(Messages.SHOP_MODE_SAVE_FAILED, "{prefix}&cShop mode is active for this session, but could not be saved.");
+        yml.addDefault(Messages.CHEST_QUICK_DEPOSIT_DISABLED, "&eQuick Chest Deposit: &cOFF");
+        yml.addDefault(Messages.CHEST_QUICK_DEPOSIT_ENABLED, "&eQuick Chest Deposit: &aON");
+        yml.addDefault(Messages.CHEST_QUICK_DEPOSIT_DISABLED_LORE, Arrays.asList("&7When enabled, left-click a chest or ender chest", "&7while holding an item to deposit the stack directly.", "&eClick to enable Quick Chest Deposit."));
+        yml.addDefault(Messages.CHEST_QUICK_DEPOSIT_ENABLED_LORE, Arrays.asList("&7Left-click a chest or ender chest while holding", "&7an item to deposit the stack directly.", "&eClick to disable Quick Chest Deposit."));
+        yml.addDefault(Messages.CHEST_QUICK_DEPOSIT_SAVE_FAILED, "{prefix}&cQuick Chest Deposit is active for this session, but could not be saved.");
+        yml.addDefault(Messages.CHEST_QUICK_DEPOSIT_FULL, "{prefix}&cThis chest is full!");
         yml.addDefault(Messages.SHOP_BULK_QUICK_ADD, "&bRight-click to add to Quick Buy");
         yml.addDefault(Messages.SHOP_BULK_QUICK_REMOVE, "&bRight-click to remove from Quick Buy");
         yml.addDefault(Messages.SHOP_BULK_EMPTY_LORE, Arrays.asList("&7This is a Quick Buy Slot!", "&bRight-click &7an item in the shop to add it here."));

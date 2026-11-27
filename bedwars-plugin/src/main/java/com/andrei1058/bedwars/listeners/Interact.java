@@ -21,19 +21,26 @@
 package com.andrei1058.bedwars.listeners;
 
 import com.andrei1058.bedwars.BedWars;
+import com.andrei1058.bedwars.api.arena.GameState;
 import com.andrei1058.bedwars.api.arena.IArena;
 import com.andrei1058.bedwars.api.arena.team.ITeam;
 import com.andrei1058.bedwars.api.configuration.ConfigPath;
 import com.andrei1058.bedwars.api.language.Messages;
 import com.andrei1058.bedwars.api.server.ServerType;
 import com.andrei1058.bedwars.arena.Arena;
+import com.andrei1058.bedwars.arena.compass.CompassManager;
 import com.andrei1058.bedwars.configuration.Sounds;
+import com.andrei1058.bedwars.database.PlayerPreferenceService;
 import com.andrei1058.bedwars.shop.ShopCache;
 import com.andrei1058.bedwars.shop.listeners.InventoryListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.Chest;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
@@ -46,8 +53,14 @@ import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.DoubleChestInventory;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Openable;
+
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.andrei1058.bedwars.BedWars.*;
 import static com.andrei1058.bedwars.api.language.Language.getMsg;
@@ -57,6 +70,7 @@ public class Interact implements Listener, com.andrei1058.bedwars.configuration.
     private double fireballSpeedMultiplier;
     private double fireballCooldown;
     private float fireballExplosionSize;
+    private final Map<UUID, Long> chestFullNoticeCooldown = new ConcurrentHashMap<>();
 
     public Interact() {
         refreshConfiguration();
@@ -167,6 +181,10 @@ public class Interact implements Listener, com.andrei1058.bedwars.configuration.
                 return;
             }
         }
+        if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
+            handleQuickDeposit(e);
+            return;
+        }
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Block b = e.getClickedBlock();
             if (b == null) return;
@@ -195,21 +213,8 @@ public class Interact implements Listener, com.andrei1058.bedwars.configuration.
                         e.setCancelled(true);
                         return;
                     }
-                    //make it so only team members can open chests while team is alive, and all when is eliminated
-                    ITeam owner = null;
-                    int isRad = a.getConfig().getInt(ConfigPath.ARENA_ISLAND_RADIUS);
-                    for (ITeam t : a.getTeams()) {
-                        if (t.getSpawn().distance(e.getClickedBlock().getLocation()) <= isRad) {
-                            owner = t;
-                        }
-                    }
-                    if (owner != null) {
-                        if (!owner.isMember(p)) {
-                            if (!(owner.getMembers().isEmpty() && owner.isBedDestroyed())) {
-                                e.setCancelled(true);
-                                p.sendMessage(getMsg(p, Messages.INTERACT_CHEST_CANT_OPEN_TEAM_ELIMINATED));
-                            }
-                        }
+                    if (!canAccessTeamChest(a, p, b)) {
+                        e.setCancelled(true);
                     }
                 }
                 if (a.isSpectator(p) || a.getRespawnSessions().containsKey(p)) {
@@ -263,6 +268,123 @@ public class Interact implements Listener, com.andrei1058.bedwars.configuration.
                 }
             }
         }
+    }
+
+    /** 检查玩家是否有权访问岛屿范围内的团队箱子。 */
+    private boolean canAccessTeamChest(IArena arena, Player player, Block block) {
+        ITeam owner = null;
+        int isRad = arena.getConfig().getInt(ConfigPath.ARENA_ISLAND_RADIUS);
+        for (ITeam t : arena.getTeams()) {
+            if (t.getSpawn().distance(block.getLocation()) <= isRad) {
+                owner = t;
+            }
+        }
+        if (owner != null && !owner.isMember(player)) {
+            if (!(owner.getMembers().isEmpty() && owner.isBedDestroyed())) {
+                player.sendMessage(getMsg(player, Messages.INTERACT_CHEST_CANT_OPEN_TEAM_ELIMINATED));
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /** 处理手持物品左键箱子/末影箱直接存入。 */
+    private void handleQuickDeposit(PlayerInteractEvent e) {
+        Player p = e.getPlayer();
+        PlayerPreferenceService prefs = PlayerPreferenceService.getInstance();
+        if (prefs == null || !prefs.isQuickDeposit(p.getUniqueId())) return;
+
+        Block b = e.getClickedBlock();
+        if (b == null) return;
+        Material type = b.getType();
+        if (type != Material.CHEST && type != Material.TRAPPED_CHEST && type != Material.ENDER_CHEST) return;
+
+        IArena arena = Arena.getArenaByPlayer(p);
+        if (arena == null || arena.getStatus() != GameState.playing) return;
+        if (!arena.isPlayer(p) || arena.isSpectator(p) || arena.getRespawnSessions().containsKey(p)) return;
+
+        int heldSlot = p.getInventory().getHeldItemSlot();
+        ItemStack inHand = p.getInventory().getItem(heldSlot);
+        if (inHand == null || inHand.getType() == Material.AIR) return;
+
+        // 拦截不可快速存入的物品（剑/镐/斧/弓/剪刀、指南针、命令物品、默认/可升级装备）
+        if (isBlockedQuickDepositItem(inHand)) return;
+        if (CompassManager.isCompass(inHand)) return;
+        if (nms.isCustomBedWarsItem(inHand) && nms.getCustomData(inHand).startsWith("RUNCOMMAND_")) return;
+        ShopCache shopCache = ShopCache.getShopCache(p.getUniqueId());
+        if (InventoryListener.shouldCancelMovement(inHand, shopCache)) return;
+
+        Inventory targetInv;
+        if (type == Material.ENDER_CHEST) {
+            targetInv = p.getEnderChest();
+        } else {
+            if (!(b.getState() instanceof Chest)) return;
+            targetInv = ((Chest) b.getState()).getInventory();
+        }
+
+        // 校验箱子上方是否被不透明完整方块遮挡，与原版打开条件保持一致
+        if (isChestBlockedAbove(b, targetInv)) return;
+
+        if (type != Material.ENDER_CHEST && !canAccessTeamChest(arena, p, b)) {
+            e.setCancelled(true);
+            return;
+        }
+
+        e.setCancelled(true);
+        int originalAmount = inHand.getAmount();
+
+        Map<Integer, ItemStack> leftover = targetInv.addItem(inHand.clone());
+        if (leftover.isEmpty()) {
+            p.getInventory().setItem(heldSlot, null);
+        } else {
+            ItemStack remaining = leftover.values().iterator().next();
+            if (remaining.getAmount() == originalAmount) {
+                long now = System.currentTimeMillis();
+                long last = chestFullNoticeCooldown.getOrDefault(p.getUniqueId(), 0L);
+                if (now - last >= 1000L) {
+                    chestFullNoticeCooldown.put(p.getUniqueId(), now);
+                    p.sendMessage(getMsg(p, Messages.CHEST_QUICK_DEPOSIT_FULL));
+                }
+                return;
+            }
+            p.getInventory().setItem(heldSlot, remaining);
+        }
+
+        p.playSound(p.getLocation(), Sound.CHICKEN_EGG_POP, 0.8f, 1.2f);
+        p.updateInventory();
+    }
+
+    /** 屏蔽所有剑、镐子、斧头、弓和剪刀，防止左键箱子误存。 */
+    private boolean isBlockedQuickDepositItem(ItemStack item) {
+        if (nms.isSword(item) || nms.isAxe(item) || nms.isBow(item)) return true;
+        switch (item.getType()) {
+            case WOOD_PICKAXE:
+            case STONE_PICKAXE:
+            case IRON_PICKAXE:
+            case GOLD_PICKAXE:
+            case DIAMOND_PICKAXE:
+            case SHEARS:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /** 检查箱子（含大箱子两侧）或末影箱上方是否被不透明完整方块遮挡。 */
+    private boolean isChestBlockedAbove(Block block, Inventory targetInv) {
+        if (targetInv instanceof DoubleChestInventory && targetInv.getHolder() instanceof DoubleChest) {
+            DoubleChest doubleChest = (DoubleChest) targetInv.getHolder();
+            if (doubleChest.getLeftSide() instanceof Chest
+                    && ((Chest) doubleChest.getLeftSide()).getBlock().getRelative(BlockFace.UP).getType().isOccluding()) {
+                return true;
+            }
+            if (doubleChest.getRightSide() instanceof Chest
+                    && ((Chest) doubleChest.getRightSide()).getBlock().getRelative(BlockFace.UP).getType().isOccluding()) {
+                return true;
+            }
+            return false;
+        }
+        return block.getRelative(BlockFace.UP).getType().isOccluding();
     }
 
 

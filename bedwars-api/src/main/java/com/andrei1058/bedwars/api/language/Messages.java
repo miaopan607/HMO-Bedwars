@@ -94,6 +94,12 @@ public class Messages {
     public static final String SHOP_MODE_DEFAULT_LORE = "shop-mode.default-lore";
     public static final String SHOP_MODE_BULK_LORE = "shop-mode.bulk-lore";
     public static final String SHOP_MODE_SAVE_FAILED = "shop-mode.save-failed";
+    public static final String CHEST_QUICK_DEPOSIT_DISABLED = "chest-quick-deposit.disabled";
+    public static final String CHEST_QUICK_DEPOSIT_ENABLED = "chest-quick-deposit.enabled";
+    public static final String CHEST_QUICK_DEPOSIT_DISABLED_LORE = "chest-quick-deposit.disabled-lore";
+    public static final String CHEST_QUICK_DEPOSIT_ENABLED_LORE = "chest-quick-deposit.enabled-lore";
+    public static final String CHEST_QUICK_DEPOSIT_SAVE_FAILED = "chest-quick-deposit.save-failed";
+    public static final String CHEST_QUICK_DEPOSIT_FULL = "chest-quick-deposit.full";
     public static final String SHOP_BULK_QUICK_ADD = "shop-mode.quick-add";
     public static final String SHOP_BULK_QUICK_REMOVE = "shop-mode.quick-remove";
     public static final String SHOP_BULK_EMPTY_LORE = "shop-mode.empty-lore";

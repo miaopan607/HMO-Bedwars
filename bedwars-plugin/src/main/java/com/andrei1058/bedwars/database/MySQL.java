@@ -156,6 +156,7 @@ public class MySQL implements Database {
             try (Statement statement = connection.createStatement()) {
                 statement.executeUpdate("CREATE TABLE IF NOT EXISTS spectator_preferences (uuid VARCHAR(36) PRIMARY KEY, show_spectators BOOLEAN NOT NULL DEFAULT TRUE)");
                 statement.executeUpdate("CREATE TABLE IF NOT EXISTS shop_preferences (uuid VARCHAR(36) PRIMARY KEY, shift_bulk_buy BOOLEAN NOT NULL DEFAULT FALSE)");
+                statement.executeUpdate("CREATE TABLE IF NOT EXISTS chest_preferences (uuid VARCHAR(36) PRIMARY KEY, quick_deposit BOOLEAN NOT NULL DEFAULT FALSE)");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -428,6 +429,27 @@ public class MySQL implements Database {
     public void setShiftBulkBuy(UUID player, boolean enabled) throws SQLException {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement("INSERT INTO shop_preferences (uuid, shift_bulk_buy) VALUES (?, ?) ON DUPLICATE KEY UPDATE shift_bulk_buy = VALUES(shift_bulk_buy)")) {
+            statement.setString(1, player.toString());
+            statement.setBoolean(2, enabled);
+            statement.executeUpdate();
+        }
+    }
+
+    @Override
+    public boolean getQuickDeposit(UUID player) throws SQLException {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT quick_deposit FROM chest_preferences WHERE uuid = ?")) {
+            statement.setString(1, player.toString());
+            try (ResultSet result = statement.executeQuery()) {
+                return result.next() && result.getBoolean(1);
+            }
+        }
+    }
+
+    @Override
+    public void setQuickDeposit(UUID player, boolean enabled) throws SQLException {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement("INSERT INTO chest_preferences (uuid, quick_deposit) VALUES (?, ?) ON DUPLICATE KEY UPDATE quick_deposit = VALUES(quick_deposit)")) {
             statement.setString(1, player.toString());
             statement.setBoolean(2, enabled);
             statement.executeUpdate();

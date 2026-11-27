@@ -495,7 +495,7 @@ public final class CompassManager {
         player.updateInventory();
     }
 
-    static boolean isCompass(ItemStack item) {
+    public static boolean isCompass(ItemStack item) {
         return item != null && item.getType() == Material.COMPASS
                 && nms.isCustomBedWarsItem(item) && COMPASS_MARKER.equals(nms.getCustomData(item));
     }
