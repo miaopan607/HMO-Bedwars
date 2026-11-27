@@ -54,12 +54,15 @@ public class GamePlayingTask implements Runnable, PlayingTask {
     private Arena arena;
     private BukkitTask task;
     private int beds_destroy_countdown, dragon_spawn_countdown, game_end_countdown;
+    // 第一批龙生成后等待多少秒再刷第二批龙，0 表示不生成第二批龙
+    private final int secondDragonSpawnDelay;
     private int suddenDeathElapsedSeconds = 0;
 
     public GamePlayingTask(Arena arena) {
         this.arena = arena;
         this.beds_destroy_countdown = arena.getGameConfiguration().getInt(ConfigPath.GENERAL_CONFIGURATION_BEDS_DESTROY_COUNTDOWN);
         this.dragon_spawn_countdown = arena.getGameConfiguration().getInt(ConfigPath.GENERAL_CONFIGURATION_DRAGON_SPAWN_COUNTDOWN);
+        this.secondDragonSpawnDelay = arena.getGameConfiguration().getInt(ConfigPath.GENERAL_CONFIGURATION_SECOND_DRAGON_SPAWN_COUNTDOWN);
         this.game_end_countdown = arena.getGameConfiguration().getInt(ConfigPath.GENERAL_CONFIGURATION_GAME_END_COUNTDOWN);
         this.task = Bukkit.getScheduler().runTaskTimer(BedWars.plugin, this, 0, 20L);
     }
@@ -161,7 +164,7 @@ public class GamePlayingTask implements Runnable, PlayingTask {
                     getArena().changeStatus(GameState.restarting);
                     return;
                 }
-                if (suddenDeathElapsedSeconds == 300) {
+                if (secondDragonSpawnDelay > 0 && suddenDeathElapsedSeconds == secondDragonSpawnDelay) {
                     // 第二波末影龙刷新时补发公告与音效
                     announceSuddenDeathToArena();
                     Sounds.playSound(NextEvent.ENDER_DRAGON.getSoundPath(), getArena().getPlayers());

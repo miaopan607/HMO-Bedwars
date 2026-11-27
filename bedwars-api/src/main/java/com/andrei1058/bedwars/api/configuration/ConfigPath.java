@@ -145,6 +145,7 @@ public class ConfigPath {
     public static final String GENERAL_CONFIGURATION_RE_SPAWN_COUNTDOWN = "countdowns.player-re-spawn";
     public static final String GENERAL_CONFIGURATION_BEDS_DESTROY_COUNTDOWN = "countdowns.next-event-beds-destroy";
     public static final String GENERAL_CONFIGURATION_DRAGON_SPAWN_COUNTDOWN = "countdowns.next-event-dragon-spawn";
+    public static final String GENERAL_CONFIGURATION_SECOND_DRAGON_SPAWN_COUNTDOWN = "countdowns.second-dragon-spawn";
     public static final String GENERAL_CONFIGURATION_GAME_END_COUNTDOWN = "countdowns.next-event-game-end";
 
     public static final String GENERAL_CONFIGURATION_HUNGER_WAITING = "allow-hunger-depletion.waiting";
