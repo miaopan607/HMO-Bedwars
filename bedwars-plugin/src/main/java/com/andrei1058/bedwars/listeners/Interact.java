@@ -331,27 +331,61 @@ public class Interact implements Listener, com.andrei1058.bedwars.configuration.
         }
 
         e.setCancelled(true);
-        int originalAmount = inHand.getAmount();
+        int depositedTotal = 0;
 
-        Map<Integer, ItemStack> leftover = targetInv.addItem(inHand.clone());
-        if (leftover.isEmpty()) {
-            p.getInventory().setItem(heldSlot, null);
-        } else {
-            ItemStack remaining = leftover.values().iterator().next();
-            if (remaining.getAmount() == originalAmount) {
-                long now = System.currentTimeMillis();
-                long last = chestFullNoticeCooldown.getOrDefault(p.getUniqueId(), 0L);
-                if (now - last >= 1000L) {
-                    chestFullNoticeCooldown.put(p.getUniqueId(), now);
-                    p.sendMessage(getMsg(p, Messages.CHEST_QUICK_DEPOSIT_FULL));
+        if (p.isSneaking()) {
+            // 潜行左键：先存手持槽位，再存入背包内所有同类型物品
+            ItemStack template = inHand.clone();
+            int moved = depositSlot(p.getInventory(), heldSlot, targetInv);
+            depositedTotal += moved;
+            if (p.getInventory().getItem(heldSlot) == null) {
+                ItemStack[] contents = p.getInventory().getContents();
+                for (int slot = 0; slot < contents.length; slot++) {
+                    if (slot == heldSlot) continue;
+                    ItemStack stack = contents[slot];
+                    if (stack == null || stack.getType() == Material.AIR || !stack.isSimilar(template)) continue;
+                    int slotMoved = depositSlot(p.getInventory(), slot, targetInv);
+                    depositedTotal += slotMoved;
+                    if (p.getInventory().getItem(slot) != null) {
+                        // 当前槽位未完全存入，说明箱子已满
+                        break;
+                    }
                 }
-                return;
             }
-            p.getInventory().setItem(heldSlot, remaining);
+        } else {
+            depositedTotal = depositSlot(p.getInventory(), heldSlot, targetInv);
+        }
+
+        if (depositedTotal == 0) {
+            long now = System.currentTimeMillis();
+            long last = chestFullNoticeCooldown.getOrDefault(p.getUniqueId(), 0L);
+            if (now - last >= 1000L) {
+                chestFullNoticeCooldown.put(p.getUniqueId(), now);
+                p.sendMessage(getMsg(p, Messages.CHEST_QUICK_DEPOSIT_FULL));
+            }
+            return;
         }
 
         p.playSound(p.getLocation(), Sound.CHICKEN_EGG_POP, 0.8f, 1.2f);
         p.updateInventory();
+    }
+
+    /** 将玩家指定槽位的物品存入目标箱子，返回实际存入的数量。 */
+    private int depositSlot(Inventory playerInv, int slot, Inventory targetInv) {
+        ItemStack stack = playerInv.getItem(slot);
+        if (stack == null || stack.getType() == Material.AIR) return 0;
+        int originalAmount = stack.getAmount();
+        Map<Integer, ItemStack> leftover = targetInv.addItem(stack.clone());
+        if (leftover.isEmpty()) {
+            playerInv.setItem(slot, null);
+            return originalAmount;
+        }
+        ItemStack remaining = leftover.values().iterator().next();
+        int moved = originalAmount - remaining.getAmount();
+        if (moved > 0) {
+            playerInv.setItem(slot, remaining);
+        }
+        return moved;
     }
 
     /** 屏蔽所有剑、镐子、斧头、弓和剪刀，防止左键箱子误存。 */

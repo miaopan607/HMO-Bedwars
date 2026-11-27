@@ -790,8 +790,8 @@ public class SimplifiedChinese extends Language {
         yml.addDefault(Messages.SHOP_MODE_SAVE_FAILED, "{prefix}&c商店模式已在本次在线生效，但保存失败，重连后可能恢复。");
         yml.addDefault(Messages.CHEST_QUICK_DEPOSIT_DISABLED, "&e箱子快速存入：&c关");
         yml.addDefault(Messages.CHEST_QUICK_DEPOSIT_ENABLED, "&e箱子快速存入：&a开");
-        yml.addDefault(Messages.CHEST_QUICK_DEPOSIT_DISABLED_LORE, Arrays.asList("&7开启后，对局中手持物品左键箱子或末影箱", "&7可直接将整组物品存入，无需打开界面。", "&e点击开启箱子快速存入。"));
-        yml.addDefault(Messages.CHEST_QUICK_DEPOSIT_ENABLED_LORE, Arrays.asList("&7对局中手持物品左键箱子或末影箱", "&7可直接将整组物品存入，无需打开界面。", "&e点击关闭箱子快速存入。"));
+        yml.addDefault(Messages.CHEST_QUICK_DEPOSIT_DISABLED_LORE, Arrays.asList("&7开启后，对局中手持物品左键箱子或末影箱：", "&7普通左键：存入手持这一组物品", "&7Shift + 左键：存入背包内所有同类型物品", "&e点击开启箱子快速存入。"));
+        yml.addDefault(Messages.CHEST_QUICK_DEPOSIT_ENABLED_LORE, Arrays.asList("&7对局中手持物品左键箱子或末影箱：", "&7普通左键：存入手持这一组物品", "&7Shift + 左键：存入背包内所有同类型物品", "&e点击关闭箱子快速存入。"));
         yml.addDefault(Messages.CHEST_QUICK_DEPOSIT_SAVE_FAILED, "{prefix}&c箱子快速存入已在本次在线生效，但保存失败，重连后可能恢复。");
         yml.addDefault(Messages.CHEST_QUICK_DEPOSIT_FULL, "{prefix}&c箱子已满，无法存入更多物品！");
         yml.addDefault(Messages.SHOP_BULK_QUICK_ADD, "&b右键添加到快速购买");
