@@ -157,6 +157,7 @@ public class MySQL implements Database {
                 statement.executeUpdate("CREATE TABLE IF NOT EXISTS spectator_preferences (uuid VARCHAR(36) PRIMARY KEY, show_spectators BOOLEAN NOT NULL DEFAULT TRUE)");
                 statement.executeUpdate("CREATE TABLE IF NOT EXISTS shop_preferences (uuid VARCHAR(36) PRIMARY KEY, shift_bulk_buy BOOLEAN NOT NULL DEFAULT FALSE)");
                 statement.executeUpdate("CREATE TABLE IF NOT EXISTS chest_preferences (uuid VARCHAR(36) PRIMARY KEY, quick_deposit BOOLEAN NOT NULL DEFAULT FALSE)");
+                statement.executeUpdate("CREATE TABLE IF NOT EXISTS hotbar_preferences (uuid VARCHAR(36) PRIMARY KEY, layout VARCHAR(255) NOT NULL DEFAULT '')");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -452,6 +453,27 @@ public class MySQL implements Database {
              PreparedStatement statement = connection.prepareStatement("INSERT INTO chest_preferences (uuid, quick_deposit) VALUES (?, ?) ON DUPLICATE KEY UPDATE quick_deposit = VALUES(quick_deposit)")) {
             statement.setString(1, player.toString());
             statement.setBoolean(2, enabled);
+            statement.executeUpdate();
+        }
+    }
+
+    @Override
+    public String getHotbarLayout(UUID player) throws SQLException {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT layout FROM hotbar_preferences WHERE uuid = ?")) {
+            statement.setString(1, player.toString());
+            try (ResultSet result = statement.executeQuery()) {
+                return result.next() ? result.getString(1) : "";
+            }
+        }
+    }
+
+    @Override
+    public void setHotbarLayout(UUID player, String layout) throws SQLException {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement("INSERT INTO hotbar_preferences (uuid, layout) VALUES (?, ?) ON DUPLICATE KEY UPDATE layout = VALUES(layout)")) {
+            statement.setString(1, player.toString());
+            statement.setString(2, layout == null ? "" : layout);
             statement.executeUpdate();
         }
     }

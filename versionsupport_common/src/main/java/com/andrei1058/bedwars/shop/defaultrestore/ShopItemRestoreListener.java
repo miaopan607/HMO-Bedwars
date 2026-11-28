@@ -53,7 +53,7 @@ public class ShopItemRestoreListener {
     // 1.8 玩家拾取事件。
     public static class PlayerPickup implements Listener {
         @SuppressWarnings("deprecation")
-        @EventHandler
+        @EventHandler(ignoreCancelled = true)
         public void onDrop(PlayerPickupItemEvent e) {
             if (managePickup(e.getItem(), e.getPlayer())) e.setCancelled(true);
         }
@@ -66,6 +66,7 @@ public class ShopItemRestoreListener {
      */
     public static boolean managePickup(Item item, LivingEntity player) {
         if (!(player instanceof Player)) return false;
+        if (item == null || item.getItemStack() == null || item.getItemStack().getType() == Material.AIR) return false;
         if (api.getArenaUtil().getArenaByPlayer((Player) player) == null) return false;
         if (api.getArenaUtil().getArenaByPlayer((Player) player).getStatus() != GameState.playing) return false;
         if (!api.getArenaUtil().getArenaByPlayer((Player) player).isPlayer((Player) player)) return false;

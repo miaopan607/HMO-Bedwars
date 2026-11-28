@@ -124,18 +124,21 @@ public class ShopCache {
             cc.giveItems(Bukkit.getPlayer(player), getShopCache(player), arena);
         }
 
-        public void upgrade(int slot) {
+        public int upgrade(int slot) {
             tier++;
             Player p = Bukkit.getPlayer(player);
-            for (ItemStack i : p.getInventory().getContents()) {
-                if (i == null) continue;
-                if (i.getType() == Material.AIR) continue;
-                if (BedWars.nms.getShopUpgradeIdentifier(i).equals(cc.getIdentifier())) {
-                    p.getInventory().remove(i);
+            int removedSlot = -1;
+            for (int i = 0; i < 36; i++) {
+                ItemStack stack = p.getInventory().getItem(i);
+                if (stack == null || stack.getType() == Material.AIR) continue;
+                if (BedWars.nms.getShopUpgradeIdentifier(stack).equals(cc.getIdentifier())) {
+                    if (removedSlot == -1) removedSlot = i;
+                    p.getInventory().setItem(i, null);
                 }
             }
             updateItem(slot, p);
             p.updateInventory();
+            return removedSlot;
         }
 
         public void updateItem(int slot, Player p) {
@@ -179,16 +182,22 @@ public class ShopCache {
      * Add it if not found
      */
     public void upgradeCachedItem(CategoryContent cc, int slot) {
+        upgradeCachedItemSlot(cc, slot);
+    }
+
+    /** 升级缓存商品并返回旧等级物品原本所在槽位（若无则为 -1）。 */
+    public int upgradeCachedItemSlot(CategoryContent cc, int slot) {
         CachedItem ci = getCachedItem(cc.getIdentifier());
         if (ci == null) {
             ci = new CachedItem(cc);
             ci.updateItem(slot, Bukkit.getPlayer(player));
-        } else {
-            if (cc.getContentTiers().size() > ci.getTier()) {
-                BedWars.debug("Cached item upgrade for " + cc.getIdentifier() + " player " + player);
-                ci.upgrade(slot);
-            }
+            return -1;
         }
+        if (cc.getContentTiers().size() > ci.getTier()) {
+            BedWars.debug("Cached item upgrade for " + cc.getIdentifier() + " player " + player);
+            return ci.upgrade(slot);
+        }
+        return -1;
     }
 
     /**

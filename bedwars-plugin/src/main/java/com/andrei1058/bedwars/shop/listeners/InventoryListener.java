@@ -20,11 +20,13 @@
 
 package com.andrei1058.bedwars.shop.listeners;
 
+import com.andrei1058.bedwars.BedWars;
 import com.andrei1058.bedwars.api.arena.IArena;
 import com.andrei1058.bedwars.arena.Arena;
 import com.andrei1058.bedwars.shop.ShopCache;
 import com.andrei1058.bedwars.shop.ShopClickMode;
 import com.andrei1058.bedwars.shop.ShopManager;
+import com.andrei1058.bedwars.shop.hotbar.HotbarManagerMenu;
 import com.andrei1058.bedwars.database.PlayerPreferenceService;
 import com.andrei1058.bedwars.shop.main.CategoryContent;
 import com.andrei1058.bedwars.shop.main.ShopCategory;
@@ -32,6 +34,7 @@ import com.andrei1058.bedwars.shop.main.ShopIndex;
 import com.andrei1058.bedwars.shop.quickbuy.PlayerQuickBuyCache;
 import com.andrei1058.bedwars.shop.quickbuy.QuickBuyAdd;
 import com.andrei1058.bedwars.shop.quickbuy.QuickBuyElement;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -77,9 +80,23 @@ public class InventoryListener implements Listener {
             }
         }
 
+        int hotbarSlot = e.getClick() == ClickType.NUMBER_KEY && e.getHotbarButton() >= 0 && e.getHotbarButton() <= 8
+                ? e.getHotbarButton() : -1;
+        boolean normalClick = e.getClick() == ClickType.LEFT || e.getClick() == ClickType.RIGHT;
+
         if (ShopIndex.getIndexViewers().contains(p.getUniqueId())) {
             e.setCancelled(true);
 
+            if (e.getSlot() == HotbarManagerMenu.SHOP_BUTTON_SLOT) {
+                if (normalClick) {
+                    Bukkit.getScheduler().runTask(BedWars.plugin, () -> {
+                        if (ShopIndex.getIndexViewers().contains(p.getUniqueId())) {
+                            HotbarManagerMenu.open(p, HotbarManagerMenu.Source.SHOP);
+                        }
+                    });
+                }
+                return;
+            }
             for (ShopCategory sc : ShopManager.getShop().getCategoryList()) {
                 if (e.getSlot() == sc.getSlot()) {
                     sc.open(p, ShopManager.getShop(), shopCache);
@@ -88,6 +105,10 @@ public class InventoryListener implements Listener {
             }
             for (QuickBuyElement element : cache.getElements()) {
                 if (element.getSlot() == e.getSlot()) {
+                    if (hotbarSlot >= 0) {
+                        element.getCategoryContent().execute(p, shopCache, element.getSlot(), hotbarSlot);
+                        return;
+                    }
                     if (action == ShopClickMode.Action.EDIT_QUICK) {
                         cache.setElement(element.getSlot(), null);
                         ShopManager.getShop().open(p, cache, false);
@@ -100,6 +121,16 @@ public class InventoryListener implements Listener {
             }
         } else if (ShopCategory.getCategoryViewers().contains(p.getUniqueId())) {
             e.setCancelled(true);
+            if (e.getSlot() == HotbarManagerMenu.SHOP_BUTTON_SLOT) {
+                if (normalClick) {
+                    Bukkit.getScheduler().runTask(BedWars.plugin, () -> {
+                        if (ShopCategory.getCategoryViewers().contains(p.getUniqueId())) {
+                            HotbarManagerMenu.open(p, HotbarManagerMenu.Source.SHOP);
+                        }
+                    });
+                }
+                return;
+            }
             for (ShopCategory sc : ShopManager.getShop().getCategoryList()) {
                 if (ShopManager.getShop().getQuickBuyButton().getSlot() == e.getSlot()) {
                     ShopManager.getShop().open(p, cache, false);
@@ -112,6 +143,10 @@ public class InventoryListener implements Listener {
                 if (sc.getSlot() != shopCache.getSelectedCategory()) continue;
                 for (CategoryContent cc : sc.getCategoryContentList()) {
                     if (cc.getSlot() == e.getSlot()) {
+                        if (hotbarSlot >= 0) {
+                            cc.execute(p, shopCache, cc.getSlot(), hotbarSlot);
+                            return;
+                        }
                         if (action == ShopClickMode.Action.EDIT_QUICK) {
                             if (cache.hasCategoryContent(cc)) return;
                             new QuickBuyAdd(p, cc);
@@ -144,6 +179,12 @@ public class InventoryListener implements Listener {
     public void onUpgradableMove(InventoryClickEvent e) {
 
         Player p = (Player) e.getWhoClicked();
+        // 商店内点击统一由 onInventoryClick 取消并处理，避免误拦数字键快捷购买。
+        if (ShopIndex.getIndexViewers().contains(p.getUniqueId())
+                || ShopCategory.getCategoryViewers().contains(p.getUniqueId())
+                || QuickBuyAdd.getQuickBuyAdds().containsKey(p.getUniqueId())) {
+            return;
+        }
         ShopCache sc = ShopCache.getShopCache(p.getUniqueId());
         if (sc == null) return;
 

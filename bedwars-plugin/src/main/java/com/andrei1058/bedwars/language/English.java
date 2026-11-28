@@ -783,6 +783,41 @@ public class English extends Language {
         yml.addDefault(Messages.LOBBY_MENU_ITEM_LORE, Collections.singletonList("&fRight-click for stats, Quick Buy and shop settings!"));
         yml.addDefault(Messages.LOBBY_MENU_STATS, "&eView Stats");
         yml.addDefault(Messages.LOBBY_MENU_QUICK_BUY, "&eEdit Quick Buy");
+        yml.addDefault(Messages.HOTBAR_MANAGER_TITLE, "&8Hotbar Manager");
+        yml.addDefault(Messages.HOTBAR_MANAGER_BUTTON_NAME, "&aHotbar Manager");
+        yml.addDefault(Messages.HOTBAR_MANAGER_BUTTON_LORE, Arrays.asList(
+                "&7Edit preferred slots for any item in",
+                "&7the shop.",
+                "",
+                "&eClick to edit!"));
+        yml.addDefault(Messages.HOTBAR_MANAGER_SEPARATOR_NAME, "&7↑ Categories");
+        yml.addDefault(Messages.HOTBAR_MANAGER_SEPARATOR_LORE, Collections.singletonList("&7↓ Hotbar"));
+        yml.addDefault(Messages.HOTBAR_MANAGER_EMPTY_SLOT_NAME, "&7Slot {slot} &8(None)");
+        yml.addDefault(Messages.HOTBAR_MANAGER_EMPTY_SLOT_LORE, Collections.singletonList("&7Drag or place a category here."));
+        yml.addDefault(Messages.HOTBAR_MANAGER_FILLED_SLOT_NAME, "&aSlot {slot}: &e{category}");
+        yml.addDefault(Messages.HOTBAR_MANAGER_FILLED_SLOT_LORE, Arrays.asList(
+                "&7Items from &e{category} &7will prioritize",
+                "&7this hotbar slot.",
+                "",
+                "&eClick to clear, or drop another category to replace."));
+        yml.addDefault(Messages.HOTBAR_MANAGER_CATEGORY_LORE, Arrays.asList(
+                "&7Drag or click to place into a",
+                "&7hotbar slot below.",
+                "&7Press keys 1-9 to assign quickly.",
+                "",
+                "&eLeft-click to pick up!",
+                "&cRight-click to clear this category!"));
+        yml.addDefault(Messages.HOTBAR_MANAGER_RESET_NAME, "&cReset to Default");
+        yml.addDefault(Messages.HOTBAR_MANAGER_RESET_LORE, Collections.singletonList("&7Click to clear all hotbar slot assignments."));
+        yml.addDefault(Messages.HOTBAR_MANAGER_BACK, "&aGo Back");
+        yml.addDefault(Messages.HOTBAR_MANAGER_SAVE_FAILED, "{prefix}&cHotbar layout is active for this session, but could not be saved.");
+        yml.addDefault(Messages.HOTBAR_CATEGORY_BLOCKS, "&aBlocks");
+        yml.addDefault(Messages.HOTBAR_CATEGORY_SWORD, "&aSword");
+        yml.addDefault(Messages.HOTBAR_CATEGORY_PICKAXE, "&aPickaxe");
+        yml.addDefault(Messages.HOTBAR_CATEGORY_AXE, "&aAxe");
+        yml.addDefault(Messages.HOTBAR_CATEGORY_SHEARS, "&aShears");
+        yml.addDefault(Messages.HOTBAR_CATEGORY_BOW, "&aBow");
+        yml.addDefault(Messages.HOTBAR_CATEGORY_UTILITY, "&aUtility");
         yml.addDefault(Messages.SHOP_MODE_DEFAULT, "&eShop mode: Default");
         yml.addDefault(Messages.SHOP_MODE_BULK, "&eShop mode: Shift Bulk Buy");
         yml.addDefault(Messages.SHOP_MODE_DEFAULT_LORE, Arrays.asList("&7Click: buy once", "&7Shift-click: edit Quick Buy", "&eClick to enable Shift Bulk Buy."));

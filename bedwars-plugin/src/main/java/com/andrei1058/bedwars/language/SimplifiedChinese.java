@@ -783,6 +783,41 @@ public class SimplifiedChinese extends Language {
         yml.addDefault(Messages.LOBBY_MENU_ITEM_LORE, Collections.singletonList("&f右键查看战绩、编辑快速购买或调整商店设置！"));
         yml.addDefault(Messages.LOBBY_MENU_STATS, "&e查看战绩");
         yml.addDefault(Messages.LOBBY_MENU_QUICK_BUY, "&e编辑快速购买");
+        yml.addDefault(Messages.HOTBAR_MANAGER_TITLE, "&8快捷栏管理");
+        yml.addDefault(Messages.HOTBAR_MANAGER_BUTTON_NAME, "&a快捷栏管理");
+        yml.addDefault(Messages.HOTBAR_MANAGER_BUTTON_LORE, Arrays.asList(
+                "&7设置不同类别物品在购买或重生时",
+                "&7优先放置的快捷栏位置。",
+                "",
+                "&e点击编辑！"));
+        yml.addDefault(Messages.HOTBAR_MANAGER_SEPARATOR_NAME, "&7↑ 物品类别");
+        yml.addDefault(Messages.HOTBAR_MANAGER_SEPARATOR_LORE, Collections.singletonList("&7↓ 快捷栏位置 (1-9)"));
+        yml.addDefault(Messages.HOTBAR_MANAGER_EMPTY_SLOT_NAME, "&7快捷栏 {slot} &8（未设置）");
+        yml.addDefault(Messages.HOTBAR_MANAGER_EMPTY_SLOT_LORE, Collections.singletonList("&7将上方物品类别拖动或放置到此槽位。"));
+        yml.addDefault(Messages.HOTBAR_MANAGER_FILLED_SLOT_NAME, "&a快捷栏 {slot}：&e{category}");
+        yml.addDefault(Messages.HOTBAR_MANAGER_FILLED_SLOT_LORE, Arrays.asList(
+                "&7属于 &e{category} &7类别的物品将优先",
+                "&7放置到此快捷栏位置。",
+                "",
+                "&e点击取消此槽位设置，或放置其他类别替换。"));
+        yml.addDefault(Messages.HOTBAR_MANAGER_CATEGORY_LORE, Arrays.asList(
+                "&7拖动或点击并放置到下方",
+                "&7任意快捷栏槽位。",
+                "&7悬停按数字键 1-9 可快速指定槽位。",
+                "",
+                "&e左键拿起配置！",
+                "&c右键清除该类别的所有配置！"));
+        yml.addDefault(Messages.HOTBAR_MANAGER_RESET_NAME, "&c重置全部配置");
+        yml.addDefault(Messages.HOTBAR_MANAGER_RESET_LORE, Collections.singletonList("&7点击清除全部快捷栏位置映射。"));
+        yml.addDefault(Messages.HOTBAR_MANAGER_BACK, "&a返回");
+        yml.addDefault(Messages.HOTBAR_MANAGER_SAVE_FAILED, "{prefix}&c快捷栏配置已在本次在线生效，但保存失败，重连后可能恢复。");
+        yml.addDefault(Messages.HOTBAR_CATEGORY_BLOCKS, "&a方块");
+        yml.addDefault(Messages.HOTBAR_CATEGORY_SWORD, "&a剑");
+        yml.addDefault(Messages.HOTBAR_CATEGORY_PICKAXE, "&a镐");
+        yml.addDefault(Messages.HOTBAR_CATEGORY_AXE, "&a斧");
+        yml.addDefault(Messages.HOTBAR_CATEGORY_SHEARS, "&a剪刀");
+        yml.addDefault(Messages.HOTBAR_CATEGORY_BOW, "&a弓");
+        yml.addDefault(Messages.HOTBAR_CATEGORY_UTILITY, "&a实用物品");
         yml.addDefault(Messages.SHOP_MODE_DEFAULT, "&e商店模式：默认");
         yml.addDefault(Messages.SHOP_MODE_BULK, "&e商店模式：Shift 批量购买");
         yml.addDefault(Messages.SHOP_MODE_DEFAULT_LORE, Arrays.asList("&7点击：购买一次", "&7Shift 点击：编辑快速购买", "&e点击启用 Shift 批量购买。"));

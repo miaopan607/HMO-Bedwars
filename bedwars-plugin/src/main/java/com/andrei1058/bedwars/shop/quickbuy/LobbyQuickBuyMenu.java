@@ -6,6 +6,7 @@ import com.andrei1058.bedwars.api.language.Language;
 import com.andrei1058.bedwars.api.language.Messages;
 import com.andrei1058.bedwars.arena.Arena;
 import com.andrei1058.bedwars.shop.ShopManager;
+import com.andrei1058.bedwars.shop.hotbar.HotbarManagerMenu;
 import com.andrei1058.bedwars.database.PlayerPreferenceService;
 import com.andrei1058.bedwars.shop.main.CategoryContent;
 import com.andrei1058.bedwars.shop.main.ShopCategory;
@@ -47,10 +48,11 @@ public class LobbyQuickBuyMenu implements Listener {
                 : page == Page.SLOT ? Messages.QUICK_BUY_EDITOR_SELECT_SLOT_TITLE : Messages.QUICK_BUY_EDITOR_TITLE;
         menu.inventory = Bukkit.createInventory(menu, page == Page.MENU ? 27 : 54, Language.getMsg(player, title));
         if (page == Page.MENU) {
-            menu.inventory.setItem(10, item(Material.PAPER, Language.getMsg(player, Messages.LOBBY_MENU_STATS)));
+            menu.inventory.setItem(9, item(Material.PAPER, Language.getMsg(player, Messages.LOBBY_MENU_STATS)));
             renderShopMode(player, menu);
             renderQuickDeposit(player, menu);
-            menu.inventory.setItem(16, item(Material.CHEST, Language.getMsg(player, Messages.LOBBY_MENU_QUICK_BUY)));
+            menu.inventory.setItem(15, item(Material.CHEST, Language.getMsg(player, Messages.LOBBY_MENU_QUICK_BUY)));
+            menu.inventory.setItem(17, HotbarManagerMenu.createEntryButton(player));
         } else {
             PlayerQuickBuyCache cache = PlayerQuickBuyCache.getQuickBuyCache(player.getUniqueId());
             if (cache == null || cache.isLoadFailed()) {
@@ -134,19 +136,20 @@ public class LobbyQuickBuyMenu implements Listener {
         if (!normal && !shift) return;
         if (menu.page == Page.MENU) {
             if (!normal) return;
-            if (slot == 10) later(player, menu, () -> {
+            if (slot == 9) later(player, menu, () -> {
                 player.closeInventory();
                 Bukkit.dispatchCommand(player, "bw stats");
             });
-            if (slot == 12) {
+            if (slot == 11) {
                 PlayerPreferenceService.getInstance().toggleShiftBulkBuy(player);
                 renderShopMode(player, menu);
             }
-            if (slot == 14) {
+            if (slot == 13) {
                 PlayerPreferenceService.getInstance().toggleQuickDeposit(player);
                 renderQuickDeposit(player, menu);
             }
-            if (slot == 16) navigate(player, menu, Page.QUICK, null, null);
+            if (slot == 15) navigate(player, menu, Page.QUICK, null, null);
+            if (slot == 17) later(player, menu, () -> HotbarManagerMenu.open(player, HotbarManagerMenu.Source.LOBBY));
             return;
         }
         if (slot == 49 && normal) {
@@ -245,7 +248,7 @@ public class LobbyQuickBuyMenu implements Listener {
         ItemMeta meta = icon.getItemMeta();
         meta.setLore(Language.getList(player, bulk ? Messages.SHOP_MODE_BULK_LORE : Messages.SHOP_MODE_DEFAULT_LORE));
         icon.setItemMeta(meta);
-        menu.inventory.setItem(12, icon);
+        menu.inventory.setItem(11, icon);
     }
 
     private static void renderQuickDeposit(Player player, Menu menu) {
@@ -256,7 +259,7 @@ public class LobbyQuickBuyMenu implements Listener {
         meta.setLore(Language.getList(player,
                 enabled ? Messages.CHEST_QUICK_DEPOSIT_ENABLED_LORE : Messages.CHEST_QUICK_DEPOSIT_DISABLED_LORE));
         icon.setItemMeta(meta);
-        menu.inventory.setItem(14, icon);
+        menu.inventory.setItem(13, icon);
     }
 
     private static ItemStack item(Material material, String name) {

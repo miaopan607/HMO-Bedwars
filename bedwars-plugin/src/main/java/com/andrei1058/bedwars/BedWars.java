@@ -246,6 +246,8 @@ public class BedWars extends JavaPlugin {
                 new EnderPearlLanded(), new QuitAndTeleportListener(), new BreakPlace(), new DamageDeathMove(),
                 new Inventory(), new Interact(), new TeamSelectorListener(), new RefreshGUI(), new HungerWeatherSpawn(), new CmdProcess(),
                 new com.andrei1058.bedwars.shop.quickbuy.LobbyQuickBuyMenu(),
+                new com.andrei1058.bedwars.shop.hotbar.HotbarManagerMenu(),
+                new com.andrei1058.bedwars.shop.hotbar.HotbarListener(),
                 new FireballListener(), new EggBridge(), new SpectatorListeners(), new BaseListener(), new CompassListener(),
                 new TargetListener(), new LangListener(), new Warnings(this), new ChatAFK(),
                 new GameEndListener(), new DefaultStatsHandler(), new ArenaOpFilterListener(), new CommandHintListener()
@@ -490,6 +492,7 @@ public class BedWars extends JavaPlugin {
             }
         }
         CompassManager.clearAll();
+        com.andrei1058.bedwars.shop.hotbar.HotbarManagerMenu.closeAll();
         if (SpectatorVisibilityService.getInstance() != null)
             SpectatorVisibilityService.getInstance().shutdown();
         if (PlayerPreferenceService.getInstance() != null)

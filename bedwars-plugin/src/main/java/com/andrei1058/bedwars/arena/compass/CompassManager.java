@@ -95,7 +95,26 @@ public final class CompassManager {
         ItemMeta meta = compass.getItemMeta();
         meta.setDisplayName(getMsg(player, Messages.COMPASS_ITEM_NAME));
         compass.setItemMeta(meta);
-        player.getInventory().setItem(DEFAULT_SLOT, nms.addCustomData(compass, COMPASS_MARKER));
+        ItemStack tagged = nms.addCustomData(compass, COMPASS_MARKER);
+        // 避免覆盖玩家在 Hotbar Manager 中配置到 9 号快捷栏的物品。
+        ItemStack existing = player.getInventory().getItem(DEFAULT_SLOT);
+        if (existing == null || existing.getType() == Material.AIR) {
+            player.getInventory().setItem(DEFAULT_SLOT, tagged);
+        } else {
+            int empty = -1;
+            for (int slot = 9; slot < 36; slot++) {
+                ItemStack s = player.getInventory().getItem(slot);
+                if (s == null || s.getType() == Material.AIR) {
+                    empty = slot;
+                    break;
+                }
+            }
+            if (empty >= 0) {
+                player.getInventory().setItem(empty, tagged);
+            } else {
+                player.getInventory().addItem(tagged);
+            }
+        }
         player.updateInventory();
     }
 

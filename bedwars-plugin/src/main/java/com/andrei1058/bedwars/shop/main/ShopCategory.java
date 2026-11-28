@@ -26,6 +26,7 @@ import com.andrei1058.bedwars.api.language.Language;
 import com.andrei1058.bedwars.api.language.Messages;
 import com.andrei1058.bedwars.shop.ShopCache;
 import com.andrei1058.bedwars.shop.ShopManager;
+import com.andrei1058.bedwars.shop.hotbar.HotbarManagerMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -139,6 +140,7 @@ public class ShopCategory {
         for (CategoryContent cc : getCategoryContentList()) {
             inv.setItem(cc.getSlot(), cc.getItemStack(player, shopCache));
         }
+        inv.setItem(HotbarManagerMenu.SHOP_BUTTON_SLOT, HotbarManagerMenu.createEntryButton(player));
 
         int prevWin = com.andrei1058.bedwars.shop.InventorySyncAudit.getActiveWindowId(player);
         boolean wasIndex = ShopIndex.indexViewers.contains(player.getUniqueId());

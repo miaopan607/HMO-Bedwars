@@ -25,6 +25,7 @@ import com.andrei1058.bedwars.api.events.shop.ShopOpenEvent;
 import com.andrei1058.bedwars.api.language.Language;
 import com.andrei1058.bedwars.arena.Arena;
 import com.andrei1058.bedwars.shop.ShopCache;
+import com.andrei1058.bedwars.shop.hotbar.HotbarManagerMenu;
 import com.andrei1058.bedwars.shop.quickbuy.PlayerQuickBuyCache;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -99,6 +100,7 @@ public class ShopIndex {
         ShopCache.getShopCache(player.getUniqueId()).setSelectedCategory(getQuickBuyButton().getSlot());
 
         quickBuyCache.addInInventory(inv, ShopCache.getShopCache(player.getUniqueId()));
+        inv.setItem(HotbarManagerMenu.SHOP_BUTTON_SLOT, HotbarManagerMenu.createEntryButton(player));
 
         int prevWin = com.andrei1058.bedwars.shop.InventorySyncAudit.getActiveWindowId(player);
         boolean wasIndex = indexViewers.contains(player.getUniqueId());

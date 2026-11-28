@@ -33,6 +33,7 @@ import com.andrei1058.bedwars.arena.Arena;
 import com.andrei1058.bedwars.configuration.Sounds;
 import com.andrei1058.bedwars.shop.ShopCache;
 import com.andrei1058.bedwars.shop.ShopClickMode;
+import com.andrei1058.bedwars.shop.hotbar.HotbarService;
 import com.andrei1058.bedwars.database.PlayerPreferenceService;
 import com.andrei1058.bedwars.shop.quickbuy.PlayerQuickBuyCache;
 import com.andrei1058.bedwars.shop.quickbuy.QuickBuyElement;
@@ -157,8 +158,8 @@ public class CategoryContent implements ICategoryContent {
             if (!nms.isSword(item)) continue;
             for (int slot = 0; slot < contents.length; slot++) {
                 ItemStack stack = contents[slot];
-                if (stack != null && nms.isSword(stack) && nms.isCustomBedWarsItem(stack)
-                        && nms.getCustomData(stack).equals("DEFAULT_ITEM") && nms.getDamage(stack) <= nms.getDamage(item)) {
+                if (stack != null && nms.isSword(stack) && HotbarService.isDefaultBedWarsItem(stack)
+                        && HotbarService.getSwordRank(stack) <= HotbarService.getSwordRank(item)) {
                     contents[slot] = null;
                 }
             }
@@ -215,15 +216,19 @@ public class CategoryContent implements ICategoryContent {
     }
 
     public void execute(Player player, ShopCache shopCache, int slot) {
-        execute(player, shopCache, slot, false);
+        execute(player, shopCache, slot, false, -1);
+    }
+
+    public void execute(Player player, ShopCache shopCache, int slot, int preferredSlot) {
+        execute(player, shopCache, slot, false, preferredSlot);
     }
 
     public void executeBulk(Player player, ShopCache shopCache, int slot) {
-        execute(player, shopCache, slot, true);
+        execute(player, shopCache, slot, true, -1);
     }
 
-    /** 单买和整批购买共用校验与结算，只有购买上限和成功提示不同。 */
-    private void execute(Player player, ShopCache shopCache, int slot, boolean bulk) {
+    /** 单买、数字键指定和整批购买共用校验与结算。 */
+    private void execute(Player player, ShopCache shopCache, int slot, boolean bulk, int preferredSlot) {
         IContentTier tier = resolveTier(shopCache);
         if (tier == null || shopCache.getCategoryWeight(father) > weight) return;
         if (isPermanent() && shopCache.hasCachedItem(this)
@@ -264,14 +269,14 @@ public class CategoryContent implements ICategoryContent {
 
         com.andrei1058.bedwars.shop.InventorySyncAudit.logShopBuyStart(player, getIdentifier(), bulk, price, currency, money, limit, amount, batchItems);
         takeMoney(player, currency, price * amount);
-        shopCache.upgradeCachedItem(this, slot);
+        int previousSlot = shopCache.upgradeCachedItemSlot(this, slot);
         if (batchItems) {
             for (int index = 0; index < tier.getBuyItemsList().size(); index++) {
-                ((BuyItem) tier.getBuyItemsList().get(index)).give(player, arena, items.get(index), amount);
+                ((BuyItem) tier.getBuyItemsList().get(index)).give(player, arena, items.get(index), amount, this, preferredSlot, previousSlot);
             }
             player.updateInventory();
         } else {
-            giveItems(player, shopCache, arena);
+            giveItems(player, shopCache, arena, preferredSlot, previousSlot);
         }
         shopCache.setCategoryWeight(father, weight);
         com.andrei1058.bedwars.shop.InventorySyncAudit.logShopBuyEnd(player, getIdentifier(), amount);
@@ -319,9 +324,21 @@ public class CategoryContent implements ICategoryContent {
      * Add tier items to player inventory
      */
     public void giveItems(Player player, ShopCache shopCache, IArena arena) {
+        giveItems(player, shopCache, arena, -1, -1);
+    }
+
+    public void giveItems(Player player, ShopCache shopCache, IArena arena, int preferredSlot, int fallbackSlot) {
+        boolean updated = false;
         for (IBuyItem bi : contentTiers.get(shopCache.getContentTier(getIdentifier()) - 1).getBuyItemsList()) {
-            bi.give(player, arena);
+            if (bi instanceof BuyItem) {
+                BuyItem buyItem = (BuyItem) bi;
+                buyItem.give(player, arena, buyItem.prepareItem(player, arena), 1, this, preferredSlot, fallbackSlot);
+                updated = true;
+            } else {
+                bi.give(player, arena);
+            }
         }
+        if (updated) player.updateInventory();
     }
 
     @Override

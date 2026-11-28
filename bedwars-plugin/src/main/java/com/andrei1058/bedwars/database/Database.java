@@ -98,6 +98,10 @@ public interface Database {
 
     void setQuickDeposit(UUID player, boolean enabled) throws SQLException;
 
+    String getHotbarLayout(UUID player) throws SQLException;
+
+    void setHotbarLayout(UUID player, String layout) throws SQLException;
+
     /**
      * @param updateSlots key is slot id and value is the element.
      */

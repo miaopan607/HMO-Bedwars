@@ -38,6 +38,7 @@ import com.andrei1058.bedwars.arena.OreGenerator;
 import com.andrei1058.bedwars.arena.compass.CompassManager;
 import com.andrei1058.bedwars.configuration.Sounds;
 import com.andrei1058.bedwars.shop.ShopCache;
+import com.andrei1058.bedwars.shop.hotbar.HotbarService;
 import com.andrei1058.bedwars.support.paper.TeleportManager;
 import lombok.Getter;
 import org.bukkit.*;
@@ -243,7 +244,7 @@ public class BedWarsTeam implements ITeam {
                             }
                         }
                         if (!hasSword) {
-                            p.getInventory().addItem(i);
+                            HotbarService.giveItem(p, i, 1, null, -1, -1);
                         }
                     } else if (BedWars.nms.isBow(i)) {
                         boolean hasBow = false;
@@ -256,10 +257,10 @@ public class BedWarsTeam implements ITeam {
                             }
                         }
                         if (!hasBow) {
-                            p.getInventory().addItem(i);
+                            HotbarService.giveItem(p, i, 1, null, -1, -1);
                         }
                     } else {
-                        p.getInventory().addItem(i);
+                        HotbarService.giveItem(p, i, 1, null, -1, -1);
                     }
                 } catch (Exception ignored) {
                 }
@@ -311,7 +312,8 @@ public class BedWarsTeam implements ITeam {
 
                     i = nms.addCustomData(i, "DEFAULT_ITEM");
 
-                    p.getInventory().addItem(i);
+                    HotbarService.giveItem(p, i, 1, null, -1, -1);
+                    p.updateInventory();
                     break;
                 } catch (Exception ignored) {
                 }
